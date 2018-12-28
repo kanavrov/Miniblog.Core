@@ -1,39 +1,132 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Miniblog.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Microsoft.AspNetCore.Hosting;
+using Miniblog.Core.Models;
+using Miniblog.Core.Users;
 
-namespace Miniblog.Core.Services
+namespace Miniblog.Core.Repositories
 {
-    public class FileBlogService : IBlogService
+    public class XmlFileBlogRepository : IBlogRepository
     {
         private const string POSTS = "Posts";
         private const string FILES = "files";
 
         private readonly List<Post> _cache = new List<Post>();
-        private readonly IHttpContextAccessor _contextAccessor;
-        private readonly string _folder;
 
-        public FileBlogService(IHostingEnvironment env, IHttpContextAccessor contextAccessor)
+        private readonly string _folder;
+        private readonly IUserRoleResolver _userRoleResolver;
+
+        public XmlFileBlogRepository(IHostingEnvironment env, IUserRoleResolver userRoleResolver)
         {
             _folder = Path.Combine(env.WebRootPath, POSTS);
-            _contextAccessor = contextAccessor;
-
+            _userRoleResolver = userRoleResolver;
             Initialize();
+        }
+        public async Task AddComment(Comment comment, string postId)
+        {
+            var post = await GetPostById(postId);
+            if (post != null)
+            {
+                post.Comments.Add(comment);
+                await SavePost(post);
+            }
+        }
+
+        public async Task DeleteComment(string commentId, string postId)
+        {
+            var post = await GetPostById(postId);
+            if (post != null)
+            {
+                var comment = post.Comments.FirstOrDefault(c => c.ID.Equals(commentId, StringComparison.OrdinalIgnoreCase));
+                if (comment != null)
+                {
+                    post.Comments.Remove(comment);
+                    await SavePost(post);
+                }                
+            }
+        }
+
+        public async Task AddPost(Post post)
+        {
+            await SavePost(post);
+        }
+
+        public async Task UpdatePost(Post post)
+        {
+            await SavePost(post);
+        }
+
+        public async Task DeletePost(string id)
+        {
+            var post = await GetPostById(id);
+
+            if(post == null)
+            {
+                return;
+            }
+
+            string filePath = GetFilePath(post);
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            if (_cache.Contains(post))
+            {
+                _cache.Remove(post);
+            }
+        }
+
+        public virtual Task<IEnumerable<string>> GetCategories()
+        {
+            bool isAdmin = _userRoleResolver.IsAdmin();
+
+            var categories = _cache
+                .Where(p => p.IsPublished || isAdmin)
+                .SelectMany(post => post.Categories)
+                .Select(cat => cat.ToLowerInvariant())
+                .Distinct();
+
+            return Task.FromResult(categories);
+        }
+
+        public virtual Task<Post> GetPostById(string id)
+        {
+            var post = _cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
+            bool isAdmin = _userRoleResolver.IsAdmin();
+
+            if (post != null && post.PubDate <= DateTime.UtcNow && (post.IsPublished || isAdmin))
+            {
+                return Task.FromResult(post);
+            }
+
+            return Task.FromResult<Post>(null);
+        }
+
+        public virtual Task<Post> GetPostBySlug(string slug)
+        {
+            var post = _cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
+            bool isAdmin = _userRoleResolver.IsAdmin();
+
+            if (post != null && post.PubDate <= DateTime.UtcNow && (post.IsPublished || isAdmin))
+            {
+                return Task.FromResult(post);
+            }
+
+            return Task.FromResult<Post>(null);
         }
 
         public virtual Task<IEnumerable<Post>> GetPosts(int count, int skip = 0)
         {
-            bool isAdmin = IsAdmin();
+            bool isAdmin = _userRoleResolver.IsAdmin();
 
             var posts = _cache
                 .Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
@@ -45,7 +138,7 @@ namespace Miniblog.Core.Services
 
         public virtual Task<IEnumerable<Post>> GetPostsByCategory(string category)
         {
-            bool isAdmin = IsAdmin();
+            bool isAdmin = _userRoleResolver.IsAdmin();
 
             var posts = from p in _cache
                         where p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin)
@@ -55,46 +148,7 @@ namespace Miniblog.Core.Services
             return Task.FromResult(posts);
         }
 
-        public virtual Task<Post> GetPostBySlug(string slug)
-        {
-            var post = _cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
-            bool isAdmin = IsAdmin();
-
-            if (post != null && post.PubDate <= DateTime.UtcNow && (post.IsPublished || isAdmin))
-            {
-                return Task.FromResult(post);
-            }
-
-            return Task.FromResult<Post>(null);
-        }
-
-        public virtual Task<Post> GetPostById(string id)
-        {
-            var post = _cache.FirstOrDefault(p => p.ID.Equals(id, StringComparison.OrdinalIgnoreCase));
-            bool isAdmin = IsAdmin();
-
-            if (post != null && post.PubDate <= DateTime.UtcNow && (post.IsPublished || isAdmin))
-            {
-                return Task.FromResult(post);
-            }
-
-            return Task.FromResult<Post>(null);
-        }
-
-        public virtual Task<IEnumerable<string>> GetCategories()
-        {
-            bool isAdmin = IsAdmin();
-
-            var categories = _cache
-                .Where(p => p.IsPublished || isAdmin)
-                .SelectMany(post => post.Categories)
-                .Select(cat => cat.ToLowerInvariant())
-                .Distinct();
-
-            return Task.FromResult(categories);
-        }
-
-        public async Task SavePost(Post post)
+        private async Task SavePost(Post post)
         {
             string filePath = GetFilePath(post);
             post.LastModified = DateTime.UtcNow;
@@ -142,49 +196,6 @@ namespace Miniblog.Core.Services
                 _cache.Add(post);
                 SortCache();
             }
-        }
-
-        public Task DeletePost(Post post)
-        {
-            string filePath = GetFilePath(post);
-
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-
-            if (_cache.Contains(post))
-            {
-                _cache.Remove(post);
-            }
-
-            return Task.CompletedTask;
-        }
-
-        public async Task<string> SaveFile(byte[] bytes, string fileName, string suffix = null)
-        {
-            suffix = CleanFromInvalidChars(suffix ?? DateTime.UtcNow.Ticks.ToString());
-
-            string ext = Path.GetExtension(fileName);
-            string name = CleanFromInvalidChars(Path.GetFileNameWithoutExtension(fileName));
-
-            string fileNameWithSuffix = $"{name}_{suffix}{ext}";
-
-            string absolute = Path.Combine(_folder, FILES, fileNameWithSuffix);
-            string dir = Path.GetDirectoryName(absolute);
-
-            Directory.CreateDirectory(dir);
-            using (var writer = new FileStream(absolute, FileMode.CreateNew))
-            {
-                await writer.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
-            }
-
-            return $"/{POSTS}/{FILES}/{fileNameWithSuffix}";
-        }
-
-        private string GetFilePath(Post post)
-        {
-            return Path.Combine(_folder, post.ID + ".xml");
         }
 
         private void Initialize()
@@ -275,24 +286,9 @@ namespace Miniblog.Core.Services
 
             return defaultValue;
         }
-
-        private static string CleanFromInvalidChars(string input)
+        private string GetFilePath(Post post)
         {
-            // ToDo: what we are doing here if we switch the blog from windows
-            // to unix system or vice versa? we should remove all invalid chars for both systems
-
-            var regexSearch = Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()));
-            var r = new Regex($"[{regexSearch}]");
-            return r.Replace(input, "");
-        }
-        
-        private static string FormatDateTime(DateTime dateTime)
-        {
-            const string UTC = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
-
-            return dateTime.Kind == DateTimeKind.Utc
-                ? dateTime.ToString(UTC)
-                : dateTime.ToUniversalTime().ToString(UTC);
+            return Path.Combine(_folder, post.ID + ".xml");
         }
 
         protected void SortCache()
@@ -300,9 +296,13 @@ namespace Miniblog.Core.Services
             _cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
         }
 
-        protected bool IsAdmin()
+        private static string FormatDateTime(DateTime dateTime)
         {
-            return _contextAccessor.HttpContext?.User?.Identity.IsAuthenticated == true;
+            const string UTC = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
+
+            return dateTime.Kind == DateTimeKind.Utc
+                ? dateTime.ToString(UTC)
+                : dateTime.ToUniversalTime().ToString(UTC);
         }
     }
 }

@@ -4,22 +4,26 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Miniblog.Core.Repositories;
 using WilderMinds.MetaWeblog;
 
 namespace Miniblog.Core.Services
 {
     public class MetaWeblogService : IMetaWeblogProvider
     {
-        private readonly IBlogService _blog;
+        private readonly IBlogRepository _blog;
         private readonly IConfiguration _config;
         private readonly IUserServices _userServices;
+        private readonly IFilePersisterService _filePersisterService;
         private readonly IHttpContextAccessor _context;
 
-        public MetaWeblogService(IBlogService blog, IConfiguration config, IHttpContextAccessor context, IUserServices userServices)
+        public MetaWeblogService(IBlogRepository blog, IConfiguration config, IHttpContextAccessor context, 
+        IUserServices userServices, IFilePersisterService filePersisterService)
         {
             _blog = blog;
             _config = config;
             _userServices = userServices;
+            _filePersisterService = filePersisterService;
             _context = context;
         }
 
@@ -41,7 +45,7 @@ namespace Miniblog.Core.Services
                 newPost.PubDate = post.dateCreated;
             }
 
-            _blog.SavePost(newPost).GetAwaiter().GetResult();
+            _blog.AddPost(newPost).GetAwaiter().GetResult();
 
             return newPost.ID;
         }
@@ -54,7 +58,7 @@ namespace Miniblog.Core.Services
 
             if (post != null)
             {
-                _blog.DeletePost(post).GetAwaiter().GetResult();
+                _blog.DeletePost(postid).GetAwaiter().GetResult();
                 return true;
             }
 
@@ -80,7 +84,7 @@ namespace Miniblog.Core.Services
                     existing.PubDate = post.dateCreated;
                 }
 
-                _blog.SavePost(existing).GetAwaiter().GetResult();
+                _blog.UpdatePost(existing).GetAwaiter().GetResult();
 
                 return true;
             }
@@ -141,7 +145,7 @@ namespace Miniblog.Core.Services
         {
             ValidateUser(username, password);
             byte[] bytes = Convert.FromBase64String(mediaObject.bits);
-            string path = _blog.SaveFile(bytes, mediaObject.name).GetAwaiter().GetResult();
+            string path = _filePersisterService.SaveFile(bytes, mediaObject.name).GetAwaiter().GetResult();
 
             return new MediaObjectInfo { url = path };
         }

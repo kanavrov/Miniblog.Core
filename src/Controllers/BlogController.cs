@@ -101,51 +101,9 @@ namespace Miniblog.Core.Controllers
                 return View("Edit", post);
             }
 
-            var existing = await _blog.GetPostById(post.ID) ?? post;
-            string categories = Request.Form["categories"];
-
-            existing.Categories = categories.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(c => c.Trim().ToLowerInvariant()).ToList();
-            existing.Title = post.Title.Trim();
-            existing.Slug = !string.IsNullOrWhiteSpace(post.Slug) ? post.Slug.Trim() : Models.Post.CreateSlug(post.Title);
-            existing.IsPublished = post.IsPublished;
-            existing.Content = post.Content.Trim();
-            existing.Excerpt = post.Excerpt.Trim();
-
-            await SaveFilesToDisk(existing);
-
-            await _blog.SavePost(existing);
+            await _blog.SavePost(post, Request.Form["categories"]);
 
             return Redirect(post.GetEncodedLink());
-        }
-
-        private async Task SaveFilesToDisk(Post post)
-        {
-            var imgRegex = new Regex("<img[^>].+ />", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            var base64Regex = new Regex("data:[^/]+/(?<ext>[a-z]+);base64,(?<base64>.+)", RegexOptions.IgnoreCase);
-
-            foreach (Match match in imgRegex.Matches(post.Content))
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml("<root>" + match.Value + "</root>");
-
-                var img = doc.FirstChild.FirstChild;
-                var srcNode = img.Attributes["src"];
-                var fileNameNode = img.Attributes["data-filename"];
-
-                // The HTML editor creates base64 DataURIs which we'll have to convert to image files on disk
-                if (srcNode != null && fileNameNode != null)
-                {
-                    var base64Match = base64Regex.Match(srcNode.Value);
-                    if (base64Match.Success)
-                    {
-                        byte[] bytes = Convert.FromBase64String(base64Match.Groups["base64"].Value);
-                        srcNode.Value = await _blog.SaveFile(bytes, fileNameNode.Value).ConfigureAwait(false);
-
-                        img.Attributes.Remove(fileNameNode);
-                        post.Content = post.Content.Replace(match.Value, img.OuterXml);
-                    }
-                }
-            }
         }
 
         [Route("/blog/deletepost/{id}")]
@@ -156,7 +114,7 @@ namespace Miniblog.Core.Controllers
 
             if (existing != null)
             {
-                await _blog.DeletePost(existing);
+                await _blog.DeletePost(id);
                 return Redirect("/");
             }
 
@@ -167,6 +125,13 @@ namespace Miniblog.Core.Controllers
         [HttpPost]
         public async Task<IActionResult> AddComment(string postId, Comment comment)
         {
+            // the website form key should have been removed by javascript
+            // unless the comment was posted by a spam robot
+            if (!Request.Form.ContainsKey("website"))
+            {
+                return BadRequest();
+            }
+
             var post = await _blog.GetPostById(postId);
 
             if (!ModelState.IsValid)
@@ -174,23 +139,12 @@ namespace Miniblog.Core.Controllers
                 return View("Post", post);
             }
 
-            if (post == null || !post.AreCommentsOpen(_settings.Value.CommentsCloseAfterDays))
+            if (post == null)
             {
                 return NotFound();
-            }
+            }            
 
-            comment.IsAdmin = User.Identity.IsAuthenticated;
-            comment.Content = comment.Content.Trim();
-            comment.Author = comment.Author.Trim();
-            comment.Email = comment.Email.Trim();
-
-            // the website form key should have been removed by javascript
-            // unless the comment was posted by a spam robot
-            if (!Request.Form.ContainsKey("website"))
-            {
-                post.Comments.Add(comment);
-                await _blog.SavePost(post);
-            }
+            await _blog.AddComment(comment, postId);
 
             return Redirect(post.GetEncodedLink() + "#" + comment.ID);
         }
@@ -206,15 +160,7 @@ namespace Miniblog.Core.Controllers
                 return NotFound();
             }
 
-            var comment = post.Comments.FirstOrDefault(c => c.ID.Equals(commentId, StringComparison.OrdinalIgnoreCase));
-
-            if (comment == null)
-            {
-                return NotFound();
-            }
-
-            post.Comments.Remove(comment);
-            await _blog.SavePost(post);
+            await _blog.DeleteComment(commentId, postId);
 
             return Redirect(post.GetEncodedLink() + "#comments");
         }

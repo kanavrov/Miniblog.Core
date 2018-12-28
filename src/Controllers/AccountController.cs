@@ -18,8 +18,7 @@ namespace Miniblog.Core.Controllers
         {
             _userServices = userServices;
         }
-
-
+        
         [Route("/login")]
         [AllowAnonymous]
         [HttpGet]

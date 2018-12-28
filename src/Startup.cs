@@ -44,9 +44,9 @@ namespace Miniblog.Core
         {
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
+            //TODO: Add new registrations to IoC
             services.AddSingleton<IUserServices, BlogUserServices>();
-            services.AddSingleton<IBlogService, FileBlogService>();
+            services.AddSingleton<IBlogService, BlogService>();
             services.Configure<BlogSettings>(Configuration.GetSection("blog"));
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMetaWeblog<MetaWeblogService>();
