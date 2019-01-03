@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Miniblog.Core.Repositories;
 using Miniblog.Core.Services;
+using Miniblog.Core.Users;
 using WebEssentials.AspNetCore.OutputCaching;
 using WebMarkupMin.AspNetCore2;
 using WebMarkupMin.Core;
@@ -44,8 +46,12 @@ namespace Miniblog.Core
         {
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            //TODO: Add new registrations to IoC
+            
             services.AddSingleton<IUserServices, BlogUserServices>();
+            services.AddSingleton<IFilePersisterService, FilePersisterService>();
+            services.AddSingleton<IRenderService, HtmlRenderService>();
+            services.AddSingleton<IBlogRepository, XmlFileBlogRepository>();
+            services.AddSingleton<IUserRoleResolver, IdentityUserRoleResolver>();
             services.AddSingleton<IBlogService, BlogService>();
             services.Configure<BlogSettings>(Configuration.GetSection("blog"));
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();

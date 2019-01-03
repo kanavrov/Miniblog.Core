@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace Miniblog.Core.Users
 {
-    public class CurrentUserRoleResolver : IUserRoleResolver
+    public class IdentityUserRoleResolver : IUserRoleResolver
     {
         private readonly IHttpContextAccessor _contextAccessor;
 
-        public CurrentUserRoleResolver(IHttpContextAccessor contextAccessor)
+        public IdentityUserRoleResolver(IHttpContextAccessor contextAccessor)
         {
             _contextAccessor = contextAccessor;
         }
