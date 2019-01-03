@@ -16,10 +16,12 @@ namespace Miniblog.Core.Services
 		private readonly IUserServices _userServices;
 		private readonly IFilePersisterService _filePersisterService;
 		private readonly IHttpContextAccessor _context;
+		private readonly IRouteService _routeService;
 
-		public MetaWeblogService(IBlogRepository blog, IConfiguration config, IHttpContextAccessor context, 
-		IUserServices userServices, IFilePersisterService filePersisterService)
+		public MetaWeblogService(IBlogRepository blog, IConfiguration config, IHttpContextAccessor context,
+		IUserServices userServices, IFilePersisterService filePersisterService, IRouteService routeService)
 		{
+			_routeService = routeService;
 			_blog = blog;
 			_config = config;
 			_userServices = userServices;
@@ -34,7 +36,7 @@ namespace Miniblog.Core.Services
 			var newPost = new Models.Post
 			{
 				Title = post.title,
-				Slug = !string.IsNullOrWhiteSpace(post.wp_slug) ? post.wp_slug : Models.Post.CreateSlug(post.title),
+				Slug = !string.IsNullOrWhiteSpace(post.wp_slug) ? post.wp_slug : _routeService.CreateSlug(post.title),
 				Content = post.description,
 				IsPublished = publish,
 				Categories = post.categories
@@ -164,7 +166,7 @@ namespace Miniblog.Core.Services
 
 		private void ValidateUser(string username, string password)
 		{
-			if (_userServices.ValidateUser(username, password)==false)
+			if (_userServices.ValidateUser(username, password) == false)
 			{
 				throw new MetaWeblogException("Unauthorized");
 			}
@@ -177,15 +179,12 @@ namespace Miniblog.Core.Services
 
 		private WilderMinds.MetaWeblog.Post ToMetaWebLogPost(Models.Post post)
 		{
-			var request = _context.HttpContext.Request;
-			string url = request.Scheme + "://" + request.Host;
-
 			return new WilderMinds.MetaWeblog.Post
 			{
 				postid = post.ID,
 				title = post.Title,
 				wp_slug = post.Slug,
-				permalink = url + post.GetLink(),
+				permalink = _routeService.GetAbsoluteLink(post),
 				dateCreated = post.PubDate,
 				description = post.Content,
 				categories = post.Categories.ToArray()

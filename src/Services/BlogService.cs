@@ -25,12 +25,15 @@ namespace Miniblog.Core.Services
 		private readonly IFilePersisterService _filePersisterService;
 		private readonly IUserRoleResolver _userRoleResolver;
 		private readonly IRenderService _renderService;
+		public readonly IRouteService _routeService;
 
 		public BlogService(IHostingEnvironment env, IBlogRepository blogRepository,
 		IUserRoleResolver userRoleResolver, IOptionsSnapshot<BlogSettings> settings,
-		IFilePersisterService filePersisterService, IRenderService renderService)
+		IFilePersisterService filePersisterService, IRenderService renderService,
+		IRouteService routeService)
 		{
 			_renderService = renderService;
+			_routeService = routeService;
 			_blogRepository = blogRepository;
 			_settings = settings;
 			_filePersisterService = filePersisterService;
@@ -75,7 +78,7 @@ namespace Miniblog.Core.Services
 
 			existing.Categories = categories.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(c => c.Trim().ToLowerInvariant()).ToList();
 			existing.Title = post.Title.Trim();
-			existing.Slug = !string.IsNullOrWhiteSpace(post.Slug) ? post.Slug.Trim() : Models.Post.CreateSlug(post.Title);
+			existing.Slug = !string.IsNullOrWhiteSpace(post.Slug) ? post.Slug.Trim() : _routeService.CreateSlug(post.Title);
 			existing.IsPublished = post.IsPublished;
 			existing.Content = post.Content.Trim();
 			existing.Excerpt = post.Excerpt.Trim();

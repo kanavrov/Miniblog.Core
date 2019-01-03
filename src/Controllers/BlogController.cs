@@ -17,9 +17,12 @@ namespace Miniblog.Core.Controllers
 		private readonly IBlogService _blog;
 		private readonly IOptionsSnapshot<BlogSettings> _settings;
 		private readonly WebManifest _manifest;
+		private readonly IRouteService _routeService;
 
-		public BlogController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings, WebManifest manifest)
+		public BlogController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings,
+		WebManifest manifest, IRouteService routeService)
 		{
+			_routeService = routeService;
 			_blog = blog;
 			_settings = settings;
 			_manifest = manifest;
@@ -103,7 +106,7 @@ namespace Miniblog.Core.Controllers
 
 			await _blog.SavePost(post, Request.Form["categories"]);
 
-			return Redirect(post.GetEncodedLink());
+			return Redirect(_routeService.GetEncodedLink(post));
 		}
 
 		[Route("/blog/deletepost/{id}")]
@@ -146,7 +149,7 @@ namespace Miniblog.Core.Controllers
 
 			await _blog.AddComment(comment, postId);
 
-			return Redirect(post.GetEncodedLink() + "#" + comment.ID);
+			return Redirect(_routeService.GetCommentLink(post, comment));
 		}
 
 		[Route("/blog/comment/{postId}/{commentId}")]
@@ -162,7 +165,7 @@ namespace Miniblog.Core.Controllers
 
 			await _blog.DeleteComment(commentId, postId);
 
-			return Redirect(post.GetEncodedLink() + "#comments");
+			return Redirect(_routeService.GetCommentLink(post));
 		}
 	}
 }

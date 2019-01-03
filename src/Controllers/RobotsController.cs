@@ -18,19 +18,22 @@ namespace Miniblog.Core.Controllers
 		private readonly IBlogService _blog;
 		private readonly IOptionsSnapshot<BlogSettings> _settings;
 		private readonly WebManifest _manifest;
+		private readonly IRouteService _routeService;
 
-		public RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings, WebManifest manifest)
+		public RobotsController(IBlogService blog, IOptionsSnapshot<BlogSettings> settings, 
+		WebManifest manifest, IRouteService routeService)
 		{
 			_blog = blog;
 			_settings = settings;
 			_manifest = manifest;
+			_routeService = routeService;
 		}
 
 		[Route("/robots.txt")]
 		[OutputCache(Profile = "default")]
 		public string RobotsTxt()
 		{
-			string host = Request.Scheme + "://" + Request.Host;
+			string host = _routeService.GetHost();
 			var sb = new StringBuilder();
 			sb.AppendLine("User-agent: *");
 			sb.AppendLine("Disallow:");
@@ -42,8 +45,6 @@ namespace Miniblog.Core.Controllers
 		[Route("/sitemap.xml")]
 		public async Task SitemapXml()
 		{
-			string host = Request.Scheme + "://" + Request.Host;
-
 			Response.ContentType = "application/xml";
 
 			using (var xml = XmlWriter.Create(Response.Body, new XmlWriterSettings { Indent = true }))
@@ -58,7 +59,7 @@ namespace Miniblog.Core.Controllers
 					var lastMod = new[] { post.PubDate, post.LastModified };
 
 					xml.WriteStartElement("url");
-					xml.WriteElementString("loc", host + post.GetLink());
+					xml.WriteElementString("loc", _routeService.GetLink(post));
 					xml.WriteElementString("lastmod", lastMod.Max().ToString("yyyy-MM-ddThh:mmzzz"));
 					xml.WriteEndElement();
 				}
@@ -105,8 +106,7 @@ namespace Miniblog.Core.Controllers
 		public async Task Rss(string type)
 		{
 			Response.ContentType = "application/xml";
-			string host = Request.Scheme + "://" + Request.Host;
-
+			
 			using (XmlWriter xmlWriter = XmlWriter.Create(Response.Body, new XmlWriterSettings() { Async = true, Indent = true, Encoding = new UTF8Encoding(false) }))
 			{
 				var posts = await _blog.GetPosts(10);
@@ -118,7 +118,7 @@ namespace Miniblog.Core.Controllers
 					{
 						Title = post.Title,
 						Description = post.Content,
-						Id = host + post.GetLink(),
+						Id = _routeService.GetAbsoluteLink(post),
 						Published = post.PubDate,
 						LastUpdated = post.LastModified,
 						ContentType = "html",

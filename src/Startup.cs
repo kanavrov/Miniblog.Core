@@ -53,6 +53,7 @@ namespace Miniblog.Core
 			services.AddSingleton<IBlogRepository, XmlFileBlogRepository>();
 			services.AddSingleton<IUserRoleResolver, IdentityUserRoleResolver>();
 			services.AddSingleton<IBlogService, BlogService>();
+			services.AddSingleton<IRouteService, BlogRouteService>();
 			services.Configure<BlogSettings>(Configuration.GetSection("blog"));
 			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddMetaWeblog<MetaWeblogService>();

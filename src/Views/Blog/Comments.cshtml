@@ -1,5 +1,6 @@
 ﻿@model Post
 @inject IOptionsSnapshot<BlogSettings> settings
+@inject Miniblog.Core.Services.IRenderService renderService
 
 <section id="comments">
     <div class="container">
@@ -14,11 +15,11 @@
                 </h3>
 
                 <figure class="gravatar">
-                    <img alt="@comment.Author" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="@comment.GetGravatar()" />
+                    <img alt="@comment.Author" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="@renderService.GetGravatar(comment)" />
                 </figure>
 
                 <div class="content">
-                    <p itemprop="text">@comment.RenderContent()</p>
+                    <p itemprop="text">@renderService.RenderContent(comment)</p>
                     <span itemprop="name">@comment.Author</span>
 
                     @if (User.Identity.IsAuthenticated)

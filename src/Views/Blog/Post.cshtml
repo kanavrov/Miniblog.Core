@@ -1,20 +1,21 @@
 ﻿@model Post
-@inject IOptionsSnapshot<BlogSettings> settings
+@inject IOptionsSnapshot<BlogSettings> settings	
+@inject Miniblog.Core.Services.IRenderService renderService
+@inject Miniblog.Core.Services.IRouteService routeService
 @{
     ViewData["Title"] = Model.Title;
     ViewData["Description"] = Model.Excerpt;
     bool showFullPost = ViewContext.RouteData.Values.ContainsKey("slug");
-    string host = Context.Request.Scheme + "://" + Context.Request.Host;
     bool isCodePreview = Model.Content.Contains("</code>");
 }
 
 @section Head {
-    <link rel="canonical" href="@(host + Model.GetLink())" />
+    <link rel="canonical" href="@routeService.GetAbsoluteLink(Model))" />
 }
 
 <article class="post container" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
     <header>
-        <h1 itemprop="name headline"><a href="@Model.GetLink()" rel="canonical" itemprop="url">@Model.Title</a></h1>
+        <h1 itemprop="name headline"><a href="@routeService.GetLink(Model)" rel="canonical" itemprop="url">@Model.Title</a></h1>
         <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">Published @Model.PubDate.ToString("MMM d, yyyy")</time>
         @if (User.Identity.IsAuthenticated)
         {
@@ -23,7 +24,7 @@
     </header>
 
     <div itemprop="articleBody mainEntityOfPage" cdnify>
-        @Html.Raw(Model.RenderContent())
+        @Html.Raw(renderService.RenderContent(Model))
     </div>
 
     <footer>
@@ -39,13 +40,13 @@
             <text>and has</text>
         }
 
-        <a href="@Model.GetLink()#comments" itemprop="discussionUrl" title="Go to the comments section">
+        <a href="@routeService.GetCommentLink(Model)" itemprop="discussionUrl" title="Go to the comments section">
             <span itemprop="commentCount">@Model.Comments.Count</span> @(Model.Comments.Count == 1 ? "comment" : "comments")
         </a>
 
         <meta itemprop="author" content="@settings.Value.Owner" />
         <meta itemprop="dateModified" content="@Model.LastModified.ToString("s")" />
-        <meta itemprop="mainEntityOfPage" content="@(host + Model.GetLink())" />
+        <meta itemprop="mainEntityOfPage" content="@routeService.GetAbsoluteLink(Model)" />
     </footer>
 </article>
 
