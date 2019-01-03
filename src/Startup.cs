@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Miniblog.Core.Localization;
 using Miniblog.Core.Repositories;
 using Miniblog.Core.Services;
 using Miniblog.Core.Users;
@@ -46,6 +47,10 @@ namespace Miniblog.Core
 		{
 			services.AddMvc()
 				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+			services.AddSingleton<ITranslationLoader, TranslationLoader>();
+			services.AddSingleton<ITranslationStore, TranslationStore>();
+			services.AddSingleton<ITranslationProvider, TranslationProvider>();
 
 			services.AddSingleton<IUserServices, BlogUserServices>();
 			services.AddSingleton<IFilePersisterService, FilePersisterService>();
