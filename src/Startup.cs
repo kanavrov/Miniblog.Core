@@ -22,130 +22,130 @@ using WmmNullLogger = WebMarkupMin.Core.Loggers.NullLogger;
 
 namespace Miniblog.Core
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+	public class Startup
+	{
+		public Startup(IConfiguration configuration)
+		{
+			Configuration = configuration;
+		}
 
-        public static void Main(string[] args)
-        {
-            CreateWebHostBuilder(args).Build().Run();
-        }
+		public static void Main(string[] args)
+		{
+			CreateWebHostBuilder(args).Build().Run();
+		}
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .UseKestrel(a => a.AddServerHeader = false);
+		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+			WebHost.CreateDefaultBuilder(args)
+				.UseStartup<Startup>()
+				.UseKestrel(a => a.AddServerHeader = false);
 
-        public IConfiguration Configuration { get; }
+		public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            
-            services.AddSingleton<IUserServices, BlogUserServices>();
-            services.AddSingleton<IFilePersisterService, FilePersisterService>();
-            services.AddSingleton<IRenderService, HtmlRenderService>();
-            services.AddSingleton<IBlogRepository, XmlFileBlogRepository>();
-            services.AddSingleton<IUserRoleResolver, IdentityUserRoleResolver>();
-            services.AddSingleton<IBlogService, BlogService>();
-            services.Configure<BlogSettings>(Configuration.GetSection("blog"));
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddMetaWeblog<MetaWeblogService>();
+		// This method gets called by the runtime. Use this method to add services to the container.
+		public void ConfigureServices(IServiceCollection services)
+		{
+			services.AddMvc()
+				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            // Progressive Web Apps https://github.com/madskristensen/WebEssentials.AspNetCore.ServiceWorker
-            services.AddProgressiveWebApp(new WebEssentials.AspNetCore.Pwa.PwaOptions
-            {
-                OfflineRoute = "/shared/offline/"
-            });
+			services.AddSingleton<IUserServices, BlogUserServices>();
+			services.AddSingleton<IFilePersisterService, FilePersisterService>();
+			services.AddSingleton<IRenderService, HtmlRenderService>();
+			services.AddSingleton<IBlogRepository, XmlFileBlogRepository>();
+			services.AddSingleton<IUserRoleResolver, IdentityUserRoleResolver>();
+			services.AddSingleton<IBlogService, BlogService>();
+			services.Configure<BlogSettings>(Configuration.GetSection("blog"));
+			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+			services.AddMetaWeblog<MetaWeblogService>();
 
-            // Output caching (https://github.com/madskristensen/WebEssentials.AspNetCore.OutputCaching)
-            services.AddOutputCaching(options =>
-            {
-                options.Profiles["default"] = new OutputCacheProfile
-                {
-                    Duration = 3600
-                };
-            });
+			// Progressive Web Apps https://github.com/madskristensen/WebEssentials.AspNetCore.ServiceWorker
+			services.AddProgressiveWebApp(new WebEssentials.AspNetCore.Pwa.PwaOptions
+			{
+				OfflineRoute = "/shared/offline/"
+			});
 
-            // Cookie authentication.
-            services
-                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/login/";
-                    options.LogoutPath = "/logout/";
-                });
+			// Output caching (https://github.com/madskristensen/WebEssentials.AspNetCore.OutputCaching)
+			services.AddOutputCaching(options =>
+			{
+				options.Profiles["default"] = new OutputCacheProfile
+				{
+					Duration = 3600
+				};
+			});
 
-            // HTML minification (https://github.com/Taritsyn/WebMarkupMin)
-            services
-                .AddWebMarkupMin(options =>
-                {
-                    options.AllowMinificationInDevelopmentEnvironment = true;
-                    options.DisablePoweredByHttpHeaders = true;
-                })
-                .AddHtmlMinification(options =>
-                {
-                    options.MinificationSettings.RemoveOptionalEndTags = false;
-                    options.MinificationSettings.WhitespaceMinificationMode = WhitespaceMinificationMode.Safe;
-                });
-            services.AddSingleton<IWmmLogger, WmmNullLogger>(); // Used by HTML minifier
+			// Cookie authentication.
+			services
+				.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+				.AddCookie(options =>
+				{
+					options.LoginPath = "/login/";
+					options.LogoutPath = "/logout/";
+				});
 
-            // Bundling, minification and Sass transpilation (https://github.com/ligershark/WebOptimizer)
-            services.AddWebOptimizer(pipeline =>
-            {
-                pipeline.MinifyJsFiles();
-                pipeline.CompileScssFiles()
-                        .InlineImages(1);
-            });
-        }
+			// HTML minification (https://github.com/Taritsyn/WebMarkupMin)
+			services
+				.AddWebMarkupMin(options =>
+				{
+					options.AllowMinificationInDevelopmentEnvironment = true;
+					options.DisablePoweredByHttpHeaders = true;
+				})
+				.AddHtmlMinification(options =>
+				{
+					options.MinificationSettings.RemoveOptionalEndTags = false;
+					options.MinificationSettings.WhitespaceMinificationMode = WhitespaceMinificationMode.Safe;
+				});
+			services.AddSingleton<IWmmLogger, WmmNullLogger>(); // Used by HTML minifier
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseBrowserLink();
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Shared/Error");
-                app.UseHsts();
-            }
+			// Bundling, minification and Sass transpilation (https://github.com/ligershark/WebOptimizer)
+			services.AddWebOptimizer(pipeline =>
+			{
+				pipeline.MinifyJsFiles();
+				pipeline.CompileScssFiles()
+						.InlineImages(1);
+			});
+		}
 
-            app.Use((context, next) =>
-            {
-                context.Response.Headers["X-Content-Type-Options"] = "nosniff";
-                return next();
-            });
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+		{
+			if (env.IsDevelopment())
+			{
+				app.UseBrowserLink();
+				app.UseDeveloperExceptionPage();
+			}
+			else
+			{
+				app.UseExceptionHandler("/Shared/Error");
+				app.UseHsts();
+			}
 
-            app.UseStatusCodePagesWithReExecute("/Shared/Error");
-            app.UseWebOptimizer();
+			app.Use((context, next) =>
+			{
+				context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+				return next();
+			});
 
-            app.UseStaticFilesWithCache();
+			app.UseStatusCodePagesWithReExecute("/Shared/Error");
+			app.UseWebOptimizer();
 
-            if (Configuration.GetValue<bool>("forcessl"))
-            {
-                app.UseHttpsRedirection();
-            }
+			app.UseStaticFilesWithCache();
 
-            app.UseMetaWeblog("/metaweblog");
-            app.UseAuthentication();
+			if (Configuration.GetValue<bool>("forcessl"))
+			{
+				app.UseHttpsRedirection();
+			}
 
-            app.UseOutputCaching();
-            app.UseWebMarkupMin();
+			app.UseMetaWeblog("/metaweblog");
+			app.UseAuthentication();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Blog}/{action=Index}/{id?}");
-            });
-        }
-    }
+			app.UseOutputCaching();
+			app.UseWebMarkupMin();
+
+			app.UseMvc(routes =>
+			{
+				routes.MapRoute(
+					name: "default",
+					template: "{controller=Blog}/{action=Index}/{id?}");
+			});
+		}
+	}
 }

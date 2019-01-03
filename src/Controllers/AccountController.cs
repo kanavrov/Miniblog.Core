@@ -9,52 +9,52 @@ using Miniblog.Core.Services;
 
 namespace Miniblog.Core.Controllers
 {
-    [Authorize]
-    public class AccountController : Controller
-    {
-        private readonly IUserServices _userServices;
+	[Authorize]
+	public class AccountController : Controller
+	{
+		private readonly IUserServices _userServices;
 
-        public AccountController(IUserServices userServices)
-        {
-            _userServices = userServices;
-        }
-        
-        [Route("/login")]
-        [AllowAnonymous]
-        [HttpGet]
-        public IActionResult Login(string returnUrl = null)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
-        }
+		public AccountController(IUserServices userServices)
+		{
+			_userServices = userServices;
+		}
 
-        [Route("/login")]
-        [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
-        public async Task<IActionResult> LoginAsync(string returnUrl, LoginViewModel model)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
+		[Route("/login")]
+		[AllowAnonymous]
+		[HttpGet]
+		public IActionResult Login(string returnUrl = null)
+		{
+			ViewData["ReturnUrl"] = returnUrl;
+			return View();
+		}
 
-            if (ModelState.IsValid && _userServices.ValidateUser(model.UserName, model.Password))
-            {
-                var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-                identity.AddClaim(new Claim(ClaimTypes.Name, model.UserName));
+		[Route("/login")]
+		[HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
+		public async Task<IActionResult> LoginAsync(string returnUrl, LoginViewModel model)
+		{
+			ViewData["ReturnUrl"] = returnUrl;
 
-                var principle = new ClaimsPrincipal(identity);
-                var properties = new AuthenticationProperties {IsPersistent = model.RememberMe};
-                await HttpContext.SignInAsync(principle, properties);
+			if (ModelState.IsValid && _userServices.ValidateUser(model.UserName, model.Password))
+			{
+				var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+				identity.AddClaim(new Claim(ClaimTypes.Name, model.UserName));
 
-                return LocalRedirect(returnUrl ?? "/");
-            }
+				var principle = new ClaimsPrincipal(identity);
+				var properties = new AuthenticationProperties { IsPersistent = model.RememberMe };
+				await HttpContext.SignInAsync(principle, properties);
 
-            ModelState.AddModelError(string.Empty, "Username or password is invalid.");
-            return View("Login", model);
-        }
+				return LocalRedirect(returnUrl ?? "/");
+			}
 
-        [Route("/logout")]
-        public async Task<IActionResult> LogOutAsync()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return LocalRedirect("/");
-        }
-    }
+			ModelState.AddModelError(string.Empty, "Username or password is invalid.");
+			return View("Login", model);
+		}
+
+		[Route("/logout")]
+		public async Task<IActionResult> LogOutAsync()
+		{
+			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			return LocalRedirect("/");
+		}
+	}
 }
