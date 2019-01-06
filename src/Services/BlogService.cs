@@ -21,14 +21,14 @@ namespace Miniblog.Core.Services
 	public class BlogService : IBlogService
 	{
 		private readonly IBlogRepository _blogRepository;
-		private readonly IOptionsSnapshot<BlogSettings> _settings;
+		private readonly IOptions<BlogSettings> _settings;
 		private readonly IFilePersisterService _filePersisterService;
 		private readonly IUserRoleResolver _userRoleResolver;
 		private readonly IRenderService _renderService;
 		public readonly IRouteService _routeService;
 
 		public BlogService(IHostingEnvironment env, IBlogRepository blogRepository,
-		IUserRoleResolver userRoleResolver, IOptionsSnapshot<BlogSettings> settings,
+		IUserRoleResolver userRoleResolver, IOptions<BlogSettings> settings,
 		IFilePersisterService filePersisterService, IRenderService renderService,
 		IRouteService routeService)
 		{

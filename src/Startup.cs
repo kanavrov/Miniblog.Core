@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
@@ -45,6 +49,8 @@ namespace Miniblog.Core
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			var localizationSettings = Configuration.GetSection("Localization").Get<LocalizationSettings>();
+
 			services.AddMvc()
 				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -108,6 +114,14 @@ namespace Miniblog.Core
 				pipeline.CompileScssFiles()
 						.InlineImages(1);
 			});
+
+			// Request localization
+			services.Configure<RequestLocalizationOptions>(options =>
+			{
+				options.DefaultRequestCulture = new RequestCulture(localizationSettings.DefaultCulture);
+				options.SupportedCultures = localizationSettings.SupportedCultures.Select(CultureInfo.GetCultureInfo).ToList();
+				options.RequestCultureProviders = new List<IRequestCultureProvider> { new CookieRequestCultureProvider() };
+			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -123,6 +137,8 @@ namespace Miniblog.Core
 				app.UseExceptionHandler("/Shared/Error");
 				app.UseHsts();
 			}
+
+			app.UseRequestLocalization();
 
 			app.Use((context, next) =>
 			{

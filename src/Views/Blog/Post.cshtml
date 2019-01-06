@@ -2,6 +2,8 @@
 @inject IOptionsSnapshot<BlogSettings> settings	
 @inject Miniblog.Core.Services.IRenderService renderService
 @inject Miniblog.Core.Services.IRouteService routeService
+@inject Miniblog.Core.Localization.ITranslationProvider i18n
+
 @{
     ViewData["Title"] = Model.Title;
     ViewData["Description"] = Model.Excerpt;
@@ -16,10 +18,10 @@
 <article class="post container" itemscope itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
     <header>
         <h1 itemprop="name headline"><a href="@routeService.GetLink(Model)" rel="canonical" itemprop="url">@Model.Title</a></h1>
-        <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">Published @Model.PubDate.ToString("MMM d, yyyy")</time>
+        <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">@i18n.Translate("Post.Published") @Model.PubDate.ToString("MMM d, yyyy")</time>
         @if (User.Identity.IsAuthenticated)
         {
-            <a asp-controller="Blog" asp-action="edit" asp-route-id="@Model.ID" title="Edit the post">Edit post</a>
+            <a asp-controller="Blog" asp-action="edit" asp-route-id="@Model.ID" title="@i18n.Translate("Post.EditPostTitle")">@i18n.Translate("Post.EditPost")</a>
         }
     </header>
 
@@ -31,17 +33,17 @@
         @if (Model.Categories.Any())
         {
             <ul class="categories">
-                <li> Posted in </li>
+                <li> @i18n.Translate("Post.PostedIn") </li>
                 @foreach (string cat in Model.Categories)
                 {
                     <li itemprop="articleSection"><a asp-controller="Blog" asp-action="Category" asp-route-category="@cat.ToLowerInvariant()" asp-route-page="">@cat</a></li>
                 }
             </ul>
-            <text>and has</text>
+            <text>@i18n.Translate("Post.AndHas")</text>
         }
 
-        <a href="@routeService.GetCommentLink(Model)" itemprop="discussionUrl" title="Go to the comments section">
-            <span itemprop="commentCount">@Model.Comments.Count</span> @(Model.Comments.Count == 1 ? "comment" : "comments")
+        <a href="@routeService.GetCommentLink(Model)" itemprop="discussionUrl" title="@i18n.Translate("Post.GoToComments")">
+            <span itemprop="commentCount">@Model.Comments.Count</span> @(Model.Comments.Count == 1 ? i18n.Translate("Post.Comment") : i18n.Translate("Post.Comments"))
         </a>
 
         <meta itemprop="author" content="@settings.Value.Owner" />

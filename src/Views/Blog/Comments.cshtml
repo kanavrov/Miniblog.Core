@@ -1,10 +1,11 @@
 ﻿@model Post
 @inject IOptionsSnapshot<BlogSettings> settings
 @inject Miniblog.Core.Services.IRenderService renderService
+@inject Miniblog.Core.Localization.ITranslationProvider i18n
 
 <section id="comments">
     <div class="container">
-        <h2>Comments</h2>
+        <h2>@i18n.Translate("Comments.Title")</h2>
         @foreach (var comment in Model.Comments)
         {
             <article id="@comment.ID" class="@(comment.IsAdmin ? "admin" : null)" itemprop="comment" itemscope itemtype="http://schema.org/Comment">
@@ -24,8 +25,10 @@
 
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <a class="noline" href="mailto:@comment.Email" title="Send email to @comment.Email">&#x2709;</a>
-                        <a class="delete noline" asp-controller="Blog" asp-Action="DeleteComment" asp-route-postid="@Model.ID" asp-route-commentid="@comment.ID" asp-route-afrt="@ViewData["afrt"]" title="Delete the comment...">Delete...</a>
+                        <a class="noline" href="mailto:@comment.Email" title="@i18n.Translate("Comments.SendEmailTo") @comment.Email">&#x2709;</a>
+                        <a class="delete noline" asp-controller="Blog" asp-Action="DeleteComment" asp-route-postid="@Model.ID" 
+							asp-route-commentid="@comment.ID" asp-route-afrt="@ViewData["afrt"]" 
+							title="@i18n.Translate("Comments.DeleteTitle")">@i18n.Translate("Comments.Delete")</a>
                     }
                 </div>
             </article>
@@ -35,25 +38,25 @@
         {
             if (Model.Comments.Count == 0)
             {
-                <p>Be the first to post a comment</p>
+                <p>@i18n.Translate("Comments.NoComments")</p>
             }
 
             <form method="post" asp-controller="Blog" asp-action="AddComment" asp-route-postid="@Model.ID" asp-antiforgery="false">
-                <h3>Post a comment</h3>
+                <h3>@i18n.Translate("Comments.PostComment")</h3>
                 <br />
 
-                <label for="content">Comment</label>
-                <textarea id="content" name="content" rows="5" cols="100" onfocus="" required placeholder="Enter your comment here..."></textarea>
+                <label for="content">@i18n.Translate("Comments.Comment")</label>
+                <textarea id="content" name="content" rows="5" cols="100" onfocus="" required placeholder="@i18n.Translate("Comments.CommentPlaceholder")"></textarea>
 
                 <div class="details">
-                    <label for="author">Name</label>
-                    <input id="author" name="author" placeholder="Your name" required />
+                    <label for="author">@i18n.Translate("Comments.Name")</label>
+                    <input id="author" name="author" placeholder="@i18n.Translate("Comments.NamePlaceholder")" required />
 
-                    <label for="email">E-mail</label>
-                    <input id="email" name="email" placeholder="Example: mary@outlook.com" required />
+                    <label for="email">@i18n.Translate("Comments.Email")</label>
+                    <input id="email" name="email" placeholder="@i18n.Translate("Comments.EmailPlaceholder")" required />
                     <br />
 
-                    <input type="submit" value="Post comment" />
+                    <input type="submit" value="@i18n.Translate("Comments.Submit")" />
 
                     <!-- This element is being removed by site.js. It is to prevent comment spam-->
                     <input type="hidden" name="website" />
@@ -62,13 +65,13 @@
 
             <noscript>
                 <br />
-                <p>Enable JavaScript to post comments on this blog.</p>
+                <p>@i18n.Translate("Comments.NoScript")</p>
             </noscript>
         }
         else
         {
             <br />
-            <p>Comments are closed</p>
+            <p>@i18n.Translate("Comments.CommentsClosed")</p>
         }
     </div>
 </section>

@@ -1,7 +1,9 @@
 ﻿@inject IOptionsSnapshot<BlogSettings> settings
 @inject WebManifest manifest
+@inject Miniblog.Core.Services.IRouteService routeService
+@inject Miniblog.Core.Localization.ITranslationProvider i18n
 @{
-    var host = Context.Request.Scheme + "://" + Context.Request.Host;
+    var host = routeService.GetHost();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -47,7 +49,7 @@
 
     <main itemprop="mainEntity" itemscope itemtype="http://schema.org/Blog">
         <noscript>
-            <p class="container">Some features of this website do not work as expected when JavaScript is disabled</p>
+            <p class="container">@i18n.Translate("Layout.NoScript")</p>
         </noscript>
         @RenderBody()
     </main>
@@ -61,12 +63,12 @@
 
                         if (User.Identity.IsAuthenticated)
                         {
-                            <li><a asp-controller="Blog" asp-action="Edit">New post</a></li>
-                            <li><a href="~/logout/" title="Sign out as administrator">Sign out</a></li>
+                            <li><a asp-controller="Blog" asp-action="Edit">@i18n.Translate("Layout.NewPost")</a></li>
+                            <li><a href="~/logout/" title="@i18n.Translate("Layout.SignOutTitle")">@i18n.Translate("Layout.SignOut")</a></li>
                         }
                         else
                         {
-                            <li><a href="~/login/?returnUrl=@path" rel="nofollow" title="Sign in as administrator">Sign in</a></li>
+                            <li><a href="~/login/?returnUrl=@path" rel="nofollow" title="@i18n.Translate("Layout.SignInTitle")">@i18n.Translate("Layout.SignIn")</a></li>
                         }
                     }
                 </ul>

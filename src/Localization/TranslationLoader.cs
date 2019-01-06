@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using Microsoft.AspNetCore.Hosting;
 using Miniblog.Core.Extensions;
 using Newtonsoft.Json.Linq;
 
@@ -9,27 +10,27 @@ namespace Miniblog.Core.Localization
 {
 	public class TranslationLoader : ITranslationLoader
 	{
-		private string FolderPath { get; }
 
-		public TranslationLoader()
+		private readonly string _folder;
+
+		public TranslationLoader(IHostingEnvironment env)
 		{
-			//TODO: Set default path to translation folder
-			FolderPath = "";
+			_folder = Path.Combine(env.ContentRootPath, "App_Data/content/i18n");
 		}
 
 		public TranslationLoader(string folderPath)
 		{
-			FolderPath = folderPath;
+			_folder = folderPath;
 		}
 
 		public IDictionary<CultureInfo, ITranslationModel> Load()
 		{
 			IDictionary<CultureInfo, ITranslationModel> result = new Dictionary<CultureInfo, ITranslationModel>();
-			if (!Directory.Exists(FolderPath))
+			if (!Directory.Exists(_folder))
 			{
-				throw new TranslationLoadException($"Translation folder path doesn't exist : {FolderPath}.");
+				throw new TranslationLoadException($"Translation folder path doesn't exist : {_folder}.");
 			}
-			string[] filePaths = Directory.GetFiles(FolderPath);
+			string[] filePaths = Directory.GetFiles(_folder);
 
 			foreach (string filePath in filePaths)
 			{
