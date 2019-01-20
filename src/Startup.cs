@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using FluentMigrator.Runner;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -36,7 +38,18 @@ namespace Miniblog.Core
 
 		public static void Main(string[] args)
 		{
-			CreateWebHostBuilder(args).Build().Run();
+			var webHost = CreateWebHostBuilder(args).Build();
+			UpdateDatabase(webHost.Services);
+			webHost.Run();
+		}
+
+		private static void UpdateDatabase(IServiceProvider serviceProvider) 
+		{
+			using (var scope = serviceProvider.CreateScope())
+            {
+            	var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
+	            runner.MigrateUp();
+            }
 		}
 
 		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
@@ -53,6 +66,8 @@ namespace Miniblog.Core
 
 			services.AddMvc()
 				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+			ConfigureMigrations(services);
 
 			services.AddSingleton<ITranslationLoader, TranslationLoader>();
 			services.AddSingleton<ITranslationStore, TranslationStore>();
@@ -122,6 +137,17 @@ namespace Miniblog.Core
 				options.SupportedCultures = localizationSettings.SupportedCultures.Select(CultureInfo.GetCultureInfo).ToList();
 				options.RequestCultureProviders = new List<IRequestCultureProvider> { new CookieRequestCultureProvider() };
 			});
+		}
+
+		private void ConfigureMigrations(IServiceCollection services)
+		{
+			var connectionString = Configuration.GetConnectionString("DefaultConnection");
+
+			services.AddFluentMigratorCore()
+				.ConfigureRunner(rb => rb
+					.AddSQLite()
+					.WithGlobalConnectionString(connectionString)
+					.ScanIn(typeof(Startup).Assembly).For.Migrations());
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
