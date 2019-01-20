@@ -3,12 +3,24 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27013.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Miniblog.Core", "src\Miniblog.Core.csproj", "{8CE1A353-8B0D-43F1-B681-6057BAC241BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Miniblog.Core.Web", "src\Miniblog.Core.Web\Miniblog.Core.Web.csproj", "{8CE1A353-8B0D-43F1-B681-6057BAC241BC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E78285B4-DA3B-430D-8E6E-EA02C0FCB8F9}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{86CEBC4B-4A03-411D-8BBA-25552F608483}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miniblog.Core.Common", "src\Miniblog.Core.Common\Miniblog.Core.Common.csproj", "{0BD0DFA6-636F-4E10-BB1C-67CF221ECC05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miniblog.Core.Contract", "src\Miniblog.Core.Contract\Miniblog.Core.Contract.csproj", "{D3423F12-7337-4849-8834-89671400F715}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miniblog.Core.Data", "src\Miniblog.Core.Data\Miniblog.Core.Data.csproj", "{596818DE-5916-4F37-BD54-E40CB78DC133}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miniblog.Core.Framework", "src\Miniblog.Core.Framework\Miniblog.Core.Framework.csproj", "{609E741B-AEB2-4080-86C6-B6A2E2ABF5CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miniblog.Core.Service", "src\Miniblog.Core.Service\Miniblog.Core.Service.csproj", "{F6871D22-ECC3-4F60-B8A8-EFCCBE7FBD45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,11 +32,38 @@ Global
 		{8CE1A353-8B0D-43F1-B681-6057BAC241BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CE1A353-8B0D-43F1-B681-6057BAC241BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CE1A353-8B0D-43F1-B681-6057BAC241BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BD0DFA6-636F-4E10-BB1C-67CF221ECC05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BD0DFA6-636F-4E10-BB1C-67CF221ECC05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BD0DFA6-636F-4E10-BB1C-67CF221ECC05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BD0DFA6-636F-4E10-BB1C-67CF221ECC05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3423F12-7337-4849-8834-89671400F715}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3423F12-7337-4849-8834-89671400F715}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3423F12-7337-4849-8834-89671400F715}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3423F12-7337-4849-8834-89671400F715}.Release|Any CPU.Build.0 = Release|Any CPU
+		{596818DE-5916-4F37-BD54-E40CB78DC133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{596818DE-5916-4F37-BD54-E40CB78DC133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{596818DE-5916-4F37-BD54-E40CB78DC133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{596818DE-5916-4F37-BD54-E40CB78DC133}.Release|Any CPU.Build.0 = Release|Any CPU
+		{609E741B-AEB2-4080-86C6-B6A2E2ABF5CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{609E741B-AEB2-4080-86C6-B6A2E2ABF5CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{609E741B-AEB2-4080-86C6-B6A2E2ABF5CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{609E741B-AEB2-4080-86C6-B6A2E2ABF5CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6871D22-ECC3-4F60-B8A8-EFCCBE7FBD45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6871D22-ECC3-4F60-B8A8-EFCCBE7FBD45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6871D22-ECC3-4F60-B8A8-EFCCBE7FBD45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6871D22-ECC3-4F60-B8A8-EFCCBE7FBD45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D6EFE298-6363-41A3-92FD-78CC98AE3580}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0BD0DFA6-636F-4E10-BB1C-67CF221ECC05} = {86CEBC4B-4A03-411D-8BBA-25552F608483}
+		{D3423F12-7337-4849-8834-89671400F715} = {86CEBC4B-4A03-411D-8BBA-25552F608483}
+		{596818DE-5916-4F37-BD54-E40CB78DC133} = {86CEBC4B-4A03-411D-8BBA-25552F608483}
+		{609E741B-AEB2-4080-86C6-B6A2E2ABF5CF} = {86CEBC4B-4A03-411D-8BBA-25552F608483}
+		{F6871D22-ECC3-4F60-B8A8-EFCCBE7FBD45} = {86CEBC4B-4A03-411D-8BBA-25552F608483}
 	EndGlobalSection
 EndGlobal

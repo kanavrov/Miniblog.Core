@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Miniblog.Core.Common\Miniblog.Core.Common.csproj" />
+    <ProjectReference Include="..\Miniblog.Core.Contract\Miniblog.Core.Contract.csproj" />
+    <ProjectReference Include="..\Miniblog.Core.Data\Miniblog.Core.Data.csproj" />
+    <ProjectReference Include="..\Miniblog.Core.Framework\Miniblog.Core.Framework.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>

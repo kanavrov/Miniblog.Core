@@ -1,0 +1,64 @@
+﻿@model Post
+@inject ITranslationProvider i18n
+
+@{
+    bool isNew = string.IsNullOrEmpty(Model.Title);
+    ViewData["Title"] = $"{i18n.Translate("Edit.Title")} " + (Model.Title ?? i18n.Translate("Edit.NewPost"));
+    var host = Context.Request.Host.ToString();
+    List<string> allCats = ViewData["AllCats"] as List<string> ?? new List<string>();
+    allCats.Sort();
+}
+
+@section Head{
+    <link rel="stylesheet" href="~/css/admin.scss" />
+}
+
+    <form method="post" id="edit" class="container" asp-controller="Blog" asp-action="UpdatePost">
+        <div asp-validation-summary="All"></div>
+        <input type="hidden" asp-for="@Model.ID" />
+
+        <label asp-for="@Model.Title" class="label">@i18n.Translate("Edit.PostTitle")</label>
+        <input asp-for="@Model.Title" required placeholder="@i18n.Translate("Edit.PostTitlePlaceholder")" aria-describedby="desc_title" />
+        <span class="desc" id="desc_title">@i18n.Translate("Edit.PostTitleDesc")</span>
+        <br />
+
+        <label asp-for="@Model.Slug" class="label">@i18n.Translate("Edit.Slug")</label>
+        <input asp-for="@Model.Slug" placeholder="@i18n.Translate("Edit.SlugPlaceholder")" aria-describedby="desc_slug" />
+        <span class="desc" id="desc_slug">@i18n.Translate("Edit.SlugDesc")</span>
+        <br />
+
+        <label for="categories" class="label">@i18n.Translate("Edit.Tags")</label>
+        <input type="text" name="selecttag" id="selecttag" aria-describedby="desc_categories" list="taglist" placeholder="@string.Join(", ", Model.Categories)"  />
+        <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.Categories)" hidden />
+        <span class="desc" id="desc_categories">@i18n.Translate("Edit.TagsDesc")</span>
+        <datalist id="taglist">
+            @foreach (var cat in allCats)
+            {
+                <option value="@cat"/>
+            }
+            </datalist>
+        <br />
+
+        <label asp-for="@Model.Excerpt" class="label">@i18n.Translate("Edit.Excerpt")</label>
+        <textarea asp-for="@Model.Excerpt" rows="3" placeholder="@i18n.Translate("Edit.ExcerptPlaceholder")" aria-describedby="desc_excerpt">@Model.Excerpt</textarea>
+        <span class="desc" id="desc_excerpt">@i18n.Translate("Edit.ExcerptDesc")</span>
+        <br />
+
+        <textarea asp-for="@Model.Content" rows="20" aria-label="@i18n.Translate("Edit.ContentLabel")">@Model.Content</textarea>
+        <br />
+
+        <input type="submit" value="@i18n.Translate("Edit.Save")" title="@i18n.Translate("Edit.SaveTitle")" />
+
+        <input asp-for="@Model.IsPublished" />
+        <label asp-for="@Model.IsPublished">@i18n.Translate("Edit.IsPublished")</label>
+
+        @if (!isNew)
+        {
+            <input type="submit" value="@i18n.Translate("Edit.Delete")" class="delete" title="@i18n.Translate("Edit.DeleteTitle")" asp-action="DeletePost" asp-route-id="@Model.ID" />
+        }
+    </form>
+
+@section Scripts {
+    <script src="//@host/lib/tinymce/tinymce.min.js"></script> @*with enabled CDN tinymce is not able to find some files*@
+    <script src="~/js/admin.js" async></script>
+}
