@@ -103,14 +103,14 @@ namespace Miniblog.Core.Web.Controllers
 
 		[Route("/blog/{slug?}")]
 		[HttpPost, Authorize, AutoValidateAntiforgeryToken]
-		public async Task<IActionResult> UpdatePost(PostDto post)
+		public async Task<IActionResult> UpdatePost(PostDto post, Guid[] categories)
 		{
 			if (!ModelState.IsValid)
 			{
 				return View("Edit", post);
 			}
 
-			await _blog.SavePost(post, Request.Form["categories"]);
+			await _blog.SavePost(post, categories);
 
 			return Redirect(_routeService.GetEncodedLink(post));
 		}

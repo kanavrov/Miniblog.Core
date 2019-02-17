@@ -29,5 +29,11 @@ namespace Miniblog.Core.Data.Repositories
 		Task AddComment(IComment comment, Guid postId);
 
 		Task DeleteComment(Guid commentId, Guid postId);
+
+		Task AddCategory(ICategory category);
+
+		Task DeleteCategory(Guid categoryId);
+
+		Task UpdateCategory(ICategory category);
 	}
 }

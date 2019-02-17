@@ -19,6 +19,7 @@ using Miniblog.Core.Data.Repositories;
 using Miniblog.Core.Framework.Localization;
 using Miniblog.Core.Framework.Users;
 using Miniblog.Core.Framework.Web.Users;
+using Miniblog.Core.Migration;
 using Miniblog.Core.Service.Services;
 using Miniblog.Core.Service.Settings;
 using WebEssentials.AspNetCore.OutputCaching;
@@ -83,7 +84,11 @@ namespace Miniblog.Core.Web
 			services.AddSingleton<IUserServices, BlogUserServices>();
 			services.AddSingleton<IFilePersisterService, FilePersisterService>();
 			services.AddSingleton<IRenderService, HtmlRenderService>();
-			services.AddSingleton<IBlogRepository, XmlFileBlogRepository>();
+			services.AddSingleton<IBlogRepository, XmlFileBlogRepository>(s => {
+				var hostingEnv = s.GetService<IHostingEnvironment>();
+				var userResolver = s.GetService<IUserRoleResolver>();
+				return new XmlFileBlogRepository(hostingEnv.WebRootPath, userResolver);
+			});
 			services.AddSingleton<IUserRoleResolver, IdentityUserRoleResolver>();
 			services.AddSingleton<IBlogService, BlogService>();
 			services.AddSingleton<IRouteService, BlogRouteService>();
@@ -154,7 +159,7 @@ namespace Miniblog.Core.Web
 				.ConfigureRunner(rb => rb
 					.AddSQLite()
 					.WithGlobalConnectionString(connectionString)
-					.ScanIn(typeof(Startup).Assembly).For.Migrations());
+					.ScanIn(typeof(MigrationRoot).Assembly).For.Migrations());
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

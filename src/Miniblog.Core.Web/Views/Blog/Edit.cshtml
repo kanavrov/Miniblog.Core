@@ -27,15 +27,14 @@
         <br />
 
         <label for="categories" class="label">@i18n.Translate("Edit.Tags")</label>
-        <input type="text" name="selecttag" id="selecttag" aria-describedby="desc_categories" list="taglist" placeholder="@string.Join(", ", Model.Categories)"  />
-        <input type="text" name="categories" id="categories" value="@string.Join(", ", Model.Categories)" hidden />
+		
+		@foreach (var cat in allCats)
+        {
+			var isChecked = Model.Categories.Any(c => c.Id == cat.Id);
+
+            <label><input type="checkbox" name="categories" value="@cat.Id" checked="@isChecked"> <span>@cat.Name</span></label>
+        }
         <span class="desc" id="desc_categories">@i18n.Translate("Edit.TagsDesc")</span>
-        <datalist id="taglist">
-            @foreach (var cat in allCats)
-            {
-                <option value="@cat.Id"/>
-            }
-        </datalist>
         <br />
 
         <label asp-for="@Model.Excerpt" class="label">@i18n.Translate("Edit.Excerpt")</label>

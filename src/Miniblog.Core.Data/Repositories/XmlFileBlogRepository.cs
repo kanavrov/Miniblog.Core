@@ -16,19 +16,32 @@ namespace Miniblog.Core.Data.Repositories
 	public class XmlFileBlogRepository : IBlogRepository
 	{
 		private const string POSTS = "Posts";
+
+		private const string CATEGORIES = "categories";
+
+		private const string CATEGORIES_FILE = "categories.xml";
+
 		private const string FILES = "files";
 
 		private readonly List<IPost> _cache = new List<IPost>();
 
-		private readonly string _folder;
+		private readonly List<ICategory> _categoryCache = new List<ICategory>();
+
+		private readonly string _postFolder;
+
+		private readonly string _categoryFolder;
+
 		private readonly IUserRoleResolver _userRoleResolver;
 
 		public XmlFileBlogRepository(string webRootPath, IUserRoleResolver userRoleResolver)
 		{
-			_folder = Path.Combine(webRootPath, POSTS);
+			_postFolder = Path.Combine(webRootPath, POSTS);
+			_categoryFolder = Path.Combine(_postFolder, CATEGORIES);
+
 			_userRoleResolver = userRoleResolver;
 			Initialize();
 		}
+		
 		public async Task AddComment(IComment comment, Guid postId)
 		{
 			var post = await GetPostById(postId);
@@ -72,7 +85,7 @@ namespace Miniblog.Core.Data.Repositories
 				return;
 			}
 
-			string filePath = GetFilePath(post);
+			var filePath = GetFilePath(post);
 
 			if (File.Exists(filePath))
 			{
@@ -87,10 +100,13 @@ namespace Miniblog.Core.Data.Repositories
 
 		public virtual Task<IEnumerable<ICategory>> GetCategories()
 		{
-			bool isAdmin = _userRoleResolver.IsAdmin();
+			var isAdmin = _userRoleResolver.IsAdmin();
+
+			if(isAdmin)
+				return Task.FromResult(_categoryCache.AsEnumerable());
 
 			var categories = _cache
-				.Where(p => p.IsPublished || isAdmin)
+				.Where(p => p.IsPublished)
 				.SelectMany(post => post.Categories)
 				.GroupBy(category => category.Id)
   				.Select(group => group.First());
@@ -101,13 +117,13 @@ namespace Miniblog.Core.Data.Repositories
 		public virtual async Task<ICategory> GetCategoryById(Guid id)
 		{
 			var categories = await GetCategories();
-			return categories.FirstOrDefault(c => c.Id == id);
+			return _categoryCache.FirstOrDefault(c => c.Id == id);
 		}
 
 		public virtual Task<IPost> GetPostById(Guid id)
 		{
 			var post = _cache.FirstOrDefault(p => p.Id == id);
-			bool isAdmin = _userRoleResolver.IsAdmin();
+			var isAdmin = _userRoleResolver.IsAdmin();
 
 			if (post != null && post.PubDate <= DateTime.UtcNow && (post.IsPublished || isAdmin))
 			{
@@ -120,7 +136,7 @@ namespace Miniblog.Core.Data.Repositories
 		public virtual Task<IPost> GetPostBySlug(string slug)
 		{
 			var post = _cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
-			bool isAdmin = _userRoleResolver.IsAdmin();
+			var isAdmin = _userRoleResolver.IsAdmin();
 
 			if (post != null && post.PubDate <= DateTime.UtcNow && (post.IsPublished || isAdmin))
 			{
@@ -132,7 +148,7 @@ namespace Miniblog.Core.Data.Repositories
 
 		public virtual Task<IEnumerable<IPost>> GetPosts(int count, int skip = 0)
 		{
-			bool isAdmin = _userRoleResolver.IsAdmin();
+			var isAdmin = _userRoleResolver.IsAdmin();
 
 			var posts = _cache
 				.Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
@@ -144,7 +160,7 @@ namespace Miniblog.Core.Data.Repositories
 
 		public virtual Task<IEnumerable<IPost>> GetPostsByCategory(Guid categoryId, int count, int skip = 0)
 		{
-			bool isAdmin = _userRoleResolver.IsAdmin();
+			var isAdmin = _userRoleResolver.IsAdmin();
 			var posts = _cache
 				.Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
 				.Where(p => p.Categories.Any(c => c.Id == categoryId))
@@ -156,10 +172,10 @@ namespace Miniblog.Core.Data.Repositories
 
 		private async Task SavePost(IPost post)
 		{
-			string filePath = GetFilePath(post);
+			var filePath = GetFilePath(post);
 			post.LastModified = DateTime.UtcNow;
 
-			XDocument doc = new XDocument(
+			var doc = new XDocument(
 							new XElement("post",
 								new XElement("title", post.Title),
 								new XElement("slug", post.Slug),
@@ -172,18 +188,24 @@ namespace Miniblog.Core.Data.Repositories
 								new XElement("comments", string.Empty)
 							));
 
-			XElement categories = doc.XPathSelectElement("post/categories");
-			foreach (ICategory category in post.Categories)
+			var categories = doc.XPathSelectElement("post/categories");
+			var existingCategories = new List<ICategory>();
+			foreach (var category in post.Categories)
 			{
-				categories.Add(
+				var existingCategory = _categoryCache.FirstOrDefault(c => c.Id == category.Id);
+				if(existingCategory != null)
+				{
+					categories.Add(
 					new XElement("category", 
-						new XElement("name", category.Name),
 						new XAttribute("id", category.Id)
 					));
+					existingCategories.Add(existingCategory);
+				}				
 			}
+			post.Categories = existingCategories;
 
-			XElement comments = doc.XPathSelectElement("post/comments");
-			foreach (Comment comment in post.Comments)
+			var comments = doc.XPathSelectElement("post/comments");
+			foreach (var comment in post.Comments)
 			{
 				comments.Add(
 					new XElement("comment",
@@ -210,21 +232,45 @@ namespace Miniblog.Core.Data.Repositories
 
 		private void Initialize()
 		{
+			LoadCategories();
 			LoadPosts();
 			SortCache();
 		}
 
+		private void LoadCategories()
+		{
+			if (!Directory.Exists(_categoryFolder))
+				Directory.CreateDirectory(_categoryFolder);
+
+			var file = Path.Combine(_categoryFolder, CATEGORIES_FILE);
+
+			if(!File.Exists(file))
+				return;
+
+			var doc = XElement.Load(file);
+
+			foreach (var node in doc.Elements("category"))
+			{
+				var category = new Category() 
+				{
+					Id = Guid.Parse(ReadAttribute(node, "id")),
+					Name = node.Value
+				};
+				_categoryCache.Add(category);				
+			}
+		}
+
 		private void LoadPosts()
 		{
-			if (!Directory.Exists(_folder))
-				Directory.CreateDirectory(_folder);
+			if (!Directory.Exists(_postFolder))
+				Directory.CreateDirectory(_postFolder);
 
 			// Can this be done in parallel to speed it up?
-			foreach (string file in Directory.EnumerateFiles(_folder, "*.xml", SearchOption.TopDirectoryOnly))
+			foreach (var file in Directory.EnumerateFiles(_postFolder, "*.xml", SearchOption.TopDirectoryOnly))
 			{
-				XElement doc = XElement.Load(file);
+				var doc = XElement.Load(file);
 
-				Post post = new Post
+				var post = new Post
 				{
 					Id = Guid.Parse(Path.GetFileNameWithoutExtension(file)),
 					Title = ReadValue(doc, "title"),
@@ -236,43 +282,41 @@ namespace Miniblog.Core.Data.Repositories
 					IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
 				};
 
-				LoadCategories(post, doc);
+				LoadCategoriesForPost(post, doc);
 				LoadComments(post, doc);
 				_cache.Add(post);
 			}
 		}
 
-		private static void LoadCategories(IPost post, XElement doc)
+		private void LoadCategoriesForPost(IPost post, XElement doc)
 		{
-			XElement categories = doc.Element("categories");
-			if (categories == null)
-				return;
+			var categories = doc.Element("categories");
+			post.Categories = new List<ICategory>();
 
-			List<ICategory> list = new List<ICategory>();
+			if (categories == null)
+				return;			
 
 			foreach (var node in categories.Elements("category"))
 			{
-				ICategory category = new Category() 
-				{
-					Id = Guid.Parse(ReadAttribute(node, "id")),
-					Name = ReadValue(node, "name")
-				};
-				list.Add(category);
-			}
+				var id = Guid.Parse(ReadAttribute(node, "id"));
+				var category = _categoryCache.FirstOrDefault(c => c.Id == id);
 
-			post.Categories = list.ToArray();
+				if(category != null)
+					post.Categories.Add(category);				
+			}
 		}
 
 		private static void LoadComments(IPost post, XElement doc)
 		{
-			var comments = doc.Element("comments");
+			var commentsElement = doc.Element("comments");
+			post.Comments = new List<IComment>();
 
-			if (comments == null)
+			if (commentsElement == null)
 				return;
-
-			foreach (var node in comments.Elements("comment"))
+			
+			foreach (var node in commentsElement.Elements("comment"))
 			{
-				IComment comment = new Comment()
+				var comment = new Comment()
 				{
 					Id = Guid.Parse(ReadAttribute(node, "id")),
 					Author = ReadValue(node, "author"),
@@ -301,14 +345,16 @@ namespace Miniblog.Core.Data.Repositories
 
 			return defaultValue;
 		}
+		
 		private string GetFilePath(IPost post)
 		{
-			return Path.Combine(_folder, post.Id + ".xml");
+			return Path.Combine(_postFolder, post.Id + ".xml");
 		}
 
 		protected void SortCache()
 		{
 			_cache.Sort((p1, p2) => p2.PubDate.CompareTo(p1.PubDate));
+			_categoryCache.Sort((c1, c2) => c1.Name.CompareTo(c2.Name));
 		}
 
 		private static string FormatDateTime(DateTime dateTime)
@@ -318,6 +364,63 @@ namespace Miniblog.Core.Data.Repositories
 			return dateTime.Kind == DateTimeKind.Utc
 				? dateTime.ToString(UTC)
 				: dateTime.ToUniversalTime().ToString(UTC);
-		}		
+		}
+
+		public virtual async Task AddCategory(ICategory category)
+		{
+			if(!_categoryCache.Any(c => c.Id == category.Id))
+			{
+				_categoryCache.Add(category);
+				await SaveCategories();
+			}				
+		}
+
+		public virtual async Task UpdateCategory(ICategory category)
+		{
+			var existingCategory = _categoryCache.FirstOrDefault(c => c.Id == category.Id);
+			if(existingCategory != null)
+			{
+				existingCategory.Name = category.Name;
+				await SaveCategories();
+			}				
+		}
+
+		public virtual async Task DeleteCategory(Guid categoryId)
+		{
+			if(_categoryCache.Any(c => c.Id == categoryId))
+			{
+				_categoryCache.RemoveAll(c => c.Id == categoryId);
+				await SaveCategories();
+			}	
+			
+		}
+
+		private async Task SaveCategories()
+		{
+			var filePath = Path.Combine(_categoryFolder, CATEGORIES_FILE);
+
+			var doc = new XDocument(
+							new XElement("categories",
+								new XAttribute("lastModified", FormatDateTime(DateTime.UtcNow)),
+								string.Empty
+							));
+
+			var categories = doc.XPathSelectElement("categories");
+			foreach (var category in _categoryCache)
+			{
+				categories.Add(
+					new XElement("category", 
+						new XAttribute("id", category.Id),
+						category.Name
+					));	
+			}
+
+			using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite))
+			{
+				await doc.SaveAsync(fs, SaveOptions.None, CancellationToken.None).ConfigureAwait(false);
+			}
+
+			SortCache();
+		}
 	}
 }

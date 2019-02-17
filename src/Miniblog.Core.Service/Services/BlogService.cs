@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Miniblog.Core.Contract.Models;
 using Miniblog.Core.Data.Repositories;
 using Miniblog.Core.Framework.Users;
 using Miniblog.Core.Service.Models;
@@ -71,7 +72,7 @@ namespace Miniblog.Core.Service.Services
 			return _mapper.Map<IEnumerable<CategoryDto>>((await _blogRepository.GetCategories()).OrderBy(c => c.Name));
 		}
 
-		public virtual async Task SavePost(PostDto post, string categories)
+		public virtual async Task SavePost(PostDto post, Guid[] categories)
 		{
 			var isNew = false;
 			var existing = _mapper.Map<PostDto>(await GetPostById(post.Id));
@@ -82,8 +83,7 @@ namespace Miniblog.Core.Service.Services
 				isNew = true;
 			}
 
-			throw new NotImplementedException();
-			//existing.Categories = categories.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(c => c.Trim().ToLowerInvariant()).ToList();
+			existing.Categories = categories != null ? categories.Select(c => (new CategoryDto { Id = c } as ICategory)).ToList() : new List<ICategory>();
 			existing.Title = post.Title.Trim();
 			existing.Slug = !string.IsNullOrWhiteSpace(post.Slug) ? post.Slug.Trim() : _routeService.CreateSlug(post.Title);
 			existing.IsPublished = post.IsPublished;
@@ -133,6 +133,21 @@ namespace Miniblog.Core.Service.Services
 			return _mapper.Map<CategoryDto>(await _blogRepository.GetCategoryById(id));
 		}
 
+		public virtual async Task AddCategory(CategoryDto category)
+		{
+			await _blogRepository.AddCategory(category);
+		}
+
+		public virtual async Task UpdateCategory(CategoryDto category)
+		{
+			await _blogRepository.UpdateCategory(category);
+		}
+
+		public virtual async Task DeleteCategory(Guid id)
+		{
+			await _blogRepository.DeleteCategory(id);
+		}
+
 		private PageModel GetPageModel(int page)
 		{
 			page = page >= 0 ? page : 0;
@@ -143,5 +158,7 @@ namespace Miniblog.Core.Service.Services
 				SkipCount = _settings.Value.PostsPerPage * page
 			};
 		}
+
+		
 	}
 }

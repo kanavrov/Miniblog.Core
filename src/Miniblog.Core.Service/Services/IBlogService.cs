@@ -19,12 +19,18 @@ namespace Miniblog.Core.Service.Services
 
 		Task<CategoryDto> GetCategoryById(Guid id);
 
-		Task SavePost(PostDto post, string categories);
+		Task SavePost(PostDto post, Guid[] categories);
 
 		Task DeletePost(Guid id);
 
 		Task AddComment(CommentDto comment, Guid postId);
 
 		Task DeleteComment(Guid commentId, Guid postId);
+
+		Task AddCategory(CategoryDto category);
+
+		Task UpdateCategory(CategoryDto category);
+
+		Task DeleteCategory(Guid id);
 	}
 }

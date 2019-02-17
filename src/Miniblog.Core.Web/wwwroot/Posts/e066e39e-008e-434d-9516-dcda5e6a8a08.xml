@@ -65,8 +65,8 @@
 &lt;p&gt;Enjoy!&lt;/p&gt;</content>
   <ispublished>true</ispublished>
   <categories>
-    <category>welcome</category>
-    <category>miniblog</category>
+    <category id="e428af6d-2a8c-4c82-8278-0674702ffb13"></category>
+    <category id="ffa1c7b0-3548-405e-b913-ff938d1a0b76"></category>
   </categories>
   <comments>
     <comment isAdmin="false" id="cd58dea4-a4d5-498a-b164-6a5b7c3f2f62">
