@@ -136,7 +136,7 @@ namespace Miniblog.Core.Web.Controllers
 		{
 			// the website form key should have been removed by javascript
 			// unless the comment was posted by a spam robot
-			if (!Request.Form.ContainsKey("website"))
+			if (Request.Form.ContainsKey("website"))
 			{
 				return BadRequest();
 			}

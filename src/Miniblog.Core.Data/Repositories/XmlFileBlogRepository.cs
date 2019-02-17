@@ -225,7 +225,7 @@ namespace Miniblog.Core.Data.Repositories
 
 			_cache.RemoveAll(p => p.Id == post.Id);
 			_cache.Add(post);
-			SortCache();		
+			SortCache();			
 		}
 
 		private void Initialize()
@@ -275,8 +275,8 @@ namespace Miniblog.Core.Data.Repositories
 					Excerpt = ReadValue(doc, "excerpt"),
 					Content = ReadValue(doc, "content"),
 					Slug = ReadValue(doc, "slug").ToLowerInvariant(),
-					PubDate = DateTime.Parse(ReadValue(doc, "pubDate")),
-					LastModified = DateTime.Parse(ReadValue(doc, "lastModified", DateTime.UtcNow.ToString(CultureInfo.InvariantCulture))),
+					PubDate = ParseDateTime(ReadValue(doc, "pubDate")),
+					LastModified = ParseDateTime(ReadValue(doc, "lastModified", FormatDateTime(DateTime.UtcNow))),
 					IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
 				};
 
@@ -321,7 +321,7 @@ namespace Miniblog.Core.Data.Repositories
 					Email = ReadValue(node, "email"),
 					IsAdmin = bool.Parse(ReadAttribute(node, "isAdmin", "false")),
 					Content = ReadValue(node, "content"),
-					PubDate = DateTime.Parse(ReadValue(node, "date", "2000-01-01")),
+					PubDate = ParseDateTime(ReadValue(node, "date", "2000-01-01")),
 				};
 
 				post.Comments.Add(comment);
@@ -362,6 +362,11 @@ namespace Miniblog.Core.Data.Repositories
 			return dateTime.Kind == DateTimeKind.Utc
 				? dateTime.ToString(UTC)
 				: dateTime.ToUniversalTime().ToString(UTC);
+		}
+
+		private static DateTime ParseDateTime(string dateString)
+		{
+			return DateTime.Parse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal);
 		}
 
 		public virtual async Task AddCategory(ICategory category)

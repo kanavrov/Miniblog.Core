@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Miniblog.Core.Data.Repositories;
+using Miniblog.Core.Framework.Common;
 using Miniblog.Core.Framework.Localization;
 using Miniblog.Core.Framework.Users;
 using Miniblog.Core.Framework.Web.Users;
@@ -116,6 +117,7 @@ namespace Miniblog.Core.Web
 				services.AddSingleton<IUserRoleResolver, IdentityUserRoleResolver>();
 			}
 			
+			services.AddScoped<IDateTimeProvider, UtcDateTimeProvider>();
 			services.AddScoped<IBlogService, BlogService>();
 			services.AddSingleton<IRouteService, BlogRouteService>();
 			services.Configure<BlogSettings>(Configuration.GetSection("blog"));
