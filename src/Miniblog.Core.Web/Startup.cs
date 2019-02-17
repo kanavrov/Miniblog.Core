@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using AutoMapper;
 using FluentMigrator.Runner;
 using Microsoft.AspNetCore;
@@ -66,11 +67,12 @@ namespace Miniblog.Core.Web
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			Assembly.Load("Microsoft.AspNetCore.Mvc.TagHelpers");
 			var localizationSettings = Configuration.GetSection("Localization").Get<LocalizationSettings>();
 			services.AddAutoMapper();
 			
 			services.AddMvc()
-				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+				.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 			ConfigureMigrations(services);
 
@@ -90,7 +92,7 @@ namespace Miniblog.Core.Web
 				return new XmlFileBlogRepository(hostingEnv.WebRootPath, userResolver);
 			});
 			services.AddSingleton<IUserRoleResolver, IdentityUserRoleResolver>();
-			services.AddSingleton<IBlogService, BlogService>();
+			services.AddScoped<IBlogService, BlogService>();
 			services.AddSingleton<IRouteService, BlogRouteService>();
 			services.Configure<BlogSettings>(Configuration.GetSection("blog"));
 			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();

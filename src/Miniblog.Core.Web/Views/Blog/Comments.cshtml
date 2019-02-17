@@ -2,6 +2,7 @@
 @inject IOptionsSnapshot<BlogSettings> settings
 @inject IRenderService renderService
 @inject ITranslationProvider i18n
+@inject IUserRoleResolver userRoleResolver
 
 <section id="comments">
     <div class="container">
@@ -23,7 +24,7 @@
                     <p itemprop="text">@renderService.RenderContent(comment)</p>
                     <span itemprop="name">@comment.Author</span>
 
-                    @if (User.Identity.IsAuthenticated)
+                    @if (userRoleResolver.IsAdmin())
                     {
                         <a class="noline" href="mailto:@comment.Email" title="@i18n.Translate("Comments.SendEmailTo") @comment.Email">&#x2709;</a>
                         <a class="delete noline" asp-controller="Blog" asp-Action="DeleteComment" asp-route-postid="@Model.Id" 

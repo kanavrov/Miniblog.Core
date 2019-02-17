@@ -3,6 +3,7 @@
 @inject IRenderService renderService
 @inject IRouteService routeService
 @inject ITranslationProvider i18n
+@inject IUserRoleResolver userRoleResolver
 
 @{
     ViewData["Title"] = Model.Title;
@@ -19,7 +20,7 @@
     <header>
         <h1 itemprop="name headline"><a href="@routeService.GetLink(Model)" rel="canonical" itemprop="url">@Model.Title</a></h1>
         <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">@i18n.Translate("Post.Published") @Model.PubDate.ToString("MMM d, yyyy")</time>
-        @if (User.Identity.IsAuthenticated)
+        @if (userRoleResolver.IsAdmin())
         {
             <a asp-controller="Blog" asp-action="edit" asp-route-id="@Model.Id" title="@i18n.Translate("Post.EditPostTitle")">@i18n.Translate("Post.EditPost")</a>
         }
@@ -69,7 +70,7 @@
     }
 }
 
-@if (User.Identity.IsAuthenticated)
+@if (userRoleResolver.IsAdmin())
 {
     @section Scripts {
         <script src="~/js/admin.js" async defer></script>
