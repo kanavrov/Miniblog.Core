@@ -41,7 +41,7 @@ namespace Miniblog.Core.Data.Repositories
 			_userRoleResolver = userRoleResolver;
 			Initialize();
 		}
-		
+
 		public async Task AddComment(IComment comment, Guid postId)
 		{
 			var post = await GetPostById(postId);
@@ -102,7 +102,7 @@ namespace Miniblog.Core.Data.Repositories
 		{
 			var isAdmin = _userRoleResolver.IsAdmin();
 
-			if(isAdmin)
+			if (isAdmin)
 				return Task.FromResult(_categoryCache.AsEnumerable());
 
 			var categories = _cache
@@ -165,7 +165,7 @@ namespace Miniblog.Core.Data.Repositories
 				.Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
 				.Where(p => p.Categories.Any(c => c.Id == categoryId))
 				.Skip(skip)
-				.Take(count);			
+				.Take(count);
 
 			return Task.FromResult(posts);
 		}
@@ -193,14 +193,14 @@ namespace Miniblog.Core.Data.Repositories
 			foreach (var category in post.Categories)
 			{
 				var existingCategory = _categoryCache.FirstOrDefault(c => c.Id == category.Id);
-				if(existingCategory != null)
+				if (existingCategory != null)
 				{
 					categories.Add(
-					new XElement("category", 
+					new XElement("category",
 						new XAttribute("id", category.Id)
 					));
 					existingCategories.Add(existingCategory);
-				}				
+				}
 			}
 			post.Categories = existingCategories;
 
@@ -223,11 +223,9 @@ namespace Miniblog.Core.Data.Repositories
 				await doc.SaveAsync(fs, SaveOptions.None, CancellationToken.None).ConfigureAwait(false);
 			}
 
-			if (!_cache.Contains(post))
-			{
-				_cache.Add(post);
-				SortCache();
-			}
+			_cache.RemoveAll(p => p.Id == post.Id);
+			_cache.Add(post);
+			SortCache();		
 		}
 
 		private void Initialize()
@@ -244,19 +242,19 @@ namespace Miniblog.Core.Data.Repositories
 
 			var file = Path.Combine(_categoryFolder, CATEGORIES_FILE);
 
-			if(!File.Exists(file))
+			if (!File.Exists(file))
 				return;
 
 			var doc = XElement.Load(file);
 
 			foreach (var node in doc.Elements("category"))
 			{
-				var category = new Category() 
+				var category = new Category()
 				{
 					Id = Guid.Parse(ReadAttribute(node, "id")),
 					Name = node.Value
 				};
-				_categoryCache.Add(category);				
+				_categoryCache.Add(category);
 			}
 		}
 
@@ -294,15 +292,15 @@ namespace Miniblog.Core.Data.Repositories
 			post.Categories = new List<ICategory>();
 
 			if (categories == null)
-				return;			
+				return;
 
 			foreach (var node in categories.Elements("category"))
 			{
 				var id = Guid.Parse(ReadAttribute(node, "id"));
 				var category = _categoryCache.FirstOrDefault(c => c.Id == id);
 
-				if(category != null)
-					post.Categories.Add(category);				
+				if (category != null)
+					post.Categories.Add(category);
 			}
 		}
 
@@ -313,7 +311,7 @@ namespace Miniblog.Core.Data.Repositories
 
 			if (commentsElement == null)
 				return;
-			
+
 			foreach (var node in commentsElement.Elements("comment"))
 			{
 				var comment = new Comment()
@@ -345,7 +343,7 @@ namespace Miniblog.Core.Data.Repositories
 
 			return defaultValue;
 		}
-		
+
 		private string GetFilePath(IPost post)
 		{
 			return Path.Combine(_postFolder, post.Id + ".xml");
@@ -368,31 +366,31 @@ namespace Miniblog.Core.Data.Repositories
 
 		public virtual async Task AddCategory(ICategory category)
 		{
-			if(!_categoryCache.Any(c => c.Id == category.Id))
+			if (!_categoryCache.Any(c => c.Id == category.Id))
 			{
 				_categoryCache.Add(category);
 				await SaveCategories();
-			}				
+			}
 		}
 
 		public virtual async Task UpdateCategory(ICategory category)
 		{
 			var existingCategory = _categoryCache.FirstOrDefault(c => c.Id == category.Id);
-			if(existingCategory != null)
+			if (existingCategory != null)
 			{
 				existingCategory.Name = category.Name;
 				await SaveCategories();
-			}				
+			}
 		}
 
 		public virtual async Task DeleteCategory(Guid categoryId)
 		{
-			if(_categoryCache.Any(c => c.Id == categoryId))
+			if (_categoryCache.Any(c => c.Id == categoryId))
 			{
 				_categoryCache.RemoveAll(c => c.Id == categoryId);
 				await SaveCategories();
-			}	
-			
+			}
+
 		}
 
 		private async Task SaveCategories()
@@ -409,10 +407,10 @@ namespace Miniblog.Core.Data.Repositories
 			foreach (var category in _categoryCache)
 			{
 				categories.Add(
-					new XElement("category", 
+					new XElement("category",
 						new XAttribute("id", category.Id),
 						category.Name
-					));	
+					));
 			}
 
 			using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite))

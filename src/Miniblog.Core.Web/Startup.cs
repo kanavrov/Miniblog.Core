@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -48,13 +49,13 @@ namespace Miniblog.Core.Web
 			webHost.Run();
 		}
 
-		private static void UpdateDatabase(IServiceProvider serviceProvider) 
+		private static void UpdateDatabase(IServiceProvider serviceProvider)
 		{
 			using (var scope = serviceProvider.CreateScope())
-            {
-            	var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-	            runner.MigrateUp();
-            }
+			{
+				var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
+				runner.MigrateUp();
+			}
 		}
 
 		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
@@ -67,16 +68,29 @@ namespace Miniblog.Core.Web
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			Assembly.Load("Microsoft.AspNetCore.Mvc.TagHelpers");
 			var localizationSettings = Configuration.GetSection("Localization").Get<LocalizationSettings>();
+			var developmentSettings = Configuration.GetSection("Development").Get<DevelopmentSettings>();
+
 			services.AddAutoMapper();
-			
-			services.AddMvc()
-				.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+			IMvcBuilder mvc;
+			if (developmentSettings.AuthenticationDisabled)
+			{
+				mvc = services.AddMvc(opts =>
+				{
+					opts.Filters.Add(new AllowAnonymousFilter());
+				});
+			}
+			else
+			{
+				mvc = services.AddMvc();
+			}
+			mvc.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 			ConfigureMigrations(services);
 
-			services.AddSingleton<ITranslationLoader, TranslationLoader>(s => {
+			services.AddSingleton<ITranslationLoader, TranslationLoader>(s =>
+			{
 				var hostingEnv = s.GetService<IHostingEnvironment>();
 				return new TranslationLoader(Path.Combine(hostingEnv.ContentRootPath, "App_Data/content/i18n"));
 			});
@@ -86,15 +100,26 @@ namespace Miniblog.Core.Web
 			services.AddSingleton<IUserServices, BlogUserServices>();
 			services.AddSingleton<IFilePersisterService, FilePersisterService>();
 			services.AddSingleton<IRenderService, HtmlRenderService>();
-			services.AddSingleton<IBlogRepository, XmlFileBlogRepository>(s => {
+			services.AddSingleton<IBlogRepository, XmlFileBlogRepository>(s =>
+			{
 				var hostingEnv = s.GetService<IHostingEnvironment>();
 				var userResolver = s.GetService<IUserRoleResolver>();
 				return new XmlFileBlogRepository(hostingEnv.WebRootPath, userResolver);
 			});
-			services.AddSingleton<IUserRoleResolver, IdentityUserRoleResolver>();
+
+			if(developmentSettings.AuthenticationDisabled)
+			{
+				services.AddSingleton<IUserRoleResolver, AdminUserRoleResolver>();
+			}
+			else
+			{
+				services.AddSingleton<IUserRoleResolver, IdentityUserRoleResolver>();
+			}
+			
 			services.AddScoped<IBlogService, BlogService>();
 			services.AddSingleton<IRouteService, BlogRouteService>();
 			services.Configure<BlogSettings>(Configuration.GetSection("blog"));
+			services.Configure<DevelopmentSettings>(Configuration.GetSection("Development"));
 			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddMetaWeblog<MetaWeblogService>();
 

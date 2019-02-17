@@ -40,7 +40,7 @@
 	"Edit.SlugPlaceholder": "The URL name",
 	"Edit.SlugDesc": "The part of the URL that identifies this blog post",
 	"Edit.Tags": "Tags",
-	"Edit.TagsDesc": "Select, or build a comma separated list of keywords - to remove double the keyword",
+	"Edit.TagsDesc": "Select tags the post will be published with",
 	"Edit.Excerpt": "Excerpt",
 	"Edit.ExcerptPlaceholder": "Short description of blog post",
 	"Edit.ExcerptDesc": "A brief description of the content of the post",

@@ -94,11 +94,11 @@ namespace Miniblog.Core.Service.Services
 
 			if (isNew)
 			{
-				await _blogRepository.AddPost(post);
+				await _blogRepository.AddPost(existing);
 				return;
 			}
 
-			await _blogRepository.UpdatePost(post);
+			await _blogRepository.UpdatePost(existing);
 		}
 
 		public virtual async Task DeletePost(Guid id)

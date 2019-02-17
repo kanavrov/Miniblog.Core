@@ -13,47 +13,81 @@
 }
 
     <form method="post" id="edit" class="container" asp-controller="Blog" asp-action="UpdatePost">
-        <div asp-validation-summary="All"></div>
+		<div asp-validation-summary="All"></div>
         <input type="hidden" asp-for="@Model.Id" />
 
-        <label asp-for="@Model.Title" class="label">@i18n.Translate("Edit.PostTitle")</label>
-        <input asp-for="@Model.Title" required placeholder="@i18n.Translate("Edit.PostTitlePlaceholder")" aria-describedby="desc_title" />
-        <span class="desc" id="desc_title">@i18n.Translate("Edit.PostTitleDesc")</span>
-        <br />
-
-        <label asp-for="@Model.Slug" class="label">@i18n.Translate("Edit.Slug")</label>
-        <input asp-for="@Model.Slug" placeholder="@i18n.Translate("Edit.SlugPlaceholder")" aria-describedby="desc_slug" />
-        <span class="desc" id="desc_slug">@i18n.Translate("Edit.SlugDesc")</span>
-        <br />
-
-        <label for="categories" class="label">@i18n.Translate("Edit.Tags")</label>
+		<div class="form-group">
+			<div class="label-row">
+				<label asp-for="@Model.Title" class="label">@i18n.Translate("Edit.PostTitle")</label>
+			</div>
+			<div class="control-row">
+				 <input asp-for="@Model.Title" required placeholder="@i18n.Translate("Edit.PostTitlePlaceholder")" aria-describedby="desc_title" />
+			</div>
+			<div class="desc-row">
+				<span class="desc" id="desc_title">@i18n.Translate("Edit.PostTitleDesc")</span>
+			</div>
+		</div>        
 		
-		@foreach (var cat in allCats)
-        {
-			var isChecked = Model.Categories.Any(c => c.Id == cat.Id);
+		<div class="form-group">
+			<div class="label-row">
+				<label asp-for="@Model.Slug" class="label">@i18n.Translate("Edit.Slug")</label>
+			</div>
+			<div class="control-row">
+				<input asp-for="@Model.Slug" placeholder="@i18n.Translate("Edit.SlugPlaceholder")" aria-describedby="desc_slug" />
+			</div>
+			<div class="desc-row">
+				<span class="desc" id="desc_slug">@i18n.Translate("Edit.SlugDesc")</span>
+			</div>
+		</div>
+        
+        <div class="form-group">
+			<div class="label-row">
+				 <label for="categories" class="label">@i18n.Translate("Edit.Tags")</label>
+			</div>
+			<div class="control-row">
+				<div class="checkbox-group">
+					@foreach (var cat in allCats)
+       				{
+						var isChecked = Model.Categories.Any(c => c.Id == cat.Id);
+						<div class="checkbox-row">
+							<input type="checkbox" name="categories" value="@cat.Id" checked="@isChecked"> <label>@cat.Name</label>
+						</div>            			
+        			}
+				</div>
+				
+			</div>
+			<div class="desc-row">
+				<span class="desc" id="desc_categories">@i18n.Translate("Edit.TagsDesc")</span>
+			</div>
+		</div>
+       
+		<div class="form-group">
+			<div class="label-row">
+				<label asp-for="@Model.Excerpt" class="label">@i18n.Translate("Edit.Excerpt")</label>
+			</div>
+			<div class="control-row">
+				<textarea asp-for="@Model.Excerpt" rows="3" placeholder="@i18n.Translate("Edit.ExcerptPlaceholder")" aria-describedby="desc_excerpt">@Model.Excerpt</textarea>
+			</div>
+			<div class="desc-row">
+				<span class="desc" id="desc_excerpt">@i18n.Translate("Edit.ExcerptDesc")</span>
+			</div>
+		</div>
+        
+		<div class="form-group">
+			<textarea asp-for="@Model.Content" rows="20" aria-label="@i18n.Translate("Edit.ContentLabel")">@Model.Content</textarea>
+		</div>        
+        
+		<div class="form-group">
+			<input type="submit" value="@i18n.Translate("Edit.Save")" title="@i18n.Translate("Edit.SaveTitle")" />
+	        <input asp-for="@Model.IsPublished"/>
+        	<label asp-for="@Model.IsPublished">@i18n.Translate("Edit.IsPublished")</label>
 
-            <label><input type="checkbox" name="categories" value="@cat.Id" checked="@isChecked"> <span>@cat.Name</span></label>
-        }
-        <span class="desc" id="desc_categories">@i18n.Translate("Edit.TagsDesc")</span>
-        <br />
-
-        <label asp-for="@Model.Excerpt" class="label">@i18n.Translate("Edit.Excerpt")</label>
-        <textarea asp-for="@Model.Excerpt" rows="3" placeholder="@i18n.Translate("Edit.ExcerptPlaceholder")" aria-describedby="desc_excerpt">@Model.Excerpt</textarea>
-        <span class="desc" id="desc_excerpt">@i18n.Translate("Edit.ExcerptDesc")</span>
-        <br />
-
-        <textarea asp-for="@Model.Content" rows="20" aria-label="@i18n.Translate("Edit.ContentLabel")">@Model.Content</textarea>
-        <br />
-
-        <input type="submit" value="@i18n.Translate("Edit.Save")" title="@i18n.Translate("Edit.SaveTitle")" />
-
-        <input asp-for="@Model.IsPublished" />
-        <label asp-for="@Model.IsPublished">@i18n.Translate("Edit.IsPublished")</label>
-
-        @if (!isNew)
-        {
-            <input type="submit" value="@i18n.Translate("Edit.Delete")" class="delete" title="@i18n.Translate("Edit.DeleteTitle")" asp-action="DeletePost" asp-route-id="@Model.Id" />
-        }
+        	@if (!isNew)
+        	{
+            	<input type="submit" value="@i18n.Translate("Edit.Delete")" class="delete" title="@i18n.Translate("Edit.DeleteTitle")" asp-action="DeletePost" asp-route-id="@Model.Id" />
+        	}
+		</div>
+        
     </form>
 
 @section Scripts {

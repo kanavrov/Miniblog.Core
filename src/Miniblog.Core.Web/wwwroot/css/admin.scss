@@ -8,7 +8,34 @@ a.noline {
 }
 
 #edit {
-    padding-bottom: 2em;
+	padding-bottom: 2em;
+	
+	.form-group,
+	.label-row,
+	.control-row,
+	.desc-row {
+		width: 100%;
+	}
+
+	.label-row,
+	.control-row {
+		padding-bottom: 5px;
+	}
+
+	.form-group {
+		padding-bottom: 20px;
+	} 
+
+	.checkbox-group {
+		width: 100%;
+		max-height: 200px;
+		overflow-y: auto;
+
+		.checkbox-row {
+			width: 100%;
+			padding-bottom: 5px; 
+		}
+	}
 
     .label {
         display: inline-block;
@@ -34,7 +61,8 @@ a.noline {
     }
 
     input + span,
-    textarea + span {
+	textarea + span,
+	.desc {
         display: block;
         font-size: .9em,;
         color: #888;
