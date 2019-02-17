@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using AutoMapper;
 using FluentMigrator.Runner;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -10,21 +12,22 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Miniblog.Core.Web.Localization;
-using Miniblog.Core.Web.Repositories;
-using Miniblog.Core.Web.Services;
-using Miniblog.Core.Web.Users;
+using Miniblog.Core.Data.Repositories;
+using Miniblog.Core.Framework.Localization;
+using Miniblog.Core.Framework.Users;
+using Miniblog.Core.Framework.Web.Users;
+using Miniblog.Core.Service.Services;
+using Miniblog.Core.Service.Settings;
 using WebEssentials.AspNetCore.OutputCaching;
 using WebMarkupMin.AspNetCore2;
 using WebMarkupMin.Core;
 using WilderMinds.MetaWeblog;
 
 using IWmmLogger = WebMarkupMin.Core.Loggers.ILogger;
-using MetaWeblogService = Miniblog.Core.Web.Services.MetaWeblogService;
+using MetaWeblogService = Miniblog.Core.Service.Services.MetaWeblogService;
 using WmmNullLogger = WebMarkupMin.Core.Loggers.NullLogger;
 
 namespace Miniblog.Core.Web
@@ -63,13 +66,17 @@ namespace Miniblog.Core.Web
 		public void ConfigureServices(IServiceCollection services)
 		{
 			var localizationSettings = Configuration.GetSection("Localization").Get<LocalizationSettings>();
-
+			services.AddAutoMapper();
+			
 			services.AddMvc()
 				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
 			ConfigureMigrations(services);
 
-			services.AddSingleton<ITranslationLoader, TranslationLoader>();
+			services.AddSingleton<ITranslationLoader, TranslationLoader>(s => {
+				var hostingEnv = s.GetService<IHostingEnvironment>();
+				return new TranslationLoader(Path.Combine(hostingEnv.ContentRootPath, "App_Data/content/i18n"));
+			});
 			services.AddSingleton<ITranslationStore, TranslationStore>();
 			services.AddSingleton<ITranslationProvider, TranslationProvider>();
 

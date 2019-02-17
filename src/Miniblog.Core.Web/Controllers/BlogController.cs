@@ -6,8 +6,9 @@ using System.Xml;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Miniblog.Core.Web.Models;
-using Miniblog.Core.Web.Services;
+using Miniblog.Core.Service.Models;
+using Miniblog.Core.Service.Services;
+using Miniblog.Core.Service.Settings;
 using WebEssentials.AspNetCore.Pwa;
 
 namespace Miniblog.Core.Web.Controllers
@@ -32,7 +33,7 @@ namespace Miniblog.Core.Web.Controllers
 		[OutputCache(Profile = "default")]
 		public async Task<IActionResult> Index([FromRoute]int page = 0)
 		{
-			var posts = await _blog.GetPosts(_settings.Value.PostsPerPage, _settings.Value.PostsPerPage * page);
+			var posts = await _blog.GetPosts(page);
 			ViewData["Title"] = _manifest.Name;
 			ViewData["Description"] = _manifest.Description;
 			ViewData["prev"] = $"/{page + 1}/";
@@ -40,15 +41,20 @@ namespace Miniblog.Core.Web.Controllers
 			return View("~/Views/Blog/Index.cshtml", posts);
 		}
 
-		[Route("/blog/category/{category}/{page:int?}")]
+		[Route("/blog/category/{categoryId}/{page:int?}")]
 		[OutputCache(Profile = "default")]
-		public async Task<IActionResult> Category(string category, int page = 0)
+		public async Task<IActionResult> Category(Guid categoryId, int page = 0)
 		{
-			var posts = (await _blog.GetPostsByCategory(category)).Skip(_settings.Value.PostsPerPage * page).Take(_settings.Value.PostsPerPage);
-			ViewData["Title"] = _manifest.Name + " " + category;
-			ViewData["Description"] = $"Articles posted in the {category} category";
-			ViewData["prev"] = $"/blog/category/{category}/{page + 1}/";
-			ViewData["next"] = $"/blog/category/{category}/{(page <= 1 ? null : page - 1 + "/")}";
+			var category = await _blog.GetCategoryById(categoryId);
+			if(categoryId == null){
+				return NotFound();
+			}
+
+			var posts = (await _blog.GetPostsByCategory(categoryId, page));
+			ViewData["Title"] = _manifest.Name + " " + category.Name;
+			ViewData["Description"] = $"Articles posted in the {category.Name} category";
+			ViewData["prev"] = $"/blog/category/{category.Id}/{page + 1}/";
+			ViewData["next"] = $"/blog/category/{category.Id}/{(page <= 1 ? null : page - 1 + "/")}";
 			return View("~/Views/Blog/Index.cshtml", posts);
 		}
 
@@ -76,13 +82,13 @@ namespace Miniblog.Core.Web.Controllers
 
 		[Route("/blog/edit/{id?}")]
 		[HttpGet, Authorize]
-		public async Task<IActionResult> Edit(string id)
+		public async Task<IActionResult> Edit(Guid id)
 		{
 			ViewData["AllCats"] = (await _blog.GetCategories()).ToList();
 
-			if (string.IsNullOrEmpty(id))
+			if (id == Guid.Empty)
 			{
-				return View(new Post());
+				return View(new PostDto());
 			}
 
 			var post = await _blog.GetPostById(id);
@@ -97,7 +103,7 @@ namespace Miniblog.Core.Web.Controllers
 
 		[Route("/blog/{slug?}")]
 		[HttpPost, Authorize, AutoValidateAntiforgeryToken]
-		public async Task<IActionResult> UpdatePost(Post post)
+		public async Task<IActionResult> UpdatePost(PostDto post)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -111,7 +117,7 @@ namespace Miniblog.Core.Web.Controllers
 
 		[Route("/blog/deletepost/{id}")]
 		[HttpPost, Authorize, AutoValidateAntiforgeryToken]
-		public async Task<IActionResult> DeletePost(string id)
+		public async Task<IActionResult> DeletePost(Guid id)
 		{
 			var existing = await _blog.GetPostById(id);
 
@@ -126,7 +132,7 @@ namespace Miniblog.Core.Web.Controllers
 
 		[Route("/blog/comment/{postId}")]
 		[HttpPost]
-		public async Task<IActionResult> AddComment(string postId, Comment comment)
+		public async Task<IActionResult> AddComment(Guid postId, CommentDto comment)
 		{
 			// the website form key should have been removed by javascript
 			// unless the comment was posted by a spam robot
@@ -154,7 +160,7 @@ namespace Miniblog.Core.Web.Controllers
 
 		[Route("/blog/comment/{postId}/{commentId}")]
 		[Authorize]
-		public async Task<IActionResult> DeleteComment(string postId, string commentId)
+		public async Task<IActionResult> DeleteComment(Guid postId, Guid commentId)
 		{
 			var post = await _blog.GetPostById(postId);
 

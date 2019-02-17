@@ -8,7 +8,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Atom;
 using Microsoft.SyndicationFeed.Rss;
-using Miniblog.Core.Web.Services;
+using Miniblog.Core.Service.Models;
+using Miniblog.Core.Service.Services;
+using Miniblog.Core.Service.Settings;
 using WebEssentials.AspNetCore.Pwa;
 
 namespace Miniblog.Core.Web.Controllers
@@ -54,7 +56,7 @@ namespace Miniblog.Core.Web.Controllers
 
 				var posts = await _blog.GetPosts(int.MaxValue);
 
-				foreach (Models.Post post in posts)
+				foreach (PostDto post in posts)
 				{
 					var lastMod = new[] { post.PubDate, post.LastModified };
 
@@ -112,7 +114,7 @@ namespace Miniblog.Core.Web.Controllers
 				var posts = await _blog.GetPosts(10);
 				var writer = await GetWriter(type, xmlWriter, posts.Max(p => p.PubDate));
 
-				foreach (Models.Post post in posts)
+				foreach (PostDto post in posts)
 				{
 					var item = new AtomEntry
 					{
@@ -124,9 +126,9 @@ namespace Miniblog.Core.Web.Controllers
 						ContentType = "html",
 					};
 
-					foreach (string category in post.Categories)
+					foreach (CategoryDto category in post.Categories)
 					{
-						item.AddCategory(new SyndicationCategory(category));
+						item.AddCategory(new SyndicationCategory(category.Name));
 					}
 
 					item.AddContributor(new SyndicationPerson("test@example.com", _settings.Value.Owner));

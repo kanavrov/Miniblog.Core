@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Miniblog.Core.Web.Models;
+using Miniblog.Core.Service.Models;
+using Miniblog.Core.Service.Services;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Miniblog.Core.Web.Services;
 
 namespace Miniblog.Core.Web.Controllers
 {
