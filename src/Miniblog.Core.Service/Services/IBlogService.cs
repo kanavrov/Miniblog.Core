@@ -27,6 +27,8 @@ namespace Miniblog.Core.Service.Services
 
 		Task DeleteComment(Guid commentId, Guid postId);
 
+		bool AreCommentsOpen(PostDto post);
+
 		Task AddCategory(CategoryDto category);
 
 		Task UpdateCategory(CategoryDto category);

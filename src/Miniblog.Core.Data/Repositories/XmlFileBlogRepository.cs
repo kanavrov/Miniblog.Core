@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using Miniblog.Core.Contract.Models;
 using Miniblog.Core.Data.Models;
+using Miniblog.Core.Framework.Common;
 using Miniblog.Core.Framework.Users;
 
 namespace Miniblog.Core.Data.Repositories
@@ -33,12 +34,15 @@ namespace Miniblog.Core.Data.Repositories
 
 		private readonly IUserRoleResolver _userRoleResolver;
 
-		public XmlFileBlogRepository(string webRootPath, IUserRoleResolver userRoleResolver)
+		private readonly IDateTimeProvider _dateTimeProvider;
+
+		public XmlFileBlogRepository(string webRootPath, IUserRoleResolver userRoleResolver, IDateTimeProvider dateTimeProvider)
 		{
 			_postFolder = Path.Combine(webRootPath, POSTS);
 			_categoryFolder = Path.Combine(_postFolder, CATEGORIES);
 
 			_userRoleResolver = userRoleResolver;
+			_dateTimeProvider = dateTimeProvider;
 			Initialize();
 		}
 
@@ -47,6 +51,8 @@ namespace Miniblog.Core.Data.Repositories
 			var post = await GetPostById(postId);
 			if (post != null)
 			{
+				comment.Id = Guid.NewGuid();
+				comment.PubDate = _dateTimeProvider.Now;
 				post.Comments.Add(comment);
 				await SavePost(post);
 			}
@@ -68,6 +74,8 @@ namespace Miniblog.Core.Data.Repositories
 
 		public async Task AddPost(IPost post)
 		{
+			post.Id = Guid.NewGuid();
+			post.PubDate = _dateTimeProvider.Now;
 			await SavePost(post);
 		}
 
@@ -125,7 +133,7 @@ namespace Miniblog.Core.Data.Repositories
 			var post = _cache.FirstOrDefault(p => p.Id == id);
 			var isAdmin = _userRoleResolver.IsAdmin();
 
-			if (post != null && post.PubDate <= DateTime.UtcNow && (post.IsPublished || isAdmin))
+			if (post != null && post.PubDate <= _dateTimeProvider.Now && (post.IsPublished || isAdmin))
 			{
 				return Task.FromResult(post);
 			}
@@ -138,7 +146,7 @@ namespace Miniblog.Core.Data.Repositories
 			var post = _cache.FirstOrDefault(p => p.Slug.Equals(slug, StringComparison.OrdinalIgnoreCase));
 			var isAdmin = _userRoleResolver.IsAdmin();
 
-			if (post != null && post.PubDate <= DateTime.UtcNow && (post.IsPublished || isAdmin))
+			if (post != null && post.PubDate <= _dateTimeProvider.Now && (post.IsPublished || isAdmin))
 			{
 				return Task.FromResult(post);
 			}
@@ -151,7 +159,7 @@ namespace Miniblog.Core.Data.Repositories
 			var isAdmin = _userRoleResolver.IsAdmin();
 
 			var posts = _cache
-				.Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
+				.Where(p => p.PubDate <= _dateTimeProvider.Now && (p.IsPublished || isAdmin))
 				.Skip(skip)
 				.Take(count);
 
@@ -162,7 +170,7 @@ namespace Miniblog.Core.Data.Repositories
 		{
 			var isAdmin = _userRoleResolver.IsAdmin();
 			var posts = _cache
-				.Where(p => p.PubDate <= DateTime.UtcNow && (p.IsPublished || isAdmin))
+				.Where(p => p.PubDate <= _dateTimeProvider.Now && (p.IsPublished || isAdmin))
 				.Where(p => p.Categories.Any(c => c.Id == categoryId))
 				.Skip(skip)
 				.Take(count);
@@ -173,7 +181,7 @@ namespace Miniblog.Core.Data.Repositories
 		private async Task SavePost(IPost post)
 		{
 			var filePath = GetFilePath(post);
-			post.LastModified = DateTime.UtcNow;
+			post.LastModified = _dateTimeProvider.Now;
 
 			var doc = new XDocument(
 							new XElement("post",
@@ -276,7 +284,7 @@ namespace Miniblog.Core.Data.Repositories
 					Content = ReadValue(doc, "content"),
 					Slug = ReadValue(doc, "slug").ToLowerInvariant(),
 					PubDate = ParseDateTime(ReadValue(doc, "pubDate")),
-					LastModified = ParseDateTime(ReadValue(doc, "lastModified", FormatDateTime(DateTime.UtcNow))),
+					LastModified = ParseDateTime(ReadValue(doc, "lastModified", FormatDateTime(_dateTimeProvider.Now))),
 					IsPublished = bool.Parse(ReadValue(doc, "ispublished", "true")),
 				};
 
@@ -404,7 +412,7 @@ namespace Miniblog.Core.Data.Repositories
 
 			var doc = new XDocument(
 							new XElement("categories",
-								new XAttribute("lastModified", FormatDateTime(DateTime.UtcNow)),
+								new XAttribute("lastModified", FormatDateTime(_dateTimeProvider.Now)),
 								string.Empty
 							));
 

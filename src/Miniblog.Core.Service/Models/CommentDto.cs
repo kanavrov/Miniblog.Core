@@ -7,8 +7,7 @@ namespace Miniblog.Core.Service.Models
 {
 	public class CommentDto : IComment
 	{
-		[Required]
-		public Guid Id { get; set; } = Guid.NewGuid();
+		public Guid Id { get; set; }
 
 		[Required]
 		public string Author { get; set; }
@@ -19,8 +18,7 @@ namespace Miniblog.Core.Service.Models
 		[Required]
 		public string Content { get; set; }
 
-		[Required]
-		public DateTime PubDate { get; set; } = DateTime.UtcNow;
+		public DateTime PubDate { get; set; }
 
 		public bool IsAdmin { get; set; }		
 	}

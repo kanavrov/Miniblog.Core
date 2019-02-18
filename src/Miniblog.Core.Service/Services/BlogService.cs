@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Miniblog.Core.Contract.Models;
 using Miniblog.Core.Data.Repositories;
+using Miniblog.Core.Framework.Common;
 using Miniblog.Core.Framework.Users;
 using Miniblog.Core.Service.Models;
 using Miniblog.Core.Service.Settings;
@@ -30,11 +31,12 @@ namespace Miniblog.Core.Service.Services
 		private readonly IRenderService _renderService;
 		public readonly IRouteService _routeService;
 		private readonly IMapper _mapper;
+		private readonly IDateTimeProvider _dateTimeProvider;
 
 		public BlogService(IHostingEnvironment env, IBlogRepository blogRepository,
 		IUserRoleResolver userRoleResolver, IOptions<BlogSettings> settings,
 		IFilePersisterService filePersisterService, IRenderService renderService,
-		IRouteService routeService, IMapper mapper)
+		IRouteService routeService, IMapper mapper, IDateTimeProvider dateTimeProvider)
 		{
 			_renderService = renderService;
 			_routeService = routeService;
@@ -43,6 +45,7 @@ namespace Miniblog.Core.Service.Services
 			_settings = settings;
 			_filePersisterService = filePersisterService;
 			_userRoleResolver = userRoleResolver;
+			_dateTimeProvider = dateTimeProvider;
 		}
 
 		public virtual async Task<IEnumerable<PostDto>> GetPosts(int page = 0)
@@ -110,7 +113,7 @@ namespace Miniblog.Core.Service.Services
 		{
 			var post = await GetPostById(postId);
 
-			if (!post.AreCommentsOpen(_settings.Value.CommentsCloseAfterDays))
+			if (!AreCommentsOpen(post))
 			{
 				return;
 			}
@@ -121,6 +124,11 @@ namespace Miniblog.Core.Service.Services
 			comment.Email = comment.Email.Trim();
 
 			await _blogRepository.AddComment(comment, postId);
+		}
+
+		public bool AreCommentsOpen(PostDto post)
+		{
+			return post.PubDate.AddDays(_settings.Value.CommentsCloseAfterDays) >= DateTime.UtcNow;
 		}
 
 		public virtual async Task DeleteComment(Guid commentId, Guid postId)

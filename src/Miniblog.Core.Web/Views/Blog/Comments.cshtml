@@ -1,8 +1,8 @@
 ﻿@model PostDto
-@inject IOptionsSnapshot<BlogSettings> settings
 @inject IRenderService renderService
 @inject ITranslationProvider i18n
 @inject IUserRoleResolver userRoleResolver
+@inject IBlogService blogService
 
 <section id="comments">
     <div class="container">
@@ -35,7 +35,7 @@
             </article>
         }
 
-        @if (Model.AreCommentsOpen(settings.Value.CommentsCloseAfterDays))
+        @if (blogService.AreCommentsOpen(Model))
         {
             if (Model.Comments.Count == 0)
             {

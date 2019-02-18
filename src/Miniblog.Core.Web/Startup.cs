@@ -105,7 +105,8 @@ namespace Miniblog.Core.Web
 			{
 				var hostingEnv = s.GetService<IHostingEnvironment>();
 				var userResolver = s.GetService<IUserRoleResolver>();
-				return new XmlFileBlogRepository(hostingEnv.WebRootPath, userResolver);
+				var dateTimeProvider = s.GetService<IDateTimeProvider>();
+				return new XmlFileBlogRepository(hostingEnv.WebRootPath, userResolver, dateTimeProvider);
 			});
 
 			if(developmentSettings.AuthenticationDisabled)
@@ -117,7 +118,7 @@ namespace Miniblog.Core.Web
 				services.AddSingleton<IUserRoleResolver, IdentityUserRoleResolver>();
 			}
 			
-			services.AddScoped<IDateTimeProvider, UtcDateTimeProvider>();
+			services.AddSingleton<IDateTimeProvider, UtcDateTimeProvider>();
 			services.AddScoped<IBlogService, BlogService>();
 			services.AddSingleton<IRouteService, BlogRouteService>();
 			services.Configure<BlogSettings>(Configuration.GetSection("blog"));

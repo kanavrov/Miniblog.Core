@@ -10,8 +10,7 @@ namespace Miniblog.Core.Service.Models
 {
 	public class PostDto : IPost
 	{
-		[Required]
-		public Guid Id { get; set; } = Guid.NewGuid();
+		public Guid Id { get; set; }
 
 		[Required]
 		public string Title { get; set; }
@@ -24,19 +23,14 @@ namespace Miniblog.Core.Service.Models
 		[Required]
 		public string Content { get; set; }
 
-		public DateTime PubDate { get; set; } = DateTime.UtcNow;
+		public DateTime PubDate { get; set; }
 
-		public DateTime LastModified { get; set; } = DateTime.UtcNow;
+		public DateTime LastModified { get; set; }
 
 		public bool IsPublished { get; set; } = true;
 
 		public IList<ICategory> Categories { get; set; } = new List<ICategory>();
 
 		public IList<IComment> Comments { get; set; } = new List<IComment>();
-		
-		public bool AreCommentsOpen(int commentsCloseAfterDays)
-		{
-			return PubDate.AddDays(commentsCloseAfterDays) >= DateTime.UtcNow;
-		}
 	}
 }

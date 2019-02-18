@@ -4,6 +4,6 @@ namespace Miniblog.Core.Framework.Common
 {
 	public interface IDateTimeProvider
     {
-         DateTime DateTimeValue { get; }
+         DateTime Now { get; }
     }
 }
