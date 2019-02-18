@@ -135,6 +135,7 @@ namespace Miniblog.Core.Service.Services
 
 		public virtual async Task AddCategory(CategoryDto category)
 		{
+			category.Id = Guid.NewGuid();
 			await _blogRepository.AddCategory(category);
 		}
 

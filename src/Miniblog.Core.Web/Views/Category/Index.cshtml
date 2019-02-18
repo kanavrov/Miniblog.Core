@@ -1,0 +1,40 @@
+﻿@model IEnumerable<CategoryDto>
+@inject ITranslationProvider i18n
+
+@{
+   ViewData["Title"] = i18n.Translate("Category.Title");
+}
+
+@section Head{
+    <link rel="stylesheet" href="~/css/admin.scss" />
+}
+
+<div class="container">
+	<div class="container-row">
+		<a class="noline" asp-controller="Category" asp-Action="Edit" 
+							title="@i18n.Translate("Category.NewCategoryTitle")">@i18n.Translate("Category.NewCategory")</a>
+	</div>
+	
+	<div class="container-row">
+		<table class="editable-table category-table">
+			@foreach (var category in Model)
+			{
+    			<tr>
+					<td>@category.Name</td>
+					<td>
+						<a class="noline" asp-controller="Category" asp-Action="Edit" asp-route-id="@category.Id" 
+							title="@i18n.Translate("Category.EditTitle")">@i18n.Translate("Category.Edit")</a>
+						<a class="delete noline" asp-controller="Category" asp-Action="Delete" asp-route-id="@category.Id" 
+							title="@i18n.Translate("Category.DeleteTitle")">@i18n.Translate("Category.Delete")</a>
+					</td>	
+				</tr>
+			}
+		</table>
+	</div>
+</div>
+
+
+
+@section Scripts {
+    <script src="~/js/admin.js" async></script>
+}

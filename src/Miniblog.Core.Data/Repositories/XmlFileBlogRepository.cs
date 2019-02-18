@@ -371,7 +371,7 @@ namespace Miniblog.Core.Data.Repositories
 
 		public virtual async Task AddCategory(ICategory category)
 		{
-			if (!_categoryCache.Any(c => c.Id == category.Id))
+			if (!_categoryCache.Any(c => string.Equals(c.Name, category.Name)))
 			{
 				_categoryCache.Add(category);
 				await SaveCategories();

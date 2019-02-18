@@ -7,7 +7,14 @@ a.noline {
     text-decoration: none;
 }
 
-#edit {
+.editable-table {
+	width: 100%;
+	td {
+		border-bottom: 1px solid #dfdfdf;
+	}
+}
+
+form {
 	padding-bottom: 2em;
 	
 	.form-group,

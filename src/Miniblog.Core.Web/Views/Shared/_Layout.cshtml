@@ -66,6 +66,7 @@
                         if (userRoleResolver.IsAdmin())
                         {
                             <li><a asp-controller="Blog" asp-action="Edit">@i18n.Translate("Layout.NewPost")</a></li>
+							<li><a asp-controller="Category" asp-action="Index">@i18n.Translate("Layout.Categories")</a></li>
                             <li><a href="~/logout/" title="@i18n.Translate("Layout.SignOutTitle")">@i18n.Translate("Layout.SignOut")</a></li>
                         }
                         else

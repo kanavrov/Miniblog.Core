@@ -37,14 +37,6 @@
         }
     }
 
-    // remove empty strings
-    function removeEmpty(item) {
-        var trimmedItem = item.trim();
-        if (trimmedItem.length > 0) {
-            return trimmedItem;
-        }
-    }
-
     // edit form
     var edit = document.getElementById("edit");
     // Setup editor
@@ -117,44 +109,33 @@
                 }
             });
         }
-    }
-
-    // Tag input enhancement - using autocomplete input
-    var selecttag = document.getElementById("selecttag");
-    var categories = document.getElementById("categories");
-    if (selecttag && categories) {
-
-        selecttag.onchange = function () {
-
-            var phv = selecttag.placeholder;
-            var val = selecttag.value.toLowerCase();
-
-            var phv_array = phv.split(",").map(function (item) {
-                return removeEmpty(item);
-            });
-
-            var val_array = val.split(",").map(function (item) {
-                return removeEmpty(item);
-            });
-
-            for (var j = val_array.length - 1; j >= 0; j--) {
-                var v = val_array[j];
-                var flag = false;
-                for (var i = phv_array.length - 1; i >= 0; i--) {
-                    if (phv_array[i] === v) {
-                        phv_array.splice(i, 1);
-                        flag = true;
-                    }
+	}
+	
+	//Edit category
+	var editCategory = document.getElementById("edit-category");
+	if(editCategory) {
+		// Delete post
+        var deleteCategoryButton = editCategory.querySelector(".delete");
+        if (deleteCategoryButton) {
+            deleteCategoryButton.addEventListener("click", function (e) {
+                if (!confirm("Are you sure you want to delete the category?")) {
+                    e.preventDefault();
                 }
-                if (!flag) {
-                    phv_array.push(v);
-                }
-            }
+            });
+        }
+	}
 
-            selecttag.placeholder = phv_array.join(", ");
-            categories.value = selecttag.placeholder;
-            selecttag.value = "";
-        };
-    }
+	var categoryTable = document.querySelector(".category-table");
+	if(categoryTable) {
+		// Delete post
+		var deleteCategoryButtons = categoryTable.querySelectorAll(".delete");
+		for(var i = 0; i < deleteCategoryButtons.length; i++) {
+			deleteCategoryButtons[i].addEventListener("click", function (e) {
+                if (!confirm("Are you sure you want to delete the category?")) {
+                    e.preventDefault();
+                }
+            });
+		}
+	}
 
 })();

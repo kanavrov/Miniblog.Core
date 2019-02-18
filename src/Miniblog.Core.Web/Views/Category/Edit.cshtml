@@ -1,0 +1,44 @@
+﻿@model CategoryDto
+@inject ITranslationProvider i18n
+
+@{
+    var isNew = Model.Id == Guid.Empty;
+    ViewData["Title"] = $"{i18n.Translate("EditCategory.Title")} " + (isNew ? Model.Name : i18n.Translate("EditCategory.NewCategory"));
+    var host = Context.Request.Host.ToString();
+	var aspAction = isNew ? "Add" : "Update";
+}
+
+@section Head{
+    <link rel="stylesheet" href="~/css/admin.scss" />
+}
+
+	<form method="post" id="edit-category" class="container" asp-controller="Category" asp-action="@aspAction">
+		<div asp-validation-summary="All"></div>
+        <input type="hidden" asp-for="@Model.Id" />
+
+		<div class="form-group">
+			<div class="label-row">
+				<label asp-for="@Model.Name" class="label">@i18n.Translate("EditCategory.CategoryName")</label>
+			</div>
+			<div class="control-row">
+				 <input asp-for="@Model.Name" required placeholder="@i18n.Translate("EditCategory.CategoryNamePlaceholder")" aria-describedby="desc_name" />
+			</div>
+			<div class="desc-row">
+				<span class="desc" id="desc_name">@i18n.Translate("EditCategory.CategoryNameDesc")</span>
+			</div>
+		</div>
+        
+		<div class="form-group">
+			<input type="submit" value="@i18n.Translate("EditCategory.Save")" title="@i18n.Translate("EditCategory.SaveTitle")" />
+	        
+        	@if (!isNew)
+        	{
+            	<input type="submit" value="@i18n.Translate("EditCategory.Delete")" class="delete" title="@i18n.Translate("EditCategory.DeleteTitle")" asp-action="Delete" asp-route-id="@Model.Id" />
+        	}
+		</div>
+        
+    </form>
+
+@section Scripts {
+    <script src="~/js/admin.js" async></script>
+}
