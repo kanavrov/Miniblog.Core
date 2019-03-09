@@ -17,13 +17,13 @@ namespace Miniblog.Core.Service.Services
 	{
 		private readonly IBlogRepository _blog;
 		private readonly IConfiguration _config;
-		private readonly IUserServices _userServices;
+		private readonly IUserService _userServices;
 		private readonly IFilePersisterService _filePersisterService;
 		private readonly IHttpContextAccessor _context;
 		private readonly IRouteService _routeService;
 
 		public MetaWeblogService(IBlogRepository blog, IConfiguration config, IHttpContextAccessor context,
-		IUserServices userServices, IFilePersisterService filePersisterService, IRouteService routeService)
+		IUserService userServices, IFilePersisterService filePersisterService, IRouteService routeService)
 		{
 			_routeService = routeService;
 			_blog = blog;

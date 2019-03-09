@@ -1,6 +1,6 @@
 ﻿namespace Miniblog.Core.Service.Services
 {
-	public interface IUserServices
+	public interface IUserService
 	{
 		bool ValidateUser(string username, string password);
 	}

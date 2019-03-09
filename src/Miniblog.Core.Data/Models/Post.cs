@@ -4,9 +4,8 @@ using Miniblog.Core.Contract.Models;
 
 namespace Miniblog.Core.Data.Models
 {
-	public class Post : IPost
+	public class Post : EntityBase, IPost
 	{
-		public Guid Id { get; set; }
 		public string Title { get; set; }
 		public string Slug { get; set; }
 		public string Excerpt { get; set; }

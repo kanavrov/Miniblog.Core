@@ -5,11 +5,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace Miniblog.Core.Service.Services
 {
-	public class BlogUserServices : IUserServices
+	public class BlogUserService : IUserService
 	{
 		private readonly IConfiguration _config;
 
-		public BlogUserServices(IConfiguration config)
+		public BlogUserService(IConfiguration config)
 		{
 			_config = config;
 		}

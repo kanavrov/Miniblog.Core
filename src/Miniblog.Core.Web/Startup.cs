@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using AutoMapper;
 using FluentMigrator.Runner;
 using Microsoft.AspNetCore;
@@ -11,27 +6,18 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Miniblog.Core.Data.Repositories;
-using Miniblog.Core.Framework.Common;
-using Miniblog.Core.Framework.Localization;
-using Miniblog.Core.Framework.Users;
-using Miniblog.Core.Framework.Web.Users;
-using Miniblog.Core.Migration;
-using Miniblog.Core.Service.Services;
 using Miniblog.Core.Service.Settings;
+using Miniblog.Core.Web.Extensions;
 using WebEssentials.AspNetCore.OutputCaching;
 using WebMarkupMin.AspNetCore2;
 using WebMarkupMin.Core;
 using WilderMinds.MetaWeblog;
 
 using IWmmLogger = WebMarkupMin.Core.Loggers.ILogger;
-using MetaWeblogService = Miniblog.Core.Service.Services.MetaWeblogService;
 using WmmNullLogger = WebMarkupMin.Core.Loggers.NullLogger;
 
 namespace Miniblog.Core.Web
@@ -69,62 +55,30 @@ namespace Miniblog.Core.Web
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			var localizationSettings = Configuration.GetSection("Localization").Get<LocalizationSettings>();
 			var developmentSettings = Configuration.GetSection("Development").Get<DevelopmentSettings>();
+			var blogSettings = Configuration.GetSection("blog").Get<BlogSettings>();
 
 			services.AddAutoMapper();
 
-			IMvcBuilder mvc;
-			if (developmentSettings.AuthenticationDisabled)
-			{
-				mvc = services.AddMvc(opts =>
-				{
-					opts.Filters.Add(new AllowAnonymousFilter());
-				});
-			}
-			else
-			{
-				mvc = services.AddMvc();
-			}
-			mvc.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+			services.AddFiltersAsServices();
+			services.AddMvcWithFilters(developmentSettings, blogSettings)
+				.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-			ConfigureMigrations(services);
-
-			services.AddSingleton<ITranslationLoader, TranslationLoader>(s =>
-			{
-				var hostingEnv = s.GetService<IHostingEnvironment>();
-				return new TranslationLoader(Path.Combine(hostingEnv.ContentRootPath, "App_Data/content/i18n"));
-			});
-			services.AddSingleton<ITranslationStore, TranslationStore>();
-			services.AddSingleton<ITranslationProvider, TranslationProvider>();
-
-			services.AddSingleton<IUserServices, BlogUserServices>();
-			services.AddSingleton<IFilePersisterService, FilePersisterService>();
-			services.AddSingleton<IRenderService, HtmlRenderService>();
-			services.AddSingleton<IBlogRepository, XmlFileBlogRepository>(s =>
-			{
-				var hostingEnv = s.GetService<IHostingEnvironment>();
-				var userResolver = s.GetService<IUserRoleResolver>();
-				var dateTimeProvider = s.GetService<IDateTimeProvider>();
-				return new XmlFileBlogRepository(hostingEnv.WebRootPath, userResolver, dateTimeProvider);
-			});
+			services.UseMigrations(Configuration, "DefaultConnection");
+			services.AddTranslations(Configuration, "App_Data/content/i18n");
+			services.AddBlog(Configuration);
 
 			if(developmentSettings.AuthenticationDisabled)
 			{
-				services.AddSingleton<IUserRoleResolver, AdminUserRoleResolver>();
+				services.ForceAlwaysAuthenticated();
 			}
 			else
 			{
-				services.AddSingleton<IUserRoleResolver, IdentityUserRoleResolver>();
-			}
+				services.AddIdentityAuthentication();
+			}			
 			
-			services.AddSingleton<IDateTimeProvider, UtcDateTimeProvider>();
-			services.AddScoped<IBlogService, BlogService>();
-			services.AddSingleton<IRouteService, BlogRouteService>();
-			services.Configure<BlogSettings>(Configuration.GetSection("blog"));
 			services.Configure<DevelopmentSettings>(Configuration.GetSection("Development"));
 			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-			services.AddMetaWeblog<MetaWeblogService>();
 
 			// Progressive Web Apps https://github.com/madskristensen/WebEssentials.AspNetCore.ServiceWorker
 			services.AddProgressiveWebApp(new WebEssentials.AspNetCore.Pwa.PwaOptions
@@ -170,27 +124,10 @@ namespace Miniblog.Core.Web
 				pipeline.MinifyJsFiles();
 				pipeline.CompileScssFiles()
 						.InlineImages(1);
-			});
-
-			// Request localization
-			services.Configure<RequestLocalizationOptions>(options =>
-			{
-				options.DefaultRequestCulture = new RequestCulture(localizationSettings.DefaultCulture);
-				options.SupportedCultures = localizationSettings.SupportedCultures.Select(CultureInfo.GetCultureInfo).ToList();
-				options.RequestCultureProviders = new List<IRequestCultureProvider> { new CookieRequestCultureProvider() };
-			});
+			});			
 		}
 
-		private void ConfigureMigrations(IServiceCollection services)
-		{
-			var connectionString = Configuration.GetConnectionString("DefaultConnection");
-
-			services.AddFluentMigratorCore()
-				.ConfigureRunner(rb => rb
-					.AddSQLite()
-					.WithGlobalConnectionString(connectionString)
-					.ScanIn(typeof(MigrationRoot).Assembly).For.Migrations());
-		}
+		
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)

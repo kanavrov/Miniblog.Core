@@ -8,9 +8,10 @@ namespace Miniblog.Core.Migration
 		public override void Up()
 		{
 			Create.Table("Post")
-				.WithColumn("Id").AsGuid().PrimaryKey("PK_Post")
+				.WithColumn("PKeyId").AsInt64().Identity().PrimaryKey("PK_Post")
+				.WithColumn("Id").AsGuid().Unique("UQ_Post")
 				.WithColumn("Title").AsString()
-				.WithColumn("Slug").AsString()
+				.WithColumn("Slug").AsString().Indexed("IX_Post_Slug")
 				.WithColumn("Excerpt").AsString()
 				.WithColumn("Content").AsString()
 				.WithColumn("PubDate").AsDateTime2()
@@ -18,17 +19,20 @@ namespace Miniblog.Core.Migration
 				.WithColumn("IsPublished").AsBoolean();
 
 			Create.Table("Category")
-				.WithColumn("Id").AsGuid().PrimaryKey("PK_Category")
-				.WithColumn("Name").AsString();
+				.WithColumn("PKeyId").AsInt64().Identity().PrimaryKey("PK_Category")
+				.WithColumn("Id").AsGuid().Unique("UQ_Category")
+				.WithColumn("Name").AsString().Indexed();
 
 			Create.Table("PostCategoryRel")
-				.WithColumn("Id").AsGuid().PrimaryKey("PK_PostCategory")
-				.WithColumn("PostId").AsGuid().ForeignKey("FK_PostCategoryPost", "Post", "Id")
-				.WithColumn("CategoryId").AsGuid().ForeignKey("FK_PostCategoryCategory", "Category", "Id");
+				.WithColumn("PKeyId").AsInt64().Identity().PrimaryKey("PK_PostCategory")
+				.WithColumn("Id").AsGuid().Unique("UQ_PostCategory")
+				.WithColumn("PostPKeyId").AsInt64().ForeignKey("FK_PostCategoryPost", "Post", "PKeyId")
+				.WithColumn("CategoryPKeyId").AsInt64().ForeignKey("FK_PostCategoryCategory", "Category", "PKeyId");
 
 			Create.Table("Comment")
-                .WithColumn("Id").AsGuid().PrimaryKey("PK_Comment")
-				.WithColumn("PostId").AsGuid().ForeignKey("FK_CommentPost", "Post", "Id")
+				.WithColumn("PKeyId").AsInt64().Identity().PrimaryKey("PK_Comment")
+                .WithColumn("Id").AsGuid().Unique("UQ_Comment")
+				.WithColumn("PostPKeyId").AsInt64().ForeignKey("FK_CommentPost", "Post", "PKeyId")
                 .WithColumn("Author").AsString()
 				.WithColumn("Email").AsString()
 				.WithColumn("Content").AsString()
