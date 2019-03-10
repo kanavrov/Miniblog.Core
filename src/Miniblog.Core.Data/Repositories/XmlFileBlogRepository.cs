@@ -52,7 +52,6 @@ namespace Miniblog.Core.Data.Repositories
 			if (post != null)
 			{
 				comment.Id = Guid.NewGuid();
-				comment.PubDate = _dateTimeProvider.Now;
 				post.Comments.Add(comment);
 				await SavePost(post);
 			}
@@ -75,7 +74,6 @@ namespace Miniblog.Core.Data.Repositories
 		public async Task AddPost(IPost post)
 		{
 			post.Id = Guid.NewGuid();
-			post.PubDate = _dateTimeProvider.Now;
 			await SavePost(post);
 		}
 

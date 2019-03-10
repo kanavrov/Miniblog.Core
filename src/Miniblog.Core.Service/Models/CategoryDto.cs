@@ -10,5 +10,7 @@ namespace Miniblog.Core.Service.Models
 		
 		[Required]
 		public string Name { get; set; }
+
+		public DateTime LastModified { get; set; }
 	}
 }

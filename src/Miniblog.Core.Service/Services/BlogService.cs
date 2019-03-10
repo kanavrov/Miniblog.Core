@@ -97,6 +97,7 @@ namespace Miniblog.Core.Service.Services
 
 			if (isNew)
 			{
+				post.PubDate = _dateTimeProvider.Now;
 				await _blogRepository.AddPost(existing);
 				return;
 			}
@@ -122,6 +123,7 @@ namespace Miniblog.Core.Service.Services
 			comment.Content = comment.Content.Trim();
 			comment.Author = comment.Author.Trim();
 			comment.Email = comment.Email.Trim();
+			comment.PubDate = _dateTimeProvider.Now;
 
 			await _blogRepository.AddComment(comment, postId);
 		}
@@ -143,12 +145,11 @@ namespace Miniblog.Core.Service.Services
 
 		public virtual async Task AddCategory(CategoryDto category)
 		{
-			category.Id = Guid.NewGuid();
 			await _blogRepository.AddCategory(category);
 		}
 
 		public virtual async Task UpdateCategory(CategoryDto category)
-		{
+		{			
 			await _blogRepository.UpdateCategory(category);
 		}
 

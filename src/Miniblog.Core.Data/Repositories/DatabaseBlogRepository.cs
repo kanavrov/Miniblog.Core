@@ -34,7 +34,9 @@ namespace Miniblog.Core.Data.Repositories
 
 			if(existing == null)
 			{
-				await ExecuteNonQueryAsync("INSERT INTO Category (Id, Name) VALUES (@Id, @Name)", category);
+				category.Id = Guid.NewGuid();
+				category.LastModified = _dateTimeProvider.Now;
+				await ExecuteNonQueryAsync("INSERT INTO Category (Id, Name, LastModified) VALUES (@Id, @Name, @LastModified)", category);
 			}			
 		}
 
@@ -45,6 +47,7 @@ namespace Miniblog.Core.Data.Repositories
 			if(postPKeyId != null)
 			{
 				var commentEntity = _mapper.Map<Comment>(comment);
+				commentEntity.Id = Guid.NewGuid();
 				commentEntity.PostPKeyId = postPKeyId.Value;
 
 				var command = new StringBuilder(512);
@@ -56,6 +59,9 @@ namespace Miniblog.Core.Data.Repositories
 
 		public async Task AddPost(IPost post)
 		{
+			post.Id = Guid.NewGuid();
+			post.LastModified = _dateTimeProvider.Now;	
+
 			var command = new StringBuilder(512);
 			command.AppendLine("INSERT INTO Post");
 			command.AppendLine("(Id, Title, Slug, Excerpt, Content, PubDate, LastModified, IsPublished) VALUES");
@@ -80,7 +86,8 @@ namespace Miniblog.Core.Data.Repositories
 
 		public async Task UpdateCategory(ICategory category)
 		{
-			await ExecuteNonQueryAsync("UPDATE Category SET Name = @Name WHERE Id = @Id", category);
+			category.LastModified = _dateTimeProvider.Now;			
+			await ExecuteNonQueryAsync("UPDATE Category SET Name = @Name, LastModified = @LastModified WHERE Id = @Id", category);
 		}
 
 		public async Task UpdatePost(IPost post)
@@ -90,6 +97,8 @@ namespace Miniblog.Core.Data.Repositories
 			{
 				return;
 			}
+
+			post.LastModified = _dateTimeProvider.Now;
 
 			var command = new StringBuilder(512);
 			command.AppendLine("UPDATE Post");
@@ -157,12 +166,13 @@ namespace Miniblog.Core.Data.Repositories
 		{
 			var command = new StringBuilder(512);
 			command.AppendLine("SELECT Category.PKeyId, Category.Id, Category.Name, COUNT(Post.Id) AS PostCount");
-			command.AppendLine("LEFT OUTER JOIN PostCategoryRel ON PostCategoryRel.CategoryPKeyId = Category.PKeyId");
-			command.AppendLine("LEFT OUTER JOIN Post ON PostCategoryRel.PostPKeyId = Post.PKeyId AND Post.IsDeleted = 0");
+			command.AppendLine("FROM Category");
+			command.AppendLine("LEFT JOIN PostCategoryRel ON PostCategoryRel.CategoryPKeyId = Category.PKeyId");
+			command.AppendLine("LEFT JOIN Post ON PostCategoryRel.PostPKeyId = Post.PKeyId AND Post.IsDeleted = 0");
 			
 			if (!_userRoleResolver.IsAdmin())
 			{
-				command.AppendLine("AND Post.PubDate <= @PubDate");
+				command.AppendLine("AND Post.PubDate <= @PubDate AND Post.IsPublished = 1");
 			}
 			command.AppendLine("GROUP BY Category.PKeyId, Category.Id, Category.Name");
 			return await ExecuteQueryAsync<Category>(command.ToString(), new { PubDate = _dateTimeProvider.Now.Date });
@@ -172,14 +182,15 @@ namespace Miniblog.Core.Data.Repositories
 		{
 			var command = new StringBuilder(512);
 			command.AppendLine("SELECT Category.PKeyId, Category.Id, Category.Name, COUNT(Post.Id) AS PostCount");
-			command.AppendLine("LEFT OUTER JOIN PostCategoryRel ON PostCategoryRel.CategoryPKeyId = Category.PKeyId");
-			command.AppendLine("LEFT OUTER JOIN Post ON PostCategoryRel.PostPKeyId = Post.PKeyId AND Post.IsDeleted = 0");
+			command.AppendLine("FROM Category");
+			command.AppendLine("LEFT JOIN PostCategoryRel ON PostCategoryRel.CategoryPKeyId = Category.PKeyId");
+			command.AppendLine("LEFT JOIN Post ON PostCategoryRel.PostPKeyId = Post.PKeyId AND Post.IsDeleted = 0");
 			
 			if (!_userRoleResolver.IsAdmin())
 			{
-				command.AppendLine("AND Post.PubDate <= @PubDate");
+				command.AppendLine("AND Post.PubDate <= @PubDate AND Post.IsPublished = 1");
 			}
-			command.AppendLine("WHERE Id = @Id");
+			command.AppendLine("WHERE Category.Id = @Id");
 			command.AppendLine("GROUP BY Category.PKeyId, Category.Id, Category.Name");
 			return await ExecuteQueryFirstOrDefaultAsync<Category>(command.ToString(), new { Id = id, PubDate = _dateTimeProvider.Now.Date });
 		}
@@ -188,6 +199,7 @@ namespace Miniblog.Core.Data.Repositories
 		{
 			var command = new StringBuilder(512);
 			command.AppendLine("SELECT Category.PKeyId, Category.Id, Category.Name");
+			command.AppendLine("FROM Category");
 			command.AppendLine("WHERE UPPER(Name) = @Name");
 			return await ExecuteQueryFirstOrDefaultAsync<Category>(command.ToString(), new { Name = name.ToUpper() });
 		}
@@ -196,6 +208,7 @@ namespace Miniblog.Core.Data.Repositories
 		{
 			var command = new StringBuilder(512);
 			command.AppendLine("SELECT Category.PKeyId, Category.Id, Category.Name");
+			command.AppendLine("FROM Category");
 			command.AppendLine("WHERE Id IN @Ids");
 			return await ExecuteQueryAsync<Category>(command.ToString(), new { Ids = ids });
 		}
@@ -208,7 +221,7 @@ namespace Miniblog.Core.Data.Repositories
 			command.AppendLine("WHERE Id = @Id AND IsDeleted = 0");
 			if (!_userRoleResolver.IsAdmin())
 			{
-				command.AppendLine("AND PubDate <= @PubDate");
+				command.AppendLine("AND PubDate <= @PubDate AND IsPublished = 1");
 			}
 			var post = await ExecuteQueryFirstOrDefaultAsync<Post>(command.ToString(), new { Id = id });
 
@@ -229,7 +242,7 @@ namespace Miniblog.Core.Data.Repositories
 			command.AppendLine("WHERE UPPER(Slug) = @Slug AND IsDeleted = 0");
 			if (!_userRoleResolver.IsAdmin())
 			{
-				command.AppendLine("AND PubDate <= @PubDate");
+				command.AppendLine("AND PubDate <= @PubDate AND IsPublished = 1");
 			}
 			var post = await ExecuteQueryFirstOrDefaultAsync<Post>(command.ToString(), new { Slug = slug.ToUpper() });
 
@@ -250,11 +263,17 @@ namespace Miniblog.Core.Data.Repositories
 			command.AppendLine("WHERE IsDeleted = 0");
 			if (!_userRoleResolver.IsAdmin())
 			{
-				command.AppendLine("AND PubDate <= @PubDate");
+				command.AppendLine("AND PubDate <= @PubDate AND IsPublished = 1");
 			}
 			command.AppendLine("LIMIT @Count OFFSET @Skip");
 			
-			var posts = (await ExecuteQueryAsync<Post>(command.ToString(), new { PubDate = _dateTimeProvider.Now.Date })).ToArray();
+			var posts = (await ExecuteQueryAsync<Post>(command.ToString(), new 
+			{ 
+				PubDate = _dateTimeProvider.Now.Date,
+				Count = count,
+				Skip = skip 
+			})).ToArray();
+
 			await PopulateRelatedComments(posts);
 			await PopulateRelatedCategories(posts);
 
@@ -274,14 +293,16 @@ namespace Miniblog.Core.Data.Repositories
 			command.AppendLine("WHERE IsDeleted = 0");
 			if (!_userRoleResolver.IsAdmin())
 			{
-				command.AppendLine("AND PubDate <= @PubDate");
+				command.AppendLine("AND PubDate <= @PubDate AND IsPublished = 1");
 			}
 			command.AppendLine("LIMIT @Count OFFSET @Skip");
 			
 			var posts = (await ExecuteQueryAsync<Post>(command.ToString(), new 
 			{ 
 				PubDate = _dateTimeProvider.Now.Date,
-				CategoryId = categoryId
+				CategoryId = categoryId,
+				Count = count,
+				Skip = skip
 			})).ToArray();
 
 			await PopulateRelatedComments(posts);

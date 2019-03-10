@@ -8,5 +8,7 @@ namespace Miniblog.Core.Data.Models
 		public string Name { get; set; }
 
 		public int PostCount { get; set; }
+
+		public DateTime LastModified { get; set; }
 	}
 }

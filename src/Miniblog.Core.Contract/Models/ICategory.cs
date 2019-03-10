@@ -7,5 +7,7 @@ namespace Miniblog.Core.Contract.Models
 		Guid Id { get; set; }
 
 		string Name { get; set; }
+
+		DateTime LastModified { get; set; }
 	}
 }

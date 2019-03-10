@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Dapper;
 using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +14,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Miniblog.Core.Data.Repositories;
+using Miniblog.Core.Data.TypeHandling;
 using Miniblog.Core.Framework.Common;
 using Miniblog.Core.Framework.Localization;
 using Miniblog.Core.Framework.Users;
@@ -86,16 +89,20 @@ namespace Miniblog.Core.Web.Extensions
 			});
 		}
 
-		public static void UseSqliteStorage(this IServiceCollection services, string connectionStringName)
+		public static void UseSqliteStorage(this IServiceCollection services, IConfiguration configuration, string connectionStringName)
 		{
-			services.AddScoped<IDbConnection>(s => new SqliteConnection(connectionStringName));
+			var connectionString = configuration.GetConnectionString(connectionStringName);
+			SqlMapper.AddTypeHandler<Guid>(new GuidTypeHandler());
+
+			services.AddScoped<IDbConnection>(s => new SqliteConnection(connectionString));
 			services.AddScoped<IDbTransaction>(s =>
             {
                 var connection = s.GetService<IDbConnection>();
                 connection.Open();
 
                 return connection.BeginTransaction();
-            });			
+            });	
+			services.AddScoped<IBlogRepository, DatabaseBlogRepository>();		
 		}
 
 		public static void UseMigrations(this IServiceCollection services, IConfiguration configuration, string connectionStringName)
@@ -128,7 +135,7 @@ namespace Miniblog.Core.Web.Extensions
 				services.UseXmlStorage();
 
 			if(blogSettings.StorageType == StorageType.SQLite)
-				services.UseSqliteStorage(blogSettings.ConnectionStringName);
+				services.UseSqliteStorage(configuration, blogSettings.ConnectionStringName);
 		}
     }
 }
