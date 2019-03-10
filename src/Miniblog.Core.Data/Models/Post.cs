@@ -13,6 +13,7 @@ namespace Miniblog.Core.Data.Models
 		public DateTime PubDate { get; set; }
 		public DateTime LastModified { get; set; }
 		public bool IsPublished { get; set; }
+		public bool IsDeleted { get; set; }
 		public IList<ICategory> Categories { get; set; }
 		public IList<IComment> Comments { get; set; }
 	}

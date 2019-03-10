@@ -86,6 +86,11 @@ namespace Miniblog.Core.Service.Services
 				isNew = true;
 			}
 
+			if(isNew || (!existing.IsPublished && post.IsPublished))
+			{
+				post.PubDate = _dateTimeProvider.Now;
+			}
+
 			existing.Categories = categories != null ? categories.Select(c => (new CategoryDto { Id = c } as ICategory)).ToList() : new List<ICategory>();
 			existing.Title = post.Title.Trim();
 			existing.Slug = !string.IsNullOrWhiteSpace(post.Slug) ? post.Slug.Trim() : _routeService.CreateSlug(post.Title);
@@ -96,8 +101,7 @@ namespace Miniblog.Core.Service.Services
 			await _renderService.SaveImagesAndReplace(existing);
 
 			if (isNew)
-			{
-				post.PubDate = _dateTimeProvider.Now;
+			{				
 				await _blogRepository.AddPost(existing);
 				return;
 			}
