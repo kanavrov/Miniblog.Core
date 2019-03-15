@@ -265,5 +265,5 @@ paket-files/
 __pycache__/
 *.pyc
 
-# Database file
-**/App_Data/content/*.db
+# Database files
+**/App_Data/content/db/

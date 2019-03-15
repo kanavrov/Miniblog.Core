@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using Dapper;
 using FluentMigrator.Runner;
+using FluentMigrator.Runner.Initialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
@@ -108,12 +109,17 @@ namespace Miniblog.Core.Web.Extensions
 		public static void UseMigrations(this IServiceCollection services, IConfiguration configuration, string connectionStringName)
 		{
 			var connectionString = configuration.GetConnectionString(connectionStringName);
+			var migrationSettings = configuration.GetSection("Migration").Get<MigrationSettings>();
 
 			services.AddFluentMigratorCore()
 				.ConfigureRunner(rb => rb
 					.AddSQLite()
 					.WithGlobalConnectionString(connectionString)
-					.ScanIn(typeof(MigrationRoot).Assembly).For.Migrations());
+					.ScanIn(typeof(MigrationRoot).Assembly).For.Migrations())
+					.Configure<RunnerOptions>(opt => {
+						if(migrationSettings.Tags != null && migrationSettings.Tags.Any())
+        					opt.Tags = migrationSettings.Tags.ToArray();
+    				});
 		}
 
 		public static void AddBlog(this IServiceCollection services, IConfiguration configuration)

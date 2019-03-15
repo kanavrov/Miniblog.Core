@@ -5,6 +5,7 @@ using FluentMigrator;
 
 namespace Miniblog.Core.Migration
 {
+	[Tags("Development")]
 	[Migration(2)]
 	public class TestData : FluentMigrator.Migration
 	{
