@@ -79,7 +79,7 @@
 		<div class="form-group content-group">
 			<textarea asp-for="@Model.Content" rows="20" aria-label="@i18n.Translate("Edit.ContentLabel")" 
 				class="@editorCssClass" 
-				data-image-size-limit-megabytes="@settings.Value.ImageSizeLimitMegabytes" 
+				data-image-size-limit-megabytes="@settings.Value.UploadSizeLimitMegabytes" 
 				data-image-upload-endpoint="@Url.Action("Image", "FileUpload")">@Model.Content</textarea>
 		</div>        
         

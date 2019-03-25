@@ -267,3 +267,6 @@ __pycache__/
 
 # Database files
 **/App_Data/content/db/
+
+# Uploaded files
+**/wwwroot/Posts/files

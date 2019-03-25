@@ -8,6 +8,6 @@
 		public StorageType StorageType { get; set; } = StorageType.XML;
 		public PostRenderType PostRenderType { get; set; } = PostRenderType.Html;
 		public string ConnectionStringName { get; set; }
-		public int ImageSizeLimitMegabytes { get; set; }
+		public int UploadSizeLimitMegabytes { get; set; }
 	}
 }

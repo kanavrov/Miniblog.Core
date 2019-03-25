@@ -2,6 +2,8 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Miniblog.Core.Framework.Data;
+using Miniblog.Core.Web.Extensions;
 
 namespace Miniblog.Core.Web.Filters
 {
@@ -16,7 +18,16 @@ namespace Miniblog.Core.Web.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var connection = transaction.Connection;
+			var noTransactionAttribute = context.GetActionAttribute<NoTransactionAttribute>();
+            
+			if(noTransactionAttribute != null) 
+			{
+				await next.Invoke();
+				return;
+			}
+
+			var connection = transaction.Connection;
+			
             if (connection.State != ConnectionState.Open)
                 throw new NotSupportedException("Database connection is not opened.");
 

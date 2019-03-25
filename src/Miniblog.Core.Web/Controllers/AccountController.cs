@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Miniblog.Core.Framework.Data;
 using Miniblog.Core.Service.Models;
 using Miniblog.Core.Service.Services;
 using System.Security.Claims;
@@ -22,6 +23,7 @@ namespace Miniblog.Core.Web.Controllers
 		[Route("/login")]
 		[AllowAnonymous]
 		[HttpGet]
+		[NoTransaction]
 		public IActionResult Login(string returnUrl = null)
 		{
 			ViewData["ReturnUrl"] = returnUrl;
@@ -30,6 +32,7 @@ namespace Miniblog.Core.Web.Controllers
 
 		[Route("/login")]
 		[HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
+		[NoTransaction]
 		public async Task<IActionResult> LoginAsync(string returnUrl, LoginViewModel model)
 		{
 			ViewData["ReturnUrl"] = returnUrl;
@@ -51,6 +54,7 @@ namespace Miniblog.Core.Web.Controllers
 		}
 
 		[Route("/logout")]
+		[NoTransaction]
 		public async Task<IActionResult> LogOutAsync()
 		{
 			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

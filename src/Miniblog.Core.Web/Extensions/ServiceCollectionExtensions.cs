@@ -29,7 +29,7 @@ using MetaWeblogService = Miniblog.Core.Service.Services.MetaWeblogService;
 
 namespace Miniblog.Core.Web.Extensions
 {
-    public static class ServiceCollectionExtensions
+	public static class ServiceCollectionExtensions
     {
         public static void AddTranslations(this IServiceCollection services, IConfiguration configuration, string traslationFolderPath) 
 		{

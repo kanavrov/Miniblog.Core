@@ -190,7 +190,6 @@
 		var image = new Image();
 		image.alt = file.name;
 		image.onload = function () {
-			image.setAttribute("data-filename", file.name);
 			image.setAttribute("width", image.width);
 			image.setAttribute("height", image.height);
 			editor.execCommand('mceInsertContent', false, image.outerHTML);

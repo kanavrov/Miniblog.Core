@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.SyndicationFeed;
 using Microsoft.SyndicationFeed.Atom;
 using Microsoft.SyndicationFeed.Rss;
+using Miniblog.Core.Framework.Data;
 using Miniblog.Core.Service.Models;
 using Miniblog.Core.Service.Services;
 using Miniblog.Core.Service.Settings;
@@ -33,6 +34,7 @@ namespace Miniblog.Core.Web.Controllers
 
 		[Route("/robots.txt")]
 		[OutputCache(Profile = "default")]
+		[NoTransaction]
 		public string RobotsTxt()
 		{
 			string host = _routeService.GetHost();
@@ -71,6 +73,7 @@ namespace Miniblog.Core.Web.Controllers
 		}
 
 		[Route("/rsd.xml")]
+		[NoTransaction]
 		public void RsdXml()
 		{
 			string host = Request.Scheme + "://" + Request.Host;
