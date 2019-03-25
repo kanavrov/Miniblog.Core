@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using Miniblog.Core.Service.Exceptions;
 using Miniblog.Core.Service.Settings;
 
-namespace Miniblog.Core.Service.Services
+namespace Miniblog.Core.Service.Persistence
 {
 	public class FilePersisterService : IFilePersisterService
 	{

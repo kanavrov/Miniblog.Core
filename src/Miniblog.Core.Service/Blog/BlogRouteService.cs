@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Http;
 using Miniblog.Core.Contract.Models;
 
-namespace Miniblog.Core.Service.Services
+namespace Miniblog.Core.Service.Blog
 {
 	public class BlogRouteService : IRouteService
 	{

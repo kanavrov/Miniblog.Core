@@ -2,21 +2,19 @@ using System.Threading.Tasks;
 using Markdig;
 using Miniblog.Core.Contract.Models;
 
-namespace Miniblog.Core.Service.Services
+namespace Miniblog.Core.Service.Rendering
 {
 	public class MarkdownRenderService : RenderServiceBase
 	{
-		private readonly IFilePersisterService _filePersisterService;
-
-		public MarkdownRenderService(IFilePersisterService filePersisterService)
+		MarkdownPipeline _pipeline;
+		public MarkdownRenderService()
 		{
-			_filePersisterService = filePersisterService;
+			_pipeline = new MarkdownPipelineBuilder().UsePipeTables().Build();;
 		}
 
 		public override string RenderContent(IPost post)
 		{
-			var pipeline = new MarkdownPipelineBuilder().UsePipeTables().Build();
-			var result = Markdown.ToHtml(post.Content, pipeline);
+			var result = Markdown.ToHtml(post.Content, _pipeline);
 			if (!string.IsNullOrEmpty(result))
 			{
 				// Set up lazy loading of images/iframes

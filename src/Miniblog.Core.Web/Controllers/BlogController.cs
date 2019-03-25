@@ -6,8 +6,8 @@ using System.Xml;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Miniblog.Core.Service.Blog;
 using Miniblog.Core.Service.Models;
-using Miniblog.Core.Service.Services;
 using Miniblog.Core.Service.Settings;
 using WebEssentials.AspNetCore.Pwa;
 

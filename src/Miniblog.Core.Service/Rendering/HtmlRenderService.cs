@@ -5,17 +5,10 @@ using System.Threading.Tasks;
 using System.Xml;
 using Miniblog.Core.Contract.Models;
 
-namespace Miniblog.Core.Service.Services
+namespace Miniblog.Core.Service.Rendering
 {
 	public class HtmlRenderService : RenderServiceBase
 	{
-		private readonly IFilePersisterService _filePersisterService;
-
-		public HtmlRenderService(IFilePersisterService filePersisterService)
-		{
-			_filePersisterService = filePersisterService;
-		}
-
 		public override string RenderContent(IPost post)
 		{
 			var result = post.Content;

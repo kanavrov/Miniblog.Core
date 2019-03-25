@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Miniblog.Core.Service.Models;
 
-namespace Miniblog.Core.Service.Services
+namespace Miniblog.Core.Service.Blog
 {
 	public interface IBlogService
 	{

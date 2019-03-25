@@ -7,6 +7,8 @@ using Miniblog.Core.Data.Repositories;
 using Miniblog.Core.Framework.Common;
 using Miniblog.Core.Framework.Users;
 using Miniblog.Core.Service.Models;
+using Miniblog.Core.Service.Persistence;
+using Miniblog.Core.Service.Rendering;
 using Miniblog.Core.Service.Settings;
 using System;
 using System.Collections.Generic;
@@ -20,7 +22,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
-namespace Miniblog.Core.Service.Services
+namespace Miniblog.Core.Service.Blog
 {
 	public class BlogService : IBlogService
 	{
@@ -28,17 +30,15 @@ namespace Miniblog.Core.Service.Services
 		private readonly IOptions<BlogSettings> _settings;
 		private readonly IFilePersisterService _filePersisterService;
 		private readonly IUserRoleResolver _userRoleResolver;
-		private readonly IRenderService _renderService;
 		public readonly IRouteService _routeService;
 		private readonly IMapper _mapper;
 		private readonly IDateTimeProvider _dateTimeProvider;
 
 		public BlogService(IHostingEnvironment env, IBlogRepository blogRepository,
 		IUserRoleResolver userRoleResolver, IOptions<BlogSettings> settings,
-		IFilePersisterService filePersisterService, IRenderService renderService,
+		IFilePersisterService filePersisterService, 
 		IRouteService routeService, IMapper mapper, IDateTimeProvider dateTimeProvider)
 		{
-			_renderService = renderService;
 			_routeService = routeService;
 			_mapper = mapper;
 			_blogRepository = blogRepository;

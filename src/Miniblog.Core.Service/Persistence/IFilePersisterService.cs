@@ -1,7 +1,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Miniblog.Core.Service.Services
+namespace Miniblog.Core.Service.Persistence
 {
 	public interface IFilePersisterService
 	{

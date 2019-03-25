@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Miniblog.Core.Framework.Data;
 using Miniblog.Core.Service.Exceptions;
-using Miniblog.Core.Service.Services;
+using Miniblog.Core.Service.Persistence;
 
 namespace Miniblog.Core.Web.Controllers
 {

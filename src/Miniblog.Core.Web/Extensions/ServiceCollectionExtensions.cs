@@ -21,11 +21,13 @@ using Miniblog.Core.Framework.Localization;
 using Miniblog.Core.Framework.Users;
 using Miniblog.Core.Framework.Web.Users;
 using Miniblog.Core.Migration;
-using Miniblog.Core.Service.Services;
+using Miniblog.Core.Service.Blog;
+using Miniblog.Core.Service.Persistence;
+using Miniblog.Core.Service.Rendering;
 using Miniblog.Core.Service.Settings;
 using Miniblog.Core.Web.Filters;
 using WilderMinds.MetaWeblog;
-using MetaWeblogService = Miniblog.Core.Service.Services.MetaWeblogService;
+using MetaWeblogService = Miniblog.Core.Service.Blog.MetaWeblogService;
 
 namespace Miniblog.Core.Web.Extensions
 {

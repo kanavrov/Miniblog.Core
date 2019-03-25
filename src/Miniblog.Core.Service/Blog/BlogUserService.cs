@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Configuration;
 
-namespace Miniblog.Core.Service.Services
+namespace Miniblog.Core.Service.Blog
 {
 	public class BlogUserService : IUserService
 	{

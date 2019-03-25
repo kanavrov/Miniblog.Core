@@ -2,8 +2,8 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Miniblog.Core.Service.Blog;
 using Miniblog.Core.Service.Models;
-using Miniblog.Core.Service.Services;
 
 namespace Miniblog.Core.Web.Controllers
 {

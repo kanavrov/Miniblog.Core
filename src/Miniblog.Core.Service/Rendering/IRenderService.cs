@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Miniblog.Core.Contract.Models;
 
-namespace Miniblog.Core.Service.Services
+namespace Miniblog.Core.Service.Rendering
 {
 	public interface IRenderService
 	{

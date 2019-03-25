@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Miniblog.Core.Framework.Data;
+using Miniblog.Core.Service.Blog;
 using Miniblog.Core.Service.Models;
-using Miniblog.Core.Service.Services;
 using System.Security.Claims;
 using System.Threading.Tasks;
 

@@ -9,9 +9,10 @@ using Microsoft.Extensions.Configuration;
 using Miniblog.Core.Contract.Models;
 using Miniblog.Core.Data.Repositories;
 using Miniblog.Core.Service.Models;
+using Miniblog.Core.Service.Persistence;
 using WilderMinds.MetaWeblog;
 
-namespace Miniblog.Core.Service.Services
+namespace Miniblog.Core.Service.Blog
 {
 	public class MetaWeblogService : IMetaWeblogProvider
 	{

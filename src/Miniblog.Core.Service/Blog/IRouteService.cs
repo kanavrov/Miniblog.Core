@@ -1,6 +1,6 @@
 using Miniblog.Core.Contract.Models;
 
-namespace Miniblog.Core.Service.Services
+namespace Miniblog.Core.Service.Blog
 {
 	public interface IRouteService
     {
