@@ -129,10 +129,18 @@ namespace Miniblog.Core.Web.Extensions
 
 			services.AddMetaWeblog<MetaWeblogService>();
 			services.AddSingleton<IUserService, BlogUserService>();
-			services.AddSingleton<IFilePersisterService, FilePersisterService>();
-			services.AddSingleton<IRenderService, HtmlRenderService>();
+			services.AddSingleton<IFilePersisterService, FilePersisterService>();			
 			services.AddSingleton<IDateTimeProvider, UtcDateTimeProvider>();
 			services.AddSingleton<IRouteService, BlogRouteService>();
+
+			if(blogSettings.PostRenderType == PostRenderType.Markdown)
+			{
+				services.AddSingleton<IRenderService, MarkdownRenderService>();
+			}
+			else
+			{
+				services.AddSingleton<IRenderService, HtmlRenderService>();
+			}
 
 			services.AddScoped<IBlogService, BlogService>();
 			services.Configure<BlogSettings>(blogSection);

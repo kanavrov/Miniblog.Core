@@ -9,8 +9,6 @@ namespace Miniblog.Core.Service.Services
 
 		string RenderContent(IComment comment);
 		
-		Task SaveImagesAndReplace(IPost post);
-
 		string GetGravatar(IComment comment);
 	}
 }

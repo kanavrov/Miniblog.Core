@@ -98,8 +98,6 @@ namespace Miniblog.Core.Service.Services
 			existing.Content = post.Content.Trim();
 			existing.Excerpt = post.Excerpt.Trim();
 
-			await _renderService.SaveImagesAndReplace(existing);
-
 			if (isNew)
 			{				
 				await _blogRepository.AddPost(existing);

@@ -28,8 +28,6 @@ namespace Miniblog.Core.Service.Services
 			return comment.Content;
 		}
 
-		public abstract string RenderContent(IPost post);
-
-		public abstract Task SaveImagesAndReplace(IPost post);
+		public abstract string RenderContent(IPost post);		
 	}
 }
