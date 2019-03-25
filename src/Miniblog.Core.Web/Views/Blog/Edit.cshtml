@@ -1,15 +1,18 @@
 ﻿@model PostDto
 @inject ITranslationProvider i18n
+@inject IOptionsSnapshot<BlogSettings> settings
 
 @{
     bool isNew = string.IsNullOrEmpty(Model.Title);
     ViewData["Title"] = $"{i18n.Translate("Edit.Title")} " + (Model.Title ?? i18n.Translate("Edit.NewPost"));
     var host = Context.Request.Host.ToString();
     var allCats = ViewData["AllCats"] as List<CategoryDto> ?? new List<CategoryDto>();
+	var editorCssClass = settings.Value.PostRenderType == PostRenderType.Markdown ? "md-editor" : "html-editor";
 }
 
 @section Head{
     <link rel="stylesheet" href="~/css/admin.scss" />
+	<link rel="stylesheet" href="~/lib/easymde/easymde.min.css" />
 }
 
     <form method="post" id="edit" class="container" asp-controller="Blog" asp-action="UpdatePost">
@@ -73,8 +76,11 @@
 			</div>
 		</div>
         
-		<div class="form-group">
-			<textarea asp-for="@Model.Content" rows="20" aria-label="@i18n.Translate("Edit.ContentLabel")">@Model.Content</textarea>
+		<div class="form-group content-group">
+			<textarea asp-for="@Model.Content" rows="20" aria-label="@i18n.Translate("Edit.ContentLabel")" 
+				class="@editorCssClass" 
+				data-image-size-limit-megabytes="@settings.Value.ImageSizeLimitMegabytes" 
+				data-image-upload-endpoint="@Url.Action("Image", "FileUpload")">@Model.Content</textarea>
 		</div>        
         
 		<div class="form-group">
@@ -92,5 +98,6 @@
 
 @section Scripts {
     <script src="//@host/lib/tinymce/tinymce.min.js"></script> @*with enabled CDN tinymce is not able to find some files*@
-    <script src="~/js/admin.js" async></script>
+    <script src="~/lib/easymde/easymde.min.js"></script>
+	<script src="~/js/admin.js" async></script>
 }

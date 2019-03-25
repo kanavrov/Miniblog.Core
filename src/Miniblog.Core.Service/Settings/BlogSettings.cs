@@ -6,6 +6,8 @@
 		public int PostsPerPage { get; set; } = 2;
 		public int CommentsCloseAfterDays { get; set; } = 10;
 		public StorageType StorageType { get; set; } = StorageType.XML;
+		public PostRenderType PostRenderType { get; set; } = PostRenderType.Html;
 		public string ConnectionStringName { get; set; }
+		public int ImageSizeLimitMegabytes { get; set; }
 	}
 }

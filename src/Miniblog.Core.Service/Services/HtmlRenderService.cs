@@ -7,7 +7,7 @@ using Miniblog.Core.Contract.Models;
 
 namespace Miniblog.Core.Service.Services
 {
-	public class HtmlRenderService : IRenderService
+	public class HtmlRenderService : RenderServiceBase
 	{
 		private readonly IFilePersisterService _filePersisterService;
 
@@ -16,25 +16,7 @@ namespace Miniblog.Core.Service.Services
 			_filePersisterService = filePersisterService;
 		}
 
-		public string GetGravatar(IComment comment)
-		{
-			using (var md5 = System.Security.Cryptography.MD5.Create())
-			{
-				byte[] inputBytes = Encoding.UTF8.GetBytes(comment.Email.Trim().ToLowerInvariant());
-				byte[] hashBytes = md5.ComputeHash(inputBytes);
-
-				// Convert the byte array to hexadecimal string
-				var sb = new StringBuilder();
-				for (int i = 0; i < hashBytes.Length; i++)
-				{
-					sb.Append(hashBytes[i].ToString("X2"));
-				}
-
-				return $"https://www.gravatar.com/avatar/{sb.ToString().ToLowerInvariant()}?s=60&d=blank";
-			}
-		}
-
-		public string RenderContent(IPost post)
+		public override string RenderContent(IPost post)
 		{
 			var result = post.Content;
 			if (!string.IsNullOrEmpty(result))
@@ -49,12 +31,7 @@ namespace Miniblog.Core.Service.Services
 			return result;
 		}
 
-		public string RenderContent(IComment comment)
-		{
-			return comment.Content;
-		}
-
-		public async Task SaveImagesAndReplace(IPost post)
+		public override async Task SaveImagesAndReplace(IPost post)
 		{
 			var imgRegex = new Regex("<img[^>].+ />", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 			var base64Regex = new Regex("data:[^/]+/(?<ext>[a-z]+);base64,(?<base64>.+)", RegexOptions.IgnoreCase);
