@@ -102,7 +102,15 @@
 					className: "fa fa-image",
 					title: "Insert Image",
 				},
-				"link", "table", "|",
+				"link", "table", 
+				{
+					name: "embed-video",
+					action: function customFunction(editor) {
+						onEmbedMedia(editor);
+					},
+					className: "fa fa-video",
+					title: "Embed video",
+				}, "|",
 				"fullscreen", "|",
 				"redo", "undo"],
 			spellChecker: false,
@@ -146,6 +154,12 @@
 		var cm = editor.codemirror;
 		var stat = editor.getState(cm);
 		replaceSelectionMarkdown(editor, stat.image, ["![" + file.name + "](#url#)", ""], url);
+	}
+
+	function onEmbedMedia(editor) {
+		var cm = editor.codemirror;
+		var stat = editor.getState(cm);
+		replaceSelectionMarkdown(editor, stat.image, ["![Video name](#url#)", ""], "");
 	}
 
 	function replaceSelectionMarkdown(editor, active, startEnd, url) {

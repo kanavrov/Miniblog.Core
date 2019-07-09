@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Xml;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Miniblog.Core.Service.Blog;
 using Miniblog.Core.Service.Models;
 using Miniblog.Core.Service.Settings;
+using Miniblog.Core.Web.Caching;
 using WebEssentials.AspNetCore.Pwa;
 
 namespace Miniblog.Core.Web.Controllers
@@ -30,7 +29,7 @@ namespace Miniblog.Core.Web.Controllers
 		}
 
 		[Route("/{page:int?}")]
-		[OutputCache(Profile = "default")]
+		[DisableableOutputCache(Profile = "default")]
 		public async Task<IActionResult> Index([FromRoute]int page = 0)
 		{
 			var posts = await _blog.GetPosts(page);
@@ -42,7 +41,7 @@ namespace Miniblog.Core.Web.Controllers
 		}
 
 		[Route("/blog/category/{categoryId}/{page:int?}")]
-		[OutputCache(Profile = "default")]
+		[DisableableOutputCache(Profile = "default")]
 		public async Task<IActionResult> Category(Guid categoryId, int page = 0)
 		{
 			var category = await _blog.GetCategoryById(categoryId);
@@ -67,7 +66,7 @@ namespace Miniblog.Core.Web.Controllers
 		}
 
 		[Route("/blog/{slug?}")]
-		[OutputCache(Profile = "default")]
+		[DisableableOutputCache(Profile = "default")]
 		public async Task<IActionResult> Post(string slug)
 		{
 			var post = await _blog.GetPostBySlug(slug);

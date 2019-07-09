@@ -24,9 +24,14 @@ namespace Miniblog.Core.Web
 {
 	public class Startup
 	{
+		private readonly DevelopmentSettings _developmentSettings;
+		private readonly BlogSettings _blogSettings;
+
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
+			_developmentSettings = Configuration.GetSection("Development").Get<DevelopmentSettings>();
+			_blogSettings = Configuration.GetSection("blog").Get<BlogSettings>();
 		}
 
 		public static void Main(string[] args)
@@ -55,28 +60,25 @@ namespace Miniblog.Core.Web
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			var developmentSettings = Configuration.GetSection("Development").Get<DevelopmentSettings>();
-			var blogSettings = Configuration.GetSection("blog").Get<BlogSettings>();
-
 			services.AddAutoMapper();
 
 			services.AddFiltersAsServices();
-			services.AddMvcWithFilters(developmentSettings, blogSettings)
+			services.AddMvcWithFilters(_developmentSettings, _blogSettings)
 				.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
 			services.UseMigrations(Configuration, "DefaultConnection");
 			services.AddTranslations(Configuration, "App_Data/content/i18n");
 			services.AddBlog(Configuration);
 
-			if(developmentSettings.AuthenticationDisabled)
+			if (_developmentSettings.AuthenticationDisabled)
 			{
 				services.ForceAlwaysAuthenticated();
 			}
 			else
 			{
 				services.AddIdentityAuthentication();
-			}			
-			
+			}
+
 			services.Configure<DevelopmentSettings>(Configuration.GetSection("Development"));
 			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -87,13 +89,17 @@ namespace Miniblog.Core.Web
 			});
 
 			// Output caching (https://github.com/madskristensen/WebEssentials.AspNetCore.OutputCaching)
-			services.AddOutputCaching(options =>
+			if (!_developmentSettings.OutputCachingDisabled)
 			{
-				options.Profiles["default"] = new OutputCacheProfile
+				services.AddOutputCaching(options =>
 				{
-					Duration = 3600
-				};
-			});
+					options.Profiles["default"] = new OutputCacheProfile
+					{
+						Duration = 3600
+					};
+				});
+			}
+
 
 			// Cookie authentication.
 			services
@@ -105,29 +111,36 @@ namespace Miniblog.Core.Web
 				});
 
 			// HTML minification (https://github.com/Taritsyn/WebMarkupMin)
-			services
-				.AddWebMarkupMin(options =>
-				{
-					options.AllowMinificationInDevelopmentEnvironment = true;
-					options.DisablePoweredByHttpHeaders = true;
-				})
-				.AddHtmlMinification(options =>
-				{
-					options.MinificationSettings.RemoveOptionalEndTags = false;
-					options.MinificationSettings.WhitespaceMinificationMode = WhitespaceMinificationMode.Safe;
-				});
+			if(!_developmentSettings.MinificationDisabled)
+			{
+				services
+					.AddWebMarkupMin(options =>
+					{
+						options.AllowMinificationInDevelopmentEnvironment = true;
+						options.DisablePoweredByHttpHeaders = true;
+					})
+					.AddHtmlMinification(options =>
+					{
+						options.MinificationSettings.RemoveOptionalEndTags = false;
+						options.MinificationSettings.WhitespaceMinificationMode = WhitespaceMinificationMode.Safe;
+					});
+			}
+			
 			services.AddSingleton<IWmmLogger, WmmNullLogger>(); // Used by HTML minifier
 
 			// Bundling, minification and Sass transpilation (https://github.com/ligershark/WebOptimizer)
 			services.AddWebOptimizer(pipeline =>
 			{
-				pipeline.MinifyJsFiles();
+				if(_developmentSettings.MinificationDisabled)
+				{
+					pipeline.MinifyJsFiles();
+				}				
 				pipeline.CompileScssFiles()
 						.InlineImages(1);
-			});			
+			});
 		}
 
-		
+
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -164,8 +177,15 @@ namespace Miniblog.Core.Web
 			app.UseMetaWeblog("/metaweblog");
 			app.UseAuthentication();
 
-			app.UseOutputCaching();
-			app.UseWebMarkupMin();
+			if (!_developmentSettings.OutputCachingDisabled)
+			{
+				app.UseOutputCaching();
+			}
+
+			if (!_developmentSettings.MinificationDisabled)
+			{
+				app.UseWebMarkupMin();
+			}
 
 			app.UseMvc(routes =>
 			{
