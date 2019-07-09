@@ -135,6 +135,9 @@ namespace Miniblog.Core.Web.Extensions
 			services.AddSingleton<IDateTimeProvider, UtcDateTimeProvider>();
 			services.AddSingleton<IRouteService, BlogRouteService>();
 
+			services.AddSingleton<IYouTubeEmbedSettings>(new YouTubeEmbedSettings());
+			services.AddSingleton<IImageRenderSettings>(new ImageRenderSettings());
+
 			if(blogSettings.PostRenderType == PostRenderType.Markdown)
 			{
 				services.AddSingleton<IRenderService, MarkdownRenderService>();

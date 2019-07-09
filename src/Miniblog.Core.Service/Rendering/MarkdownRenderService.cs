@@ -1,25 +1,24 @@
 using System.Threading.Tasks;
 using Markdig;
 using Miniblog.Core.Contract.Models;
+using Miniblog.Core.Service.Rendering.MarkdownExtensions;
 
 namespace Miniblog.Core.Service.Rendering
 {
 	public class MarkdownRenderService : RenderServiceBase
 	{
-		MarkdownPipeline _pipeline;
-		public MarkdownRenderService()
+		private readonly MarkdownPipeline _pipeline;
+		public MarkdownRenderService(IYouTubeEmbedSettings embedSettings, IImageRenderSettings imageSettings)
 		{
-			_pipeline = new MarkdownPipelineBuilder().UsePipeTables().Build();;
+			_pipeline = new MarkdownPipelineBuilder()
+				.Use(new YouTubeLinkExtension(embedSettings))
+				.Use(new LazyLoadImageExtension(imageSettings))
+				.UsePipeTables().Build();
 		}
 
 		public override string RenderContent(IPost post)
 		{
 			var result = Markdown.ToHtml(post.Content, _pipeline);
-			if (!string.IsNullOrEmpty(result))
-			{
-				// Set up lazy loading of images/iframes
-				result = result.Replace(" src=\"", " src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" data-src=\"");				
-			}
 			return result;
 		}		
 	}

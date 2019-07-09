@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using System.Xml;
 using Miniblog.Core.Contract.Models;
 
@@ -9,19 +10,39 @@ namespace Miniblog.Core.Service.Rendering
 {
 	public class HtmlRenderService : RenderServiceBase
 	{
+		private readonly IYouTubeEmbedSettings _embedSettings;
+		private readonly IImageRenderSettings _imageSettings;
+
+		public HtmlRenderService(IYouTubeEmbedSettings embedSettings, IImageRenderSettings imageSettings)
+		{
+			_embedSettings = embedSettings;
+			_imageSettings = imageSettings;
+		}
 		public override string RenderContent(IPost post)
 		{
 			var result = post.Content;
 			if (!string.IsNullOrEmpty(result))
 			{
 				// Set up lazy loading of images/iframes
-				result = result.Replace(" src=\"", " src=\"data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\" data-src=\"");
+				result = result.Replace(" src=\"", $" src=\"{_imageSettings.Placeholder}\" data-src=\"");
 
 				// Youtube content embedded using this syntax: [youtube:xyzAbc123]
-				var video = "<div class=\"video\"><iframe width=\"560\" height=\"315\" title=\"YouTube embed\" src=\"about:blank\" data-src=\"https://www.youtube-nocookie.com/embed/{0}?modestbranding=1&amp;hd=1&amp;rel=0&amp;theme=light\" allowfullscreen></iframe></div>";
-				result = Regex.Replace(result, @"\[youtube:(.*?)\]", m => string.Format(video, m.Groups[1].Value));
+				var attributes = BuildEmbedAttributes();
+				var embedUrlTemplate = HttpUtility.HtmlEncode(_embedSettings.EmbedUrlTemplate);				
+				var video = "<div class=\"video\"><iframe {0} src=\"about:blank\" data-src=\"{1}\"></iframe></div>";
+
+				result = Regex.Replace(result, @"\[youtube:(.*?)\]", m => 
+				{
+					var url = string.Format(embedUrlTemplate, m.Groups[1].Value);
+					return string.Format(video, attributes, url);
+				});
 			}
 			return result;
+		}
+
+		private string BuildEmbedAttributes()
+		{
+			return $"width=\"{_embedSettings.Width}\" height=\"{_embedSettings.Height}\" title=\"{_embedSettings.Title}\" {(_embedSettings.AllowFullscreen ? "allowfullscreen" : string.Empty)}";
 		}
 	}
 }
