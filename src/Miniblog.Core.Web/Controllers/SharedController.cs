@@ -11,10 +11,12 @@ namespace Miniblog.Core.Web.Controllers
 			return View(Response.StatusCode);
 		}
 
-		/// <summary>
-		///  This is for use in wwwroot/serviceworker.js to support offline scenarios
-		/// </summary>
 		public IActionResult Offline()
+		{
+			return View();
+		}
+
+		public IActionResult Pwa()
 		{
 			return View();
 		}

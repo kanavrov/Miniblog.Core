@@ -1,4 +1,6 @@
 {
+	"Pwa.Welcome": "Welcome!",
+	"Pwa.GoToBlog": "Go to blog",
 	"Layout.NoScript": "Some features of this website do not work as expected when JavaScript is disabled",
 	"Layout.NewPost": "New post",
 	"Layout.Categories": "Categories",

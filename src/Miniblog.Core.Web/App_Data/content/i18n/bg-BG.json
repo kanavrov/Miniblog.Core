@@ -1,4 +1,6 @@
 {
+	"Pwa.Welcome": "Добре дошли!",
+	"Pwa.GoToBlog": "Към блога",
 	"Layout.NoScript": "Възможно е някои от функционалностите на сайта да не работят при изключен JavaScript",
 	"Layout.NewPost": "Нов пост",	
 	"Layout.Categories": "Категории",

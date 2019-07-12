@@ -8,6 +8,8 @@ namespace Miniblog.Core.Service.Blog
 
 		 string GetLink(IPost post);
 
+		 string GetPostLink(string slug);
+
 		 string GetAbsoluteLink(IPost post);
 
 		 string GetEncodedLink(IPost post);

@@ -20,7 +20,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.16" />
     <PackageReference Include="WebEssentials.AspNetCore.OutputCaching" Version="1.0.16" />
-    <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.25" />
+    <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.49" />
     <PackageReference Include="WebEssentials.AspNetCore.StaticFilesWithCache" Version="1.0.1" />
     <PackageReference Include="WebMarkupMin.AspNetCore2" Version="2.4.2" />
     <PackageReference Include="WilderMinds.MetaWeblog" Version="2.0.0" />

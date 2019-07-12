@@ -30,7 +30,7 @@ namespace Miniblog.Core.Service.Blog
 
 		public string GetEncodedLink(IPost post)
 		{
-			return $"/blog/{System.Net.WebUtility.UrlEncode(post.Slug)}/";
+			return GetPostLink(System.Net.WebUtility.UrlEncode(post.Slug));
 		}
 
 		public string GetAbsoluteEncodedLink(IPost post)
@@ -49,7 +49,12 @@ namespace Miniblog.Core.Service.Blog
 		}
 		public string GetLink(IPost post)
 		{
-			return $"/blog/{post.Slug}/";
+			return GetPostLink(post.Slug);
+		}
+
+		public string GetPostLink(string slug)
+		{
+			return $"/blog/{slug}/";
 		}
 
 		public string GetAbsoluteLink(IPost post)

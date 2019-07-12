@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Miniblog.Core.Service.Settings;
 using Miniblog.Core.Web.Extensions;
 using WebEssentials.AspNetCore.OutputCaching;
+using WebEssentials.AspNetCore.Pwa;
 using WebMarkupMin.AspNetCore2;
 using WebMarkupMin.Core;
 using WilderMinds.MetaWeblog;
@@ -83,8 +84,10 @@ namespace Miniblog.Core.Web
 			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 			// Progressive Web Apps https://github.com/madskristensen/WebEssentials.AspNetCore.ServiceWorker
-			services.AddProgressiveWebApp(new WebEssentials.AspNetCore.Pwa.PwaOptions
+			services.AddProgressiveWebApp(new PwaOptions
 			{
+				Strategy = ServiceWorkerStrategy.NetworkFirst,
+				RoutesToPreCache = "/",
 				OfflineRoute = "/shared/offline/"
 			});
 
@@ -131,7 +134,7 @@ namespace Miniblog.Core.Web
 			// Bundling, minification and Sass transpilation (https://github.com/ligershark/WebOptimizer)
 			services.AddWebOptimizer(pipeline =>
 			{
-				if(_developmentSettings.MinificationDisabled)
+				if(!_developmentSettings.MinificationDisabled)
 				{
 					pipeline.MinifyJsFiles();
 				}				

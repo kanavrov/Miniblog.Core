@@ -62,7 +62,7 @@ namespace Miniblog.Core.Web.Controllers
 		[HttpGet]
 		public IActionResult Redirects(string slug)
 		{
-			return LocalRedirectPermanent($"/blog/{slug}");
+			return LocalRedirectPermanent(_routeService.GetPostLink(slug));
 		}
 
 		[Route("/blog/{slug?}")]

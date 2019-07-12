@@ -1,0 +1,7 @@
+﻿@inject ITranslationProvider i18n
+@inject WebManifest manifest
+
+<div class="container">
+    <h1>@i18n.Translate("Pwa.Welcome")</h1>
+	<a href="~/">@i18n.Translate("Pwa.GoToBlog")</a>
+</div>
