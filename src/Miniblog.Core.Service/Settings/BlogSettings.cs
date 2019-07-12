@@ -9,5 +9,6 @@
 		public PostRenderType PostRenderType { get; set; } = PostRenderType.Html;
 		public string ConnectionStringName { get; set; }
 		public int UploadSizeLimitMegabytes { get; set; }
+		public int OutputCacheDuration { get; set; }
 	}
 }

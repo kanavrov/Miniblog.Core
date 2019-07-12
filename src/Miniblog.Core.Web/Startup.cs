@@ -97,7 +97,7 @@ namespace Miniblog.Core.Web
 				{
 					options.Profiles["default"] = new OutputCacheProfile
 					{
-						Duration = 3600
+						Duration = _blogSettings.OutputCacheDuration
 					};
 				});
 			}
