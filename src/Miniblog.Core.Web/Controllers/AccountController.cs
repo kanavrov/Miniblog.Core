@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace Miniblog.Core.Web.Controllers
 {
 	[Authorize]
+	[NoClientCache]
 	public class AccountController : Controller
 	{
 		private readonly IUserService _userServices;

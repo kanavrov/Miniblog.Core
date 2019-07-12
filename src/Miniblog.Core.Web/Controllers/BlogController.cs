@@ -7,11 +7,12 @@ using Microsoft.Extensions.Options;
 using Miniblog.Core.Service.Blog;
 using Miniblog.Core.Service.Models;
 using Miniblog.Core.Service.Settings;
-using Miniblog.Core.Web.Caching;
+using Miniblog.Core.Web.Cache;
 using WebEssentials.AspNetCore.Pwa;
 
 namespace Miniblog.Core.Web.Controllers
 {
+	[NoClientCache]
 	public class BlogController : Controller
 	{
 		private readonly IBlogService _blog;

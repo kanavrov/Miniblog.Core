@@ -12,10 +12,12 @@ using Miniblog.Core.Framework.Data;
 using Miniblog.Core.Service.Blog;
 using Miniblog.Core.Service.Models;
 using Miniblog.Core.Service.Settings;
+using Miniblog.Core.Web.Cache;
 using WebEssentials.AspNetCore.Pwa;
 
 namespace Miniblog.Core.Web.Controllers
 {
+	[NoClientCache]
 	public class RobotsController : Controller
 	{
 		private readonly IBlogService _blog;
@@ -33,7 +35,7 @@ namespace Miniblog.Core.Web.Controllers
 		}
 
 		[Route("/robots.txt")]
-		[OutputCache(Profile = "default")]
+		[DisableableOutputCache(Profile = "default")]
 		[NoTransaction]
 		public string RobotsTxt()
 		{

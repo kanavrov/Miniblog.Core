@@ -2,7 +2,8 @@
 using Miniblog.Core.Framework.Data;
 
 namespace Miniblog.Core.Web.Controllers
-{
+{	
+	[NoClientCache]
 	public class SharedController : Controller
 	{
 		[NoTransaction]

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using Miniblog.Core.Service.Settings;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Miniblog.Core.Web.Caching
+namespace Miniblog.Core.Web.Cache
 {
 	public class DisableableOutputCacheAttribute : OutputCacheAttribute
 	{

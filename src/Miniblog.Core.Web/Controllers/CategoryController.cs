@@ -7,7 +7,8 @@ using Miniblog.Core.Service.Models;
 
 namespace Miniblog.Core.Web.Controllers
 {
-	[Authorize]
+	[Authorize]	
+	[NoClientCache]
 	public class CategoryController : Controller
 	{
 		private readonly IBlogService _blog;
