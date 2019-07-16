@@ -24,7 +24,40 @@ html {
 body {
     font: 19px/1.6 "Open Sans", Ubuntu, "Nimbus Sans L", Avenir, AvenirNext, "Segoe UI", Helvetica, Arial, sans-serif;
     margin-bottom: $footer_height;
-    color: $text_color;
+	color: $text_color;
+	background-color: $common_bg_color;
+}
+
+.btn {
+	display: inline-block;
+    padding: 5px 10px 5px 10px;
+	text-align: center;
+	border: 0px;
+    border-radius: 3px;
+	color: $button_text_color;
+	text-decoration: none;	
+	cursor: pointer;
+
+	&.btn-small {
+		padding: 3px 7px 3px 7px;
+		font-size: 14px;
+	}
+
+	&.btn-edit {
+		background-color: $button_edit_bg_color;
+	}
+
+	&.btn-nav {
+		background-color: $button_nav_bg_color;
+	}
+
+	&.btn-delete {
+		background-color: $button_delete_bg_color;
+	}
+}
+
+.delete {
+    float: right;
 }
 
 .container {
@@ -178,7 +211,7 @@ time {
         -ms-word-wrap: normal;
         word-wrap: normal;
         background: $light_bg_color;
-        box-shadow: 5px 5px 5px $comments_border_color;
+        //box-shadow: 5px 5px 5px $comments_border_color;
     }
 
     code {

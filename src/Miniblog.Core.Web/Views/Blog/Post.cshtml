@@ -22,7 +22,7 @@
         <time datetime="@Model.PubDate.ToString("s")" itemprop="datePublished">@i18n.Translate("Post.Published") @Model.PubDate.ToString("MMM d, yyyy")</time>
         @if (userRoleResolver.IsAdmin())
         {
-            <a asp-controller="Blog" asp-action="edit" asp-route-id="@Model.Id" title="@i18n.Translate("Post.EditPostTitle")">@i18n.Translate("Post.EditPost")</a>
+            <a asp-controller="Blog" asp-action="edit" asp-route-id="@Model.Id" title="@i18n.Translate("Post.EditPostTitle")" class="btn btn-edit">@i18n.Translate("Post.EditPost")</a>
         }
     </header>
 

@@ -22,14 +22,14 @@
 
                 <div class="content">
                     <p itemprop="text">@renderService.RenderContent(comment)</p>
-                    <span itemprop="name">@comment.Author</span>
+					<span itemprop="name" class="author-name">@comment.Author</span>
 
                     @if (userRoleResolver.IsAdmin())
                     {
-                        <a class="noline" href="mailto:@comment.Email" title="@i18n.Translate("Comments.SendEmailTo") @comment.Email">&#x2709;</a>
-                        <a class="delete noline" asp-controller="Blog" asp-Action="DeleteComment" asp-route-postid="@Model.Id" 
+                        <a class="btn btn-small btn-nav mailto noline" href="mailto:@comment.Email" title="@i18n.Translate("Comments.SendEmailTo") @comment.Email">&#x2709;</a>
+                        <a class="btn btn-small btn-delete noline" asp-controller="Blog" asp-Action="DeleteComment" asp-route-postid="@Model.Id" 
 							asp-route-commentid="@comment.Id" asp-route-afrt="@ViewData["afrt"]" 
-							title="@i18n.Translate("Comments.DeleteTitle")">@i18n.Translate("Comments.Delete")</a>
+							title="@i18n.Translate("Comments.DeleteTitle")" >@i18n.Translate("Comments.Delete")</a>
                     }
                 </div>
             </article>

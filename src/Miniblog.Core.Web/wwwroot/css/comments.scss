@@ -82,13 +82,13 @@
 
         &.admin .content,
         &.admin .gravatar {
-            box-shadow: 5px 5px 5px $admin_comment_shadow_color;
+            //box-shadow: 5px 5px 5px $admin_comment_shadow_color;
         }
     }
 
     .gravatar {
         float: left;
-        box-shadow: 5px 5px 5px $comments_border_color;
+        //box-shadow: 5px 5px 5px $comments_border_color;
         background: url("../img/avatar.svg?inline") no-repeat $comments_border_color;
         background-size: cover;
         height: 60px;
@@ -104,13 +104,19 @@
         margin-left: calc(60px + .6em);
         background: $comments_bg_color;
         border: 1px solid $comments_border_color;
-        box-shadow: 5px 5px 5px $comments_border_color;
+        //box-shadow: 5px 5px 5px $comments_border_color;
         padding: 0 .4em;
 
         p {
             white-space: pre-wrap;
             margin-bottom: .5em;
-        }
+		}
+		
+		.btn.mailto,
+		.btn-delete {
+			margin-left: 10px;
+			margin-bottom: 5px;
+		}
     }
 
     span {

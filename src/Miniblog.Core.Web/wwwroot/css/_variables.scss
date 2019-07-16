@@ -1,29 +1,68 @@
 ﻿$footer_height: 150px;
-$link_color: #0070be;
-$text_color: #222;
-$light_bg_color: #f7f7f7;
-$time_text_color: lighten($text_color, 25%);
+
+// $common_bg_color: #ffffff;
+// $link_color: #0070be;
+// $text_color: #222;
+// $light_bg_color: #f7f7f7;
+// $time_text_color: lighten($text_color, 25%);
+
+// // Comments
+// $comments_bg_color: #f1f1f1;
+// $comments_border_color: #dfdfdf;
+// $comments_input_border_color: #bbb;
+// $comments_highlight_color: #ffec82;
+// $admin_comment_shadow_color: darken($comments_border_color, 30%);
+
+// $input_border_color: #bbb;
+// $delete_button_color: crimson;
+// $description_text_color: #888;
+
+// $validation_summary_text_color: darkred;
+// $validation_summary_background_color: #ffe6e6;
+
+
+// $footer_background_color: #222222;
+// $footer_text_color: white;
+// $footer_link_text_color: white;
+
+// $input_outline_color: lighten($link_color, 20%);
+
+// $noscript_background_color: crimson;
+// $noscript_text_color: white;
+
+// $social_sharing_icon_color: gray;
+
+// $form_readonly_background_color: lightgray;
+
+$common_bg_color: #121212;
+$link_color: #bb86fc;
+$text_color: #e1e1e1;
+$light_bg_color: #252525;
+$time_text_color: #7b7b7b;
+
+//Buttons
+$button_text_color: #000000;
+$button_edit_bg_color: #03dac6;
+$button_nav_bg_color: #bb86fc;
+$button_delete_bg_color: #dc143c;
 
 // Comments
-$comments_bg_color: #f1f1f1;
+$comments_bg_color: #1d1d1d;
 $comments_border_color: #dfdfdf;
 $comments_input_border_color: #bbb;
 $comments_highlight_color: #ffec82;
 $admin_comment_shadow_color: darken($comments_border_color, 30%);
 
 $input_border_color: #bbb;
-
-$delete_button_color: crimson;
-
 $description_text_color: #888;
 
 $validation_summary_text_color: darkred;
 $validation_summary_background_color: #ffe6e6;
 
 
-$footer_background_color: #222;
-$footer_text_color: white;
-$footer_link_text_color: white;
+$footer_background_color: #222222;
+$footer_text_color: #e1e1e1;
+$footer_link_text_color: #e1e1e1;
 
 $input_outline_color: lighten($link_color, 20%);
 
@@ -33,4 +72,3 @@ $noscript_text_color: white;
 $social_sharing_icon_color: gray;
 
 $form_readonly_background_color: lightgray;
-

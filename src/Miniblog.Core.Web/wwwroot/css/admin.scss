@@ -1,7 +1,4 @@
-﻿.delete {
-    color: $delete_button_color;
-    float: right;
-}
+﻿@import "variables";
 
 a.noline {
     text-decoration: none;
@@ -84,13 +81,7 @@ form {
         border: 1px solid $input_border_color;
         padding: 5px;
         width: 100%;
-	}
-	
-	.delete {
-        border: 0;
-        background: none;
-        cursor: pointer;
-    }
+	}	
 }
 
 .validation-summary-errors {
