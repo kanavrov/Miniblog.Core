@@ -1,5 +1,5 @@
 ﻿.delete {
-    color: crimson;
+    color: $delete_button_color;
     float: right;
 }
 
@@ -10,7 +10,7 @@ a.noline {
 .editable-table {
 	width: 100%;
 	td {
-		border-bottom: 1px solid #dfdfdf;
+		border-bottom: 1px solid $input_border_color;
 	}
 }
 
@@ -56,7 +56,7 @@ form {
 
         &[type=text] {
             border-radius: 3px;
-            border: 1px solid #bbb;
+            border: 1px solid $input_border_color;
             padding: 4px 10px;
             width: 100%;
             max-width: 400px;
@@ -72,7 +72,7 @@ form {
 	.desc {
         display: block;
         font-size: .9em,;
-        color: #888;
+        color: $description_text_color;
     }
 
     textarea {
@@ -81,7 +81,7 @@ form {
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
         border-radius: 3px;
-        border: 1px solid #bbb;
+        border: 1px solid $input_border_color;
         padding: 5px;
         width: 100%;
 	}
@@ -94,8 +94,8 @@ form {
 }
 
 .validation-summary-errors {
-    background: #ffe6e6;
-    color: darkred;
+    background: $validation_summary_background_color;
+    color: $validation_summary_text_color;
     padding: 5px;
     border-radius: 5px;
 }

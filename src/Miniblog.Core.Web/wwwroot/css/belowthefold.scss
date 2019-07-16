@@ -89,7 +89,7 @@ noscript p {
     margin-top: 1em;
 
     a {
-        border: 1px solid $comments_input_border-color;
+        border: 1px solid $comments_input_border_color;
         background: $comments_bg_color;
         color: $text_color;
         display: inline-block;
@@ -102,7 +102,7 @@ noscript p {
 
         &:hover,
         &:focus {
-            background: $comments_border-color;
+            background: $comments_border_color;
         }
     }
 }

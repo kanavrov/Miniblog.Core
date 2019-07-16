@@ -1,10 +1,20 @@
 ﻿$footer_height: 150px;
 $link_color: #0070be;
 $text_color: #222;
-$light-bg-color: #f7f7f7;
+$light_bg_color: #f7f7f7;
+$time_text_color: lighten($text_color, 25%);
 
 // Comments
 $comments_bg_color: #f1f1f1;
-$comments_border-color: #dfdfdf;
-$comments_input_border-color: #bbb;
+$comments_border_color: #dfdfdf;
+$comments_input_border_color: #bbb;
 $comments_highlight_color: #ffec82;
+
+$input_border_color: #bbb;
+
+$delete_button_color: crimson;
+
+$description_text_color: #888;
+
+$validation_summary_text_color: darkred;
+$validation_summary_background_color: #ffe6e6;

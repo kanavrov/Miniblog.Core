@@ -96,7 +96,7 @@ ul, ol {
 }
 
 time {
-    color: lighten($text_color, 25%);
+    color: $time_text_color;
     font-size: .85em;
 }
 
@@ -146,7 +146,7 @@ time {
     }
 
     > footer {
-        border-top: 1px solid $comments_border-color;
+        border-top: 1px solid $comments_border_color;
         padding-top: .5em;
         clear: both; // In case there are any floating elements in the post content
     }
@@ -156,8 +156,8 @@ time {
     }
 
     blockquote {
-        border-top: 1px solid $comments_border-color;
-        border-bottom: 1px solid $comments_border-color;
+        border-top: 1px solid $comments_border_color;
+        border-bottom: 1px solid $comments_border_color;
         color: lighten($text_color, 30%);
         font-size: 1.3em;
         width: 90%;
@@ -177,12 +177,12 @@ time {
         padding: 5px 10px;
         -ms-word-wrap: normal;
         word-wrap: normal;
-        background: $light-bg-color;
-        box-shadow: 5px 5px 5px $comments_border-color;
+        background: $light_bg_color;
+        box-shadow: 5px 5px 5px $comments_border_color;
     }
 
     code {
-        background: $light-bg-color;
+        background: $light_bg_color;
         font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
     }
 
@@ -196,11 +196,11 @@ time {
     }
 
     tr:nth-child(2n) {
-        background: $light-bg-color;
+        background: $light_bg_color;
     }
 
     th {
-        border-bottom: 1px solid $comments_border-color;
+        border-bottom: 1px solid $comments_border_color;
         text-align: left;
     }
 
