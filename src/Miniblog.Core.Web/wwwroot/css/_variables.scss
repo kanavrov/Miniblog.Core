@@ -9,6 +9,7 @@ $comments_bg_color: #f1f1f1;
 $comments_border_color: #dfdfdf;
 $comments_input_border_color: #bbb;
 $comments_highlight_color: #ffec82;
+$admin_comment_shadow_color: darken($comments_border_color, 30%);
 
 $input_border_color: #bbb;
 
@@ -18,3 +19,18 @@ $description_text_color: #888;
 
 $validation_summary_text_color: darkred;
 $validation_summary_background_color: #ffe6e6;
+
+
+$footer_background_color: #222;
+$footer_text_color: white;
+$footer_link_text_color: white;
+
+$input_outline_color: lighten($link_color, 20%);
+
+$noscript_background_color: crimson;
+$noscript_text_color: white;
+
+$social_sharing_icon_color: gray;
+
+$form_readonly_background_color: lightgray;
+

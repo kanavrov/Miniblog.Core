@@ -17,7 +17,7 @@
         }
 
         [readonly] {
-            background: lightgray;
+            background: $form_readonly_background_color;
             outline: none;
         }
     }
@@ -82,7 +82,7 @@
 
         &.admin .content,
         &.admin .gravatar {
-            box-shadow: 5px 5px 5px darken($comments_border_color, 30%);
+            box-shadow: 5px 5px 5px $admin_comment_shadow_color;
         }
     }
 

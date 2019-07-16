@@ -22,14 +22,14 @@ a:focus,
 a:active,
 input:focus,
 textarea:focus {
-    outline: 2px solid lighten($link_color, 20%);
+    outline: 2px solid $input_outline_color;
 }
 
 noscript p {
-    background-color: crimson;
+    background-color: $noscript_background_color;
     line-height: 2em;
     padding: 0 10px;
-    color: white;
+    color: $noscript_text_color;
     font-size: .9em;
 }
 
@@ -75,7 +75,7 @@ noscript p {
     }
 
     path {
-        fill: gray;
+        fill: $social_sharing_icon_color;
     }
 
     svg {
@@ -112,8 +112,8 @@ noscript p {
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: $text_color;
-    color: white;
+    background-color: $footer_background_color;
+    color: $footer_text_color;
     height: $footer_height;
     font-size: .9em;
 
@@ -139,7 +139,7 @@ noscript p {
     }
 
     a {
-        color: white;
+        color: $footer_link_text_color;
     }
 
     p {
