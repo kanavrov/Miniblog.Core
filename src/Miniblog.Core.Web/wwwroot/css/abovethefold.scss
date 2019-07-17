@@ -33,6 +33,8 @@ body {
     padding: 5px 10px 5px 10px;
 	text-align: center;
 	border: 0px;
+	font-size: 17px;
+	line-height: 1.6;
     border-radius: 3px;
 	color: $button_text_color;
 	text-decoration: none;	
@@ -46,13 +48,58 @@ body {
 	&.btn-edit {
 		background-color: $button_edit_bg_color;
 	}
+	
+	&.btn-edit:hover,
+	&.btn-edit:focus {
+		background-color: darken($button_edit_bg_color, 10%);
+	}
 
 	&.btn-nav {
 		background-color: $button_nav_bg_color;
 	}
 
+	&.btn-nav:hover,
+	&.btn-nav:focus {
+		background-color: darken($button_nav_bg_color, 10%);
+	}
+
 	&.btn-delete {
 		background-color: $button_delete_bg_color;
+	}
+
+	&.btn-delete:hover,
+	&.btn-delete:focus {
+		background-color: darken($button_delete_bg_color, 10%);
+	}
+
+	&.btn-icon {
+		position: relative;
+
+		i {
+			position: absolute;
+			top: 9px;
+		}
+	}
+
+	&.btn-small.btn-icon {
+		i {
+			top: 7px;
+		}
+	}
+
+	&.btn-icon-left {
+		padding-left: 25px;
+		i {
+			left: 8px;
+
+		}
+	}
+
+	&.btn-icon-right {
+		padding-right: 25px;
+		i {
+			right: 8px;
+		}
 	}
 }
 
@@ -148,7 +195,11 @@ time {
                 color: $text_color;
                 text-decoration: none;
             }
-        }
+		}
+		
+		.btn-edit {
+			margin-left: 10px;
+		}
     }
 
     > div {

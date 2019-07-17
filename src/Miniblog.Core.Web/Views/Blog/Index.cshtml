@@ -14,11 +14,17 @@
 <nav class="pagination container" aria-label="Pagination">
     @if (Model.Any())
     {
-        <a rel="prev" href="@ViewData["prev"]" title="@i18n.Translate("Index.OlderPostsTitle")">&laquo; @i18n.Translate("Index.OlderPosts")</a>
+        <a rel="prev" href="@ViewData["prev"]" title="@i18n.Translate("Index.OlderPostsTitle")" class="btn btn-nav btn-icon btn-icon-left">
+			<i class="fa fa-angle-left"></i>
+			@i18n.Translate("Index.OlderPosts")
+		</a>
     }
     @if (currentPage > 0)
     {
-        <a rel="next" href="@ViewData["next"]" title="@i18n.Translate("Index.NewerPostsTitle")">@i18n.Translate("Index.NewerPosts") &raquo;</a>
+        <a rel="next" href="@ViewData["next"]" title="@i18n.Translate("Index.NewerPostsTitle")" class="btn btn-nav btn-icon btn-icon-right">
+			@i18n.Translate("Index.NewerPosts")
+			<i class="fa fa-angle-right"></i>
+		</a>
     }
     <br /><br />
 
