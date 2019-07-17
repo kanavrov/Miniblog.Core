@@ -56,11 +56,6 @@ form {
             border: 1px solid $input_border_color;
             padding: 4px 10px;
             width: 100%;
-            max-width: 400px;
-        }
-
-        &[type=submit] {
-            padding: 0 10px;
         }
     }
 
@@ -81,7 +76,17 @@ form {
         border: 1px solid $input_border_color;
         padding: 5px;
         width: 100%;
-	}	
+	}
+	
+	.editor-toolbar:not(.fullscreen) {
+		button {
+			color: $editor_button_text_color;
+
+			&:hover {
+				color: $editor_button_hover_text_color;
+			}
+		}		
+	}
 }
 
 .validation-summary-errors {

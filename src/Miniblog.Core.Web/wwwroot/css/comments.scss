@@ -52,43 +52,34 @@
         }
     }
 
-    input,
+    input:not([type=submit]),
     textarea {
         font: inherit;
         border: 1px solid $comments_input_border_color;
-        border-radius: 0; // Safari adds a radius to input fields
+        border-radius: 3px;
         padding: 5px 0;
         width: 100%;
         -webkit-appearance: none;
     }
 
-    input {
-        max-width: 400px;
+    input:not([type=submit]) {
         text-indent: 5px;
-
-        &[type=submit] {
-            width: auto;
-            margin: 1em 0;
-            padding: 5px 10px;
-        }
-    }
+	}
+	
+	input[type=submit] {
+		margin-top: 1em; 
+	}
 
     textarea {
         padding: 5px;
     }
 
     article {
-        margin-top: 1.5em;
-
-        &.admin .content,
-        &.admin .gravatar {
-            //box-shadow: 5px 5px 5px $admin_comment_shadow_color;
-        }
+        margin-top: 1.5em;       
     }
 
     .gravatar {
         float: left;
-        //box-shadow: 5px 5px 5px $comments_border_color;
         background: url("../img/avatar.svg?inline") no-repeat $comments_border_color;
         background-size: cover;
         height: 60px;
@@ -104,7 +95,6 @@
         margin-left: calc(60px + .6em);
         background: $comments_bg_color;
         border: 1px solid $comments_border_color;
-        //box-shadow: 5px 5px 5px $comments_border_color;
         padding: 0 .4em;
 
         p {
