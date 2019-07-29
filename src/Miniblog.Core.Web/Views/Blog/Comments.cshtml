@@ -22,7 +22,7 @@
 
                 <div class="content">
                     <p itemprop="text">@renderService.RenderContent(comment)</p>
-					<span itemprop="name" class="author-name">@comment.Author</span>
+					<span itemprop="name" class="author-name @(comment.IsAdmin ? "admin" : null)">@comment.Author</span>
 
                     @if (userRoleResolver.IsAdmin())
                     {

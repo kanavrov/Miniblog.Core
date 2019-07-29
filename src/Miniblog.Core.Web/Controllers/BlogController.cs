@@ -101,7 +101,7 @@ namespace Miniblog.Core.Web.Controllers
 			return NotFound();
 		}
 
-		[Route("/blog/{slug?}")]
+		[Route("/blog/update-post")]
 		[HttpPost, Authorize, AutoValidateAntiforgeryToken]
 		public async Task<IActionResult> UpdatePost(PostDto post, Guid[] categories)
 		{

@@ -107,6 +107,13 @@
 			margin-left: 10px;
 			margin-bottom: 5px;
 		}
+
+		.author-name.admin {
+			background-color: $admin_comment_author_bg_color;
+			color: $admin_comment_author_text_color;
+			padding: 0 5px 0 5px;
+			border-radius: 3px;
+		}
     }
 
     span {
