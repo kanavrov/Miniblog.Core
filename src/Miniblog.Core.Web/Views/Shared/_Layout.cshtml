@@ -49,9 +49,13 @@
         <div class="container">
             <p itemprop="name"><a href="~/">@manifest.Name</a></p>
             By <span itemprop="author">@settings.Value.Owner</span>
+
+			<p>
+				<button class="btn btn-icon btn-icon-left btn-day"><i class="fa fa-sun"></i>@i18n.Translate("Layout.Day")</button>
+				<button class="btn btn-icon btn-icon-left btn-night"><i class="fa fa-moon"></i>@i18n.Translate("Layout.Night")</button>
+			</p>			
         </div>
-		<button class="btn btn-icon btn-icon-left btn-day"><i class="fa fa-sun"></i> Day</button>
-		<button class="btn btn-icon btn-icon-left btn-night"><i class="fa fa-moon"></i> Night</button>
+		
     </header>
 
     <main itemprop="mainEntity" itemscope itemtype="http://schema.org/Blog">

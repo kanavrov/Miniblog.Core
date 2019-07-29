@@ -8,6 +8,8 @@
 	"Layout.SignIn": "Sign in",
 	"Layout.SignOutTitle": "Sign out as administrator",
 	"Layout.SignInTitle": "Sign in as administrator",
+	"Layout.Day": "Day",
+	"Layout.Night": "Night",
 	"SocialSharing.Facebook": "Share on Facebook",
 	"SocialSharing.Twitter": "Share on Twitter",
 	"SocialSharing.GooglePlus": "Share on Google+",
