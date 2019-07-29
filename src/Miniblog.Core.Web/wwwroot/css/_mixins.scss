@@ -187,7 +187,7 @@
 }
 
 @mixin comments-highlight-mixin($keyframes_name) {
-	#comments {		
+	#comments {
 		:target .content {
 			animation: #{$keyframes_name} 3s ease-in-out;
 		}
