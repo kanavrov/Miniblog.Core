@@ -1,182 +1,194 @@
 ﻿@import "variables";
+@import "mixins";
 
 // Lazy loading of images. See /js/site.js for more
 .notloaded {
-    opacity: 0;
-    transform: scale(.9);
+	opacity: 0;
+	transform: scale(0.9);
 }
 
 .loaded {
-    background: none;
-    opacity: 1;
-    transform: scale(1);
-    transition: all 400ms ease-in;
-    // Don't animate when the reduced motion accessibility option
-    // has been enabled in the browser or OS. Safari is supporting this
-    @media screen and (prefers-reduced-motion: reduce) {
-        transition: none;
-    }
+	background: none;
+	opacity: 1;
+	transform: scale(1);
+	transition: all 400ms ease-in;
+	// Don't animate when the reduced motion accessibility option
+	// has been enabled in the browser or OS. Safari is supporting this
+	@media screen and (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
 }
 
 a:focus,
 a:active,
 input:focus,
 textarea:focus {
-    outline: 2px solid $input_outline_color;
+	outline: 2px solid;
 }
 
 noscript p {
-    background-color: $noscript_background_color;
-    line-height: 2em;
-    padding: 0 10px;
-    color: $noscript_text_color;
-    font-size: .9em;
+	line-height: 2em;
+	padding: 0 10px;
+	font-size: 0.9em;
 }
 
 .video {
-    position: relative;
-    padding-bottom: 56.25%;
-    padding-top: 30px;
-    height: 0;
-    overflow: hidden;
+	position: relative;
+	padding-bottom: 56.25%;
+	padding-top: 30px;
+	height: 0;
+	overflow: hidden;
 
-    iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: 0;
-    }
+	iframe {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		border: 0;
+	}
 }
 
 .categories {
-    list-style: none;
-    display: inline;
-    padding: 0;
+	list-style: none;
+	display: inline;
+	padding: 0;
 
-    li {
-        display: inline-block;
+	li {
+		display: inline-block;
 
-        &:not(:first-child):not(:last-child):after {
-            content: ", ";
-        }
-    }
+		&:not(:first-child):not(:last-child):after {
+			content: ", ";
+		}
+	}
 }
 
 .socialsharing {
-    text-align: center;
+	text-align: center;
 
-    a {
-        display: inline-block;
-        padding: .7em;
-        line-height: 0;
-        margin-bottom: 2em;
-    }
+	a {
+		display: inline-block;
+		padding: 0.7em;
+		line-height: 0;
+		margin-bottom: 2em;
+	}
 
-    path {
-        fill: $social_sharing_icon_color;
-    }
-
-    svg {
-        width: 24px;
-        height: 24px;
-    }
+	svg {
+		width: 24px;
+		height: 24px;
+	}
 }
 
 .pagination {
-    padding-bottom: 2em;
-    margin-top: 1em;
+	padding-bottom: 2em;
+	margin-top: 1em;
 
-    a {
-        &[rel=next] {
-            float: right;
-        }
-    }
+	a {
+		&[rel="next"] {
+			float: right;
+		}
+	}
 }
 
 .sitefooter {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: $footer_background_color;
-    color: $footer_text_color;
-    height: $footer_height;
-    font-size: .9em;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: $footer_height;
+	font-size: 0.9em;
 
-    .container {
-        margin: 1em auto;
-    }
+	.container {
+		margin: 1em auto;
+	}
 
-    ul {
-        list-style: none;
-        padding: 0;
-    }
+	ul {
+		list-style: none;
+		padding: 0;
+	}
 
-    li {
-        display: inline-block;
+	li {
+		display: inline-block;
 
-        &:not(:last-child):not(:first-child):before {
-            content: "\00A0| \00A0"
-        }
+		&:not(:last-child):not(:first-child):before {
+			content: "\00A0| \00A0";
+		}
 
-        &:last-child {
-            float: right;
-        }
-    }
+		&:last-child {
+			float: right;
+		}
+	}
 
-    p {
-        position: absolute;
-        bottom: .5em;
-        left: 0;
-        text-align: center;
-        width: 100%;
-        font-size: .9em;
-    }
+	p {
+		position: absolute;
+		bottom: 0.5em;
+		left: 0;
+		text-align: center;
+		width: 100%;
+		font-size: 0.9em;
+	}
 }
 
+//COLORS
+@include belowthefold-colors-mixin();
+//COLORS
+
 @media print {
-    @page {
-        margin: 2cm;
-    }
+	@page {
+		margin: 2cm;
+	}
 
-    body {
-        color: #000;
-        background: #fff;
-        font: 12pt/1.5 Calibri, serif;
-        -webkit-print-color-adjust: exact;
-    }
+	body {
+		color: #000;
+		background: #fff;
+		font: 12pt/1.5 Calibri, serif;
+		-webkit-print-color-adjust: exact;
+	}
 
-    nav, aside, footer, #comments, [data-src], .video {
-        display: none;
-    }
+	nav,
+	aside,
+	footer,
+	#comments,
+	[data-src],
+	.video {
+		display: none;
+	}
 
-    article {
-        page-break-after: always;
-    }
+	article {
+		page-break-after: always;
+	}
 
-    h1, h2, h3, h4, h5, h6, img {
-        page-break-after: avoid;
-        page-break-inside: avoid
-    }
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6,
+	img {
+		page-break-after: avoid;
+		page-break-inside: avoid;
+	}
 
-    blockquote, table, pre {
-        page-break-inside: avoid;
-    }
+	blockquote,
+	table,
+	pre {
+		page-break-inside: avoid;
+	}
 
-    ul, ol, dl {
-        page-break-before: avoid
-    }
+	ul,
+	ol,
+	dl {
+		page-break-before: avoid;
+	}
 
-    .post pre {
-        background: none;
-        border: none;
-        box-shadow: none;
-        font-family: monospace;
-    }
+	.post pre {
+		background: none;
+		border: none;
+		box-shadow: none;
+		font-family: monospace;
+	}
 
-    a[href^="http"]:after, a[href^="//"]:after {
-        content: " <" attr(href) "> ";
-    }
+	a[href^="http"]:after, a[href^="//"]:after {
+		content: " <" attr(href) "> ";
+	}
 }

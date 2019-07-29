@@ -1,40 +1,45 @@
-﻿#login {
-    width: 300px;
-    margin: 0 auto;
-    padding-bottom: 2em;
+﻿@import "variables";
+@import "mixins";
 
-    fieldset {
-        border: 0;
-    }
+#login {
+	width: 300px;
+	margin: 0 auto;
+	padding-bottom: 2em;
 
-    legend {
-        font-size: 1.2em;
-        font-weight: bold;
-    }
+	fieldset {
+		border: 0;
+	}
 
-    input[type=text],
-    input[type=password] {
-        display: block;
-        width: 100%;
-        margin-bottom: 10px;
-        padding: 3px 7px;
-        border: 1px solid $input_border_color;
-        font: inherit;
-    }
+	legend {
+		font-size: 1.2em;
+		font-weight: bold;
+	}
 
-    input[type=submit] {
-        margin-top: 10px;
-        padding: 0 10px;
-        display: block;
-        font: inherit;
-    }
+	input[type="text"],
+	input[type="password"] {
+		display: block;
+		width: 100%;
+		margin-bottom: 10px;
+		padding: 3px 7px;
+		border: 1px solid;
+		font: inherit;
+	}
 
-    .validation-summary-errors {
-        color: $validation_summary_text_color;
+	input[type="submit"] {
+		margin-top: 10px;
+		padding: 0 10px;
+		display: block;
+		font: inherit;
+	}
 
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-    }
+	.validation-summary-errors {
+		ul {
+			list-style: none;
+			padding: 0;
+		}
+	}
 }
+
+//COLORS
+@include login-colors-mixin();
+//COLORS

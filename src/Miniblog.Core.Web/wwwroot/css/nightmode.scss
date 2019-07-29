@@ -1,0 +1,35 @@
+@import "variables";
+@import "mixins";
+
+$common_bg_color: #121212;
+$link_color: #bb86fc;
+$text_color: #e1e1e1;
+$light_bg_color: #252525;
+$time_text_color: #7b7b7b;
+
+//Buttons
+$button_text_color: #000000;
+$button_edit_bg_color: #03dac6;
+$button_nav_bg_color: #bb86fc;
+
+// Comments
+$comments_bg_color: #1d1d1d;
+$comments_border_color: #dfdfdf;
+$comments_highlight_color: #bbb;
+$admin_comment_author_bg_color: #ffec82;
+$admin_comment_author_text_color: #000000;
+
+$editor_button_text_color: #e1e1e1;
+$editor_button_hover_text_color: #000000;
+
+$footer_link_text_color: #e1e1e1;
+
+.night-mode {
+	@include body-colors-mixin();
+	@include admin-colors-mixin();
+	@include abovethefold-colors-mixin();
+	@include belowthefold-colors-mixin();
+	@include comments-colors-mixin();
+	@include comments-highlight-mixin(night-target);
+	@include login-colors-mixin();
+}

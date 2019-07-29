@@ -1,0 +1,218 @@
+@mixin body-colors-mixin() {
+	color: $text_color;
+	background-color: $common_bg_color;
+}
+
+@mixin abovethefold-colors-mixin() {
+	.btn {
+		color: $button_text_color;
+
+		&.btn-edit {
+			background-color: $button_edit_bg_color;
+		}
+
+		&.btn-edit:hover,
+		&.btn-edit:focus {
+			background-color: darken($button_edit_bg_color, 10%);
+		}
+
+		&.btn-nav {
+			background-color: $button_nav_bg_color;
+		}
+
+		&.btn-nav:hover,
+		&.btn-nav:focus {
+			background-color: darken($button_nav_bg_color, 10%);
+		}
+
+		&.btn-delete {
+			background-color: $button_delete_bg_color;
+		}
+
+		&.btn-delete:hover,
+		&.btn-delete:focus {
+			background-color: darken($button_delete_bg_color, 10%);
+		}
+	}
+	.siteheader {
+		a {
+			color: $text_color;
+		}
+	}
+
+	a {
+		color: $link_color;
+	}
+
+	time {
+		color: $time_text_color;
+	}
+
+	.post {
+		header {
+			h1 {
+				a {
+					color: $text_color;
+				}
+			}
+		}
+
+		> footer {
+			border-top-color: $comments_border_color;
+		}
+
+		blockquote {
+			border-top-color: $comments_border_color;
+			border-bottom-color: $comments_border_color;
+			color: lighten($text_color, 30%);
+		}
+
+		pre {
+			background-color: $light_bg_color;
+		}
+
+		code {
+			background-color: $light_bg_color;
+		}
+
+		tr:nth-child(2n) {
+			background: $light_bg_color;
+		}
+
+		th {
+			border-bottom-color: $comments_border_color;
+		}
+	}
+}
+
+@mixin admin-colors-mixin() {
+	.editable-table {
+		td {
+			border-bottom-color: $input_border_color;
+		}
+
+		tr:nth-child(2n) {
+			background-color: $light_bg_color;
+		}
+	}
+
+	form {
+		input {
+			&[type="text"] {
+				border-color: $input_border_color;
+			}
+		}
+
+		input + span,
+		textarea + span,
+		.desc {
+			color: $description_text_color;
+		}
+
+		textarea {
+			border-color: $input_border_color;
+		}
+
+		.editor-toolbar:not(.fullscreen) {
+			button {
+				color: $editor_button_text_color;
+
+				&:hover {
+					color: $editor_button_hover_text_color;
+				}
+			}
+		}
+	}
+
+	.validation-summary-errors {
+		background-color: $validation_summary_background_color;
+		color: $validation_summary_text_color;
+	}
+}
+
+@mixin belowthefold-colors-mixin() {
+	a:focus,
+	a:active,
+	input:focus,
+	textarea:focus {
+		outline-color: $input_outline_color;
+	}
+
+	noscript p {
+		background-color: $noscript_background_color;
+		color: $noscript_text_color;
+	}
+
+	.socialsharing {
+		path {
+			fill: $social_sharing_icon_color;
+		}
+	}
+
+	.sitefooter {
+		background-color: $footer_background_color;
+		color: $footer_text_color;
+	}
+}
+
+@mixin comments-colors-mixin() {
+	#comments {
+		background: $light_bg_color;
+
+		form {
+			[readonly] {
+				background: $form_readonly_background_color;
+			}
+		}
+
+		input:not([type="submit"]),
+		textarea {
+			border-color: $comments_input_border_color;
+		}
+
+		.gravatar {
+			background-color: $comments_border_color;
+		}
+
+		.content {
+			background-color: $comments_bg_color;
+			border-color: 1px solid $comments_border_color;
+
+			.author-name.admin {
+				background-color: $admin_comment_author_bg_color;
+				color: $admin_comment_author_text_color;
+			}
+		}
+	}
+}
+
+@mixin comments-highlight-mixin($keyframes_name) {
+	#comments {		
+		:target .content {
+			animation: #{$keyframes_name} 3s ease-in-out;
+		}
+	}
+
+	@keyframes #{$keyframes_name} {
+		from {
+			background-color: $comments_highlight_color;
+		}
+
+		to {
+			background-color: $comments_bg_color;
+		}
+	}
+}
+
+@mixin login-colors-mixin() {
+	#login {
+		input[type="text"],
+		input[type="password"] {
+			border-color: $input_border_color;
+		}
+
+		.validation-summary-errors {
+			color: $validation_summary_text_color;
+		}
+	}
+}
