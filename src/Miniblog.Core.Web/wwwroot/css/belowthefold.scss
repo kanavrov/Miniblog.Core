@@ -138,11 +138,27 @@ noscript p {
 		margin: 2cm;
 	}
 
-	body {
-		color: #000;
+	body,
+	body.night-mode {
+		color: #000 !important;
 		background: #fff;
 		font: 12pt/1.5 Calibri, serif;
 		-webkit-print-color-adjust: exact;
+	}
+
+	p, 
+	h1,
+	h1 a,
+	p a,
+	time,
+	a {
+		color: #000 !important;
+	}
+
+	pre,
+	code,
+	tr:nth-child(2n) {
+		background-color: #d3d3d3 !important;
 	}
 
 	nav,
@@ -150,8 +166,9 @@ noscript p {
 	footer,
 	#comments,
 	[data-src],
-	.video {
-		display: none;
+	.video,
+	.btn {
+		display: none !important;
 	}
 
 	article {
