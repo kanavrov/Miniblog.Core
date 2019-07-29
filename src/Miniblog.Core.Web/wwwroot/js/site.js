@@ -140,6 +140,19 @@
         window.addEventListener("resize", init);
 
         init();
-    });
+	});
+	
+	// Day / Night mode
+	var nightModeClass = "night-mode";
+	var nightModeCookie = "nightMode=1;"
+
+	document.body.querySelector(".btn-day").addEventListener("click", function () {
+		document.body.classList.remove(nightModeClass);
+		document.cookie = nightModeCookie + " expires=Thu, 01 Jan 1970 00:00:01 GMT;"
+	});
+	document.body.querySelector(".btn-night").addEventListener("click", function () {
+		document.body.classList.add(nightModeClass);
+		document.cookie = nightModeCookie +  + " expires=Thu, 01 Jan 9999 00:00:01 GMT;"
+	});
 
 })(window, document);

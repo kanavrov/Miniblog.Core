@@ -59,14 +59,14 @@ body {
 	}
 
 	&.btn-icon-left {
-		padding-left: 25px;
+		padding-left: 30px;
 		i {
 			left: 8px;
 		}
 	}
 
 	&.btn-icon-right {
-		padding-right: 25px;
+		padding-right: 30px;
 		i {
 			right: 8px;
 		}
@@ -268,4 +268,13 @@ body {
 }
 
 @include abovethefold-colors-mixin();
+
+.btn-day {
+	display: none;
+}
+
+.btn-night {
+	background-color: #585858;
+	color: #e1e1e1;
+}
 //COLORS

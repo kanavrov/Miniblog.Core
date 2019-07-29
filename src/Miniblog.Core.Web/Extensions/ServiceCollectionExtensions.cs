@@ -14,11 +14,13 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Miniblog.Core.Contract.Models;
 using Miniblog.Core.Data.Repositories;
 using Miniblog.Core.Data.TypeHandling;
 using Miniblog.Core.Framework.Common;
 using Miniblog.Core.Framework.Localization;
 using Miniblog.Core.Framework.Users;
+using Miniblog.Core.Framework.Web.Request;
 using Miniblog.Core.Framework.Web.Users;
 using Miniblog.Core.Migration;
 using Miniblog.Core.Service.Blog;
@@ -155,6 +157,8 @@ namespace Miniblog.Core.Web.Extensions
 
 			if(blogSettings.StorageType == StorageType.SQLite)
 				services.UseSqliteStorage(configuration, blogSettings.ConnectionStringName);
+
+			services.AddTransient<ICookieService, CookieService>();
 		}
     }
 }

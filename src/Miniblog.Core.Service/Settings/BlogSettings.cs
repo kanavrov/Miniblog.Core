@@ -1,4 +1,6 @@
-﻿namespace Miniblog.Core.Service.Settings
+﻿using Miniblog.Core.Contract.Models;
+
+namespace Miniblog.Core.Service.Settings
 {
 	public class BlogSettings
 	{

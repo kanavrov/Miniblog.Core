@@ -3,9 +3,11 @@
 @inject IRouteService routeService
 @inject ITranslationProvider i18n
 @inject IUserRoleResolver userRoleResolver
+@inject ICookieService cookieService
 
 @{
     var host = routeService.GetHost();
+	var nightModeCookieName = "nightMode";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -41,13 +43,15 @@
     <link rel="alternate" type="application/atom+xml" href="~/feed/atom/" />
     @RenderSection("Head", required: false)
 </head>
-<body class="night-mode" itemscope itemtype="http://schema.org/WebPage">
+<body itemscope itemtype="http://schema.org/WebPage" class="@(cookieService.CookieHasValue(nightModeCookieName, "1") ? "night-mode" : null)">
 
     <header class="siteheader">
         <div class="container">
             <p itemprop="name"><a href="~/">@manifest.Name</a></p>
             By <span itemprop="author">@settings.Value.Owner</span>
         </div>
+		<button class="btn btn-icon btn-icon-left btn-day"><i class="fa fa-sun"></i> Day</button>
+		<button class="btn btn-icon btn-icon-left btn-night"><i class="fa fa-moon"></i> Night</button>
     </header>
 
     <main itemprop="mainEntity" itemscope itemtype="http://schema.org/Blog">

@@ -1,4 +1,4 @@
-namespace Miniblog.Core.Service.Settings
+namespace Miniblog.Core.Contract.Models
 {
 	public enum StorageType
 	{
