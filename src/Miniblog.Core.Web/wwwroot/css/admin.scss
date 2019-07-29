@@ -5,10 +5,27 @@ a.noline {
 }
 
 .editable-table {
-	width: 100%;
+	width: 100%;	
+	border-collapse: collapse;
+
 	td {
 		border-bottom: 1px solid $input_border_color;
+		padding-top: 5px;
+		padding-bottom: 5px;
 	}
+
+	td:first-child {
+		padding-left: 5px;
+	}
+
+	td:last-child {
+		text-align: right;
+		padding-right: 5px;
+	}
+
+	tr:nth-child(2n) {
+        background: $light_bg_color;
+    }
 }
 
 form {

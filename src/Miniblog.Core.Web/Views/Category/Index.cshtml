@@ -11,7 +11,7 @@
 
 <div class="container">
 	<div class="container-row">
-		<a class="noline" asp-controller="Category" asp-Action="Edit" 
+		<a class="btn btn-edit" asp-controller="Category" asp-Action="Edit" 
 							title="@i18n.Translate("Category.NewCategoryTitle")">@i18n.Translate("Category.NewCategory")</a>
 	</div>
 	
@@ -22,9 +22,9 @@
     			<tr>
 					<td>@category.Name</td>
 					<td>
-						<a class="noline" asp-controller="Category" asp-Action="Edit" asp-route-id="@category.Id" 
+						<a class="btn btn-edit" asp-controller="Category" asp-Action="Edit" asp-route-id="@category.Id" 
 							title="@i18n.Translate("Category.EditTitle")">@i18n.Translate("Category.Edit")</a>
-						<a class="delete noline" asp-controller="Category" asp-Action="Delete" asp-route-id="@category.Id" 
+						<a class="btn btn-delete" asp-controller="Category" asp-Action="Delete" asp-route-id="@category.Id" 
 							title="@i18n.Translate("Category.DeleteTitle")">@i18n.Translate("Category.Delete")</a>
 					</td>	
 				</tr>

@@ -86,7 +86,7 @@
 		var editor = new EasyMDE({
 			autoDownloadFontAwesome: false,
 			autosave: {
-				enabled: true,
+				enabled: false,
 				delay: 1000,
 				uniqueId: 'md-editor-autosave'
 			},
