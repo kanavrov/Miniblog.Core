@@ -46,7 +46,7 @@
 </head>
 <body itemscope itemtype="http://schema.org/WebPage" 
 	class="@(cookieService.CookieHasValue(nightModeCookieName, "1") ? "night-mode" : null)"
-	data-translation-endpoint="/translations.json")">
+	data-translation-endpoint="@Url.Action("GetTranslations", "Translation")">
 
     <header class="siteheader">
         <div class="container">

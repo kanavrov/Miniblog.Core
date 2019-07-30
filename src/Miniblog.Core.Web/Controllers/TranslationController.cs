@@ -17,7 +17,7 @@ namespace Miniblog.Core.Web.Controllers {
 		[DisableableOutputCache (Profile = "default")]
 		[NoTransaction]
 		[HttpGet]
-		public ActionResult GetTranslations (string prefix) 
+		public IActionResult GetTranslations (string prefix) 
 		{
 			return Json(_translations.GetAllTranslations(prefix));
 		}
