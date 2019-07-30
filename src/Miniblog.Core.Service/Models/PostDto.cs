@@ -12,16 +12,20 @@ namespace Miniblog.Core.Service.Models
 	{
 		public Guid Id { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = ValidationConstants.FieldRequired)]
+		[Display(Name = "Edit.PostTitle")]
 		public string Title { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = ValidationConstants.FieldRequired)]
+		[Display(Name = "Edit.Slug")]
 		public string Slug { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = ValidationConstants.FieldRequired)]
+		[Display(Name = "Edit.Excerpt")]
 		public string Excerpt { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = ValidationConstants.FieldRequired)]
+		[Display(Name = "Edit.ContentLabel")]
 		public string Content { get; set; }
 
 		public DateTime PubDate { get; set; }

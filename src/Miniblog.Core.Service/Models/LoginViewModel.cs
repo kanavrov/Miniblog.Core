@@ -4,14 +4,16 @@ namespace Miniblog.Core.Service.Models
 {
 	public class LoginViewModel
 	{
-		[Required]
+		[Required(ErrorMessage = ValidationConstants.FieldRequired)]
+		[Display(Name = "Login.Username")]
 		public string UserName { get; set; }
 
-		[Required]
+		[Required(ErrorMessage = ValidationConstants.FieldRequired)]
 		[DataType(DataType.Password)]
+		[Display(Name = "Login.Password")]
 		public string Password { get; set; }
 
-		[Display(Name = "Remember me?")]
+		[Display(Name = "Login.RememberMe")]
 		public bool RememberMe { get; set; }
 	}
 }

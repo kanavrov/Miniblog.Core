@@ -8,7 +8,8 @@ namespace Miniblog.Core.Service.Models
 	{
 		public Guid Id { get; set; }
 		
-		[Required]
+		[Required(ErrorMessage = ValidationConstants.FieldRequired)]
+		[Display(Name = "EditCategory.CategoryName")]
 		public string Name { get; set; }
 
 		public DateTime LastModified { get; set; }

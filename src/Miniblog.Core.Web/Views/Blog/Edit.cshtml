@@ -36,7 +36,7 @@
 				<label asp-for="@Model.Slug" class="label">@i18n.Translate("Edit.Slug")</label>
 			</div>
 			<div class="control-row">
-				<input asp-for="@Model.Slug" placeholder="@i18n.Translate("Edit.SlugPlaceholder")" aria-describedby="desc_slug" />
+				<input asp-for="@Model.Slug" required placeholder="@i18n.Translate("Edit.SlugPlaceholder")" aria-describedby="desc_slug" />
 			</div>
 			<div class="desc-row">
 				<span class="desc" id="desc_slug">@i18n.Translate("Edit.SlugDesc")</span>

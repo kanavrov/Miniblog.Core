@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Miniblog.Core.Framework.Localization
@@ -19,15 +20,28 @@ namespace Miniblog.Core.Framework.Localization
 
 		public string Translate(CultureInfo culture, string key, params object[] args)
 		{
-			if (TranslationStore.LoadedTranslations.ContainsKey(culture))
+			ITranslationModel model = GetAllTranslations(culture);
+			if (model != null && model.ContainsKey(key))
 			{
-				ITranslationModel model = TranslationStore.LoadedTranslations[culture];
-				if (model.ContainsKey(key))
-				{
-					return string.Format(model[key], args);
-				}
+				return args != null && args.Length > 0 
+					? string.Format(model[key], args) 
+					: model[key];
 			}
+
 			return key;
+		}
+
+		public ITranslationModel GetAllTranslations()
+		{
+			return GetAllTranslations(CultureInfo.CurrentCulture);
+		}
+
+		public ITranslationModel GetAllTranslations(CultureInfo culture)
+		{
+			if(TranslationStore.LoadedTranslations.ContainsKey(culture))
+				return TranslationStore.LoadedTranslations[culture];
+
+			return null;			
 		}
 	}
 }
