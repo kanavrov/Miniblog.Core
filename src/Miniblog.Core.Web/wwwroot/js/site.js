@@ -144,7 +144,7 @@
 	
 	// Day / Night mode
 	var nightModeClass = "night-mode";
-	var nightModeCookie = "nightMode=1;"
+	var nightModeCookie = "nightMode=1; path=/;"
 
 	document.body.querySelector(".btn-day").addEventListener("click", function () {
 		document.body.classList.remove(nightModeClass);
