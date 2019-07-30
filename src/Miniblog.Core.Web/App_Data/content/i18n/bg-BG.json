@@ -84,5 +84,12 @@
 	"Category.Edit": "Редактирай",
 	"Category.EditTitle": "Редактирай категорията",
 	"Category.Delete": "Изтрий",
-	"Category.DeleteTitle": "Изтрий категорията"
+	"Category.DeleteTitle": "Изтрий категорията",
+	"Frontend.Comments.Posting": "Изпращане...",
+	"Frontend.Comments.ConfirmDelete": "Сигурен ли си, че искаш да изтриеш този коментар?",
+	"Frontend.Post.ConfirmDelete": "Сигурен ли си, че искаш да изтриеш този пост?",
+	"Frontend.Post.FileApiError": "Твоят браузер не поддържа File API",
+	"Frontend.Post.FileSizeError": "Максималният позволен размер за изображение е #image_max_size# MB",
+	"Frontend.Post.FileUploadError": "Грешка при качването на файла.",
+	"Frontend.Category.ConfirmDelete": "Сигурен ли си, че искаш да изтриеш тази категория?"
   }

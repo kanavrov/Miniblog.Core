@@ -18,7 +18,7 @@
         commentForm.classList.add("js-enabled");
 
         commentForm.addEventListener("submit", function (e) {
-            this.querySelector("input[type=submit]").value = "Posting comment...";
+            this.querySelector("input[type=submit]").value = window.i18n("Comments.Posting");
             var elements = this.elements;
             for (var i = 0; i < elements.length; ++i) {
                 elements[i].readOnly = true;

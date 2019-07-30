@@ -2,7 +2,7 @@
 	// File upload
 	function handleFileSelect(file, imageUploadEndpoint, imageSizeLimit, onSuccess, onError) {
 		if (window.File == null || window.FileList == null) {
-			console.log("Your browser does not support File API");
+			console.log(window.i18n("Post.FileApiError"));
 			return;
 		}
 
@@ -10,7 +10,7 @@
 			return;
 
 		if (getFileSizeInMegabytes(file) >= imageSizeLimit) {
-			alert("Maximum image size allowed is #image_max_size# MB"
+			alert(window.i18n("Post.FileSizeError")
 				.replace('#image_max_size#', imageSizeLimit)
 			);
 			return;
@@ -31,7 +31,7 @@
 				if (onError) {
 					onError(this.status, this.statusText.toString());
 				} else {
-					alert("An error occured while uploading image file.");
+					alert(window.i18n("Post.FileUploadError"));
 				}
 			}
 		};
@@ -228,10 +228,10 @@
 		}
 
 		// Delete post
-		var deleteButton = edit.querySelector(".delete");
+		var deleteButton = edit.querySelector(".btn-delete");
 		if (deleteButton) {
 			deleteButton.addEventListener("click", function (e) {
-				if (!confirm("Are you sure you want to delete the post?")) {
+				if (!confirm(window.i18n("Post.ConfirmDelete"))) {
 					e.preventDefault();
 				}
 			});
@@ -239,13 +239,13 @@
 	}
 
 	// Delete comments
-	var deleteLinks = document.querySelectorAll("#comments a.delete");
+	var deleteLinks = document.querySelectorAll("#comments a.btn-delete");
 	if (deleteLinks) {
 		for (var i = 0; i < deleteLinks.length; i++) {
 			var link = deleteLinks[i];
 
 			link.addEventListener("click", function (e) {
-				if (!confirm("Are you sure you want to delete the comment?")) {
+				if (!confirm(window.i18n("Comments.ConfirmDelete"))) {
 					e.preventDefault();
 				}
 			});
@@ -256,10 +256,10 @@
 	var editCategory = document.getElementById("edit-category");
 	if (editCategory) {
 		// Delete post
-		var deleteCategoryButton = editCategory.querySelector(".delete");
+		var deleteCategoryButton = editCategory.querySelector(".btn-delete");
 		if (deleteCategoryButton) {
 			deleteCategoryButton.addEventListener("click", function (e) {
-				if (!confirm("Are you sure you want to delete the category?")) {
+				if (!confirm(window.i18n("Category.ConfirmDelete"))) {
 					e.preventDefault();
 				}
 			});
@@ -269,10 +269,10 @@
 	var categoryTable = document.querySelector(".category-table");
 	if (categoryTable) {
 		// Delete post
-		var deleteCategoryButtons = categoryTable.querySelectorAll(".delete");
+		var deleteCategoryButtons = categoryTable.querySelectorAll(".btn-delete");
 		for (var i = 0; i < deleteCategoryButtons.length; i++) {
 			deleteCategoryButtons[i].addEventListener("click", function (e) {
-				if (!confirm("Are you sure you want to delete the category?")) {
+				if (!confirm(window.i18n("Category.ConfirmDelete"))) {
 					e.preventDefault();
 				}
 			});

@@ -84,5 +84,12 @@
 	"Category.Edit": "Edit",
 	"Category.EditTitle": "Edit the category",
 	"Category.Delete": "Delete",
-	"Category.DeleteTitle": "Delete the category"
+	"Category.DeleteTitle": "Delete the category",
+	"Frontend.Comments.Posting": "Posting comment...",
+	"Frontend.Comments.ConfirmDelete": "Are you sure you want to delete the comment?",
+	"Frontend.Post.ConfirmDelete": "Are you sure you want to delete the post?",
+	"Frontend.Post.FileApiError": "Your browser does not support File API",
+	"Frontend.Post.FileSizeError": "Maximum image size allowed is #image_max_size# MB",
+	"Frontend.Post.FileUploadError": "An error occured while uploading image file.",
+	"Frontend.Category.ConfirmDelete": "Are you sure you want to delete the category?"
   }

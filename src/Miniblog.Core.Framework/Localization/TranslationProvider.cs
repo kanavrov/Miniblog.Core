@@ -31,15 +31,31 @@ namespace Miniblog.Core.Framework.Localization
 			return key;
 		}
 
-		public ITranslationModel GetAllTranslations()
+		public ITranslationModel GetAllTranslations(string prefix = null)
 		{
-			return GetAllTranslations(CultureInfo.CurrentCulture);
+			return GetAllTranslations(CultureInfo.CurrentCulture, prefix);
 		}
 
-		public ITranslationModel GetAllTranslations(CultureInfo culture)
+		public ITranslationModel GetAllTranslations(CultureInfo culture, string prefix = null)
 		{
 			if(TranslationStore.LoadedTranslations.ContainsKey(culture))
-				return TranslationStore.LoadedTranslations[culture];
+			{
+				var model = TranslationStore.LoadedTranslations[culture];
+
+				if(string.IsNullOrEmpty(prefix))
+					return model;
+
+				var formattedPrefix = prefix.EndsWith(".") ? prefix : $"{prefix}.";
+				var partialModel = new TranslationModel();
+				foreach (var item in model)
+				{
+					if(item.Key.StartsWith(formattedPrefix))
+					{
+						partialModel[item.Key] = item.Value;
+					}
+				}
+				return partialModel;
+			}				
 
 			return null;			
 		}
