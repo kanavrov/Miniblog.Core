@@ -1,12 +1,12 @@
-﻿@model PostDto
+﻿@model PostViewModel
 @inject ITranslationProvider i18n
 @inject IOptionsSnapshot<BlogSettings> settings
 
 @{
-    bool isNew = string.IsNullOrEmpty(Model.Title);
-    ViewData["Title"] = $"{i18n.Translate("Edit.Title")} " + (Model.Title ?? i18n.Translate("Edit.NewPost"));
+    bool isNew = string.IsNullOrEmpty(Model.Post.Title);
+    ViewData["Title"] = $"{i18n.Translate("Edit.Title")} " + (Model.Post.Title ?? i18n.Translate("Edit.NewPost"));
     var host = Context.Request.Host.ToString();
-    var allCats = ViewData["AllCats"] as List<CategoryDto> ?? new List<CategoryDto>();
+    var allCats = Model.AllCategories ?? new List<CategoryDto>();
 	var editorCssClass = settings.Value.PostRenderType == PostRenderType.Markdown ? "md-editor" : "html-editor";
 }
 
@@ -17,14 +17,14 @@
 
     <form method="post" id="edit" class="container" asp-controller="Blog" asp-action="UpdatePost">
 		<div asp-validation-summary="All"></div>
-        <input type="hidden" asp-for="@Model.Id" />
+        <input type="hidden" asp-for="@Model.Post.Id" />
 
 		<div class="form-group">
 			<div class="label-row">
-				<label asp-for="@Model.Title" class="label">@i18n.Translate("Edit.PostTitle")</label>
+				<label asp-for="@Model.Post.Title" class="label">@i18n.Translate("Edit.PostTitle")</label>
 			</div>
 			<div class="control-row">
-				 <input asp-for="@Model.Title" required placeholder="@i18n.Translate("Edit.PostTitlePlaceholder")" aria-describedby="desc_title" />
+				 <input asp-for="@Model.Post.Title" required placeholder="@i18n.Translate("Edit.PostTitlePlaceholder")" aria-describedby="desc_title" />
 			</div>
 			<div class="desc-row">
 				<span class="desc" id="desc_title">@i18n.Translate("Edit.PostTitleDesc")</span>
@@ -33,10 +33,10 @@
 		
 		<div class="form-group">
 			<div class="label-row">
-				<label asp-for="@Model.Slug" class="label">@i18n.Translate("Edit.Slug")</label>
+				<label asp-for="@Model.Post.Slug" class="label">@i18n.Translate("Edit.Slug")</label>
 			</div>
 			<div class="control-row">
-				<input asp-for="@Model.Slug" required placeholder="@i18n.Translate("Edit.SlugPlaceholder")" aria-describedby="desc_slug" />
+				<input asp-for="@Model.Post.Slug" required placeholder="@i18n.Translate("Edit.SlugPlaceholder")" aria-describedby="desc_slug" />
 			</div>
 			<div class="desc-row">
 				<span class="desc" id="desc_slug">@i18n.Translate("Edit.SlugDesc")</span>
@@ -51,7 +51,7 @@
 				<div class="checkbox-group">
 					@foreach (var cat in allCats)
        				{
-						var isChecked = Model.Categories.Any(c => c.Id == cat.Id);
+						var isChecked = Model.Post.Categories.Any(c => c.Id == cat.Id);
 						<div class="checkbox-row">
 							<input type="checkbox" name="categories" value="@cat.Id" checked="@isChecked"> <label>@cat.Name</label>
 						</div>            			
@@ -66,10 +66,10 @@
        
 		<div class="form-group">
 			<div class="label-row">
-				<label asp-for="@Model.Excerpt" class="label">@i18n.Translate("Edit.Excerpt")</label>
+				<label asp-for="@Model.Post.Excerpt" class="label">@i18n.Translate("Edit.Excerpt")</label>
 			</div>
 			<div class="control-row">
-				<textarea asp-for="@Model.Excerpt" rows="3" placeholder="@i18n.Translate("Edit.ExcerptPlaceholder")" aria-describedby="desc_excerpt">@Model.Excerpt</textarea>
+				<textarea asp-for="@Model.Post.Excerpt" rows="3" placeholder="@i18n.Translate("Edit.ExcerptPlaceholder")" aria-describedby="desc_excerpt">@Model.Post.Excerpt</textarea>
 			</div>
 			<div class="desc-row">
 				<span class="desc" id="desc_excerpt">@i18n.Translate("Edit.ExcerptDesc")</span>
@@ -77,20 +77,20 @@
 		</div>
         
 		<div class="form-group content-group">
-			<textarea asp-for="@Model.Content" rows="20" aria-label="@i18n.Translate("Edit.ContentLabel")" 
+			<textarea asp-for="@Model.Post.Content" rows="20" aria-label="@i18n.Translate("Edit.ContentLabel")" 
 				class="@editorCssClass" 
 				data-image-size-limit-megabytes="@settings.Value.UploadSizeLimitMegabytes" 
-				data-image-upload-endpoint="@Url.Action("Image", "FileUpload")">@Model.Content</textarea>
+				data-image-upload-endpoint="@Url.Action("Image", "FileUpload")">@Model.Post.Content</textarea>
 		</div>        
         
 		<div class="form-group">
 			<input type="submit" value="@i18n.Translate("Edit.Save")" title="@i18n.Translate("Edit.SaveTitle")" class="btn btn-edit"/>
-	        <input asp-for="@Model.IsPublished"/>
-        	<label asp-for="@Model.IsPublished">@i18n.Translate("Edit.IsPublished")</label>
+	        <input asp-for="@Model.Post.IsPublished"/>
+        	<label asp-for="@Model.Post.IsPublished">@i18n.Translate("Edit.IsPublished")</label>
 
         	@if (!isNew)
         	{
-            	<input type="submit" value="@i18n.Translate("Edit.Delete")" class="btn btn-delete delete" title="@i18n.Translate("Edit.DeleteTitle")" asp-action="DeletePost" asp-route-id="@Model.Id" />
+            	<input type="submit" value="@i18n.Translate("Edit.Delete")" class="btn btn-delete delete" title="@i18n.Translate("Edit.DeleteTitle")" asp-action="DeletePost" asp-route-id="@Model.Post.Id" />
         	}
 		</div>
         

@@ -21,6 +21,8 @@ namespace Miniblog.Core.Service.Blog
 
 		Task SavePost(PostDto post, Guid[] categories);
 
+		Task<PostDto> AssignCategoriesToPost(PostDto post, Guid[] categories);
+
 		Task DeletePost(Guid id);
 
 		Task AddComment(CommentDto comment, Guid postId);

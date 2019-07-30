@@ -84,18 +84,26 @@ namespace Miniblog.Core.Web.Controllers
 		[HttpGet, Authorize]
 		public async Task<IActionResult> Edit(Guid id)
 		{
-			ViewData["AllCats"] = (await _blog.GetCategories()).ToList();
+			var allCategories = (await _blog.GetCategories()).ToList();
 
 			if (id == Guid.Empty)
 			{
-				return View(new PostDto());
+				return View(new PostViewModel
+				{
+					AllCategories = allCategories,
+					Post = new PostDto()
+				});
 			}
 
 			var post = await _blog.GetPostById(id);
 
 			if (post != null)
 			{
-				return View(post);
+				return View(new PostViewModel
+				{
+					AllCategories = allCategories,
+					Post = post
+				});
 			}
 
 			return NotFound();
@@ -107,7 +115,11 @@ namespace Miniblog.Core.Web.Controllers
 		{
 			if (!ModelState.IsValid)
 			{
-				return View("Edit", post);
+				return View("Edit", new PostViewModel 
+				{
+					AllCategories = (await _blog.GetCategories()).ToList(),
+					Post = await _blog.AssignCategoriesToPost(post, categories)
+				});
 			}
 
 			await _blog.SavePost(post, categories);

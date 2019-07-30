@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Miniblog.Core.Contract.Models;
 using Miniblog.Core.Data.Repositories;
@@ -8,19 +7,11 @@ using Miniblog.Core.Framework.Common;
 using Miniblog.Core.Framework.Users;
 using Miniblog.Core.Service.Models;
 using Miniblog.Core.Service.Persistence;
-using Miniblog.Core.Service.Rendering;
 using Miniblog.Core.Service.Settings;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.XPath;
 
 namespace Miniblog.Core.Service.Blog
 {
@@ -105,6 +96,16 @@ namespace Miniblog.Core.Service.Blog
 			}
 
 			await _blogRepository.UpdatePost(existing);
+		}
+
+		public virtual Task<PostDto> AssignCategoriesToPost(PostDto post, Guid[] categories)
+		{
+			post.Categories = new List<ICategory>();
+			foreach(var categoryId in categories)
+			{
+				post.Categories.Add(new CategoryDto { Id = categoryId });
+			}
+			return Task.FromResult(post);
 		}
 
 		public virtual async Task DeletePost(Guid id)
