@@ -1,0 +1,88 @@
+@import "variables";
+@import "mixins";
+
+#menu-icon {
+	display: block;
+	position: absolute;
+	top: 0;
+	right: 1em;
+	text-decoration: none;
+	font-weight: bold;
+	cursor: pointer;
+	opacity: 1;
+	padding: 0 0.4em;
+
+	&:hover {
+		opacity: 0.85;
+		text-decoration: none;
+		border: none;
+	}
+}
+
+.navbar {
+	float: none;
+	max-height: 0;
+	overflow: hidden;
+	text-align: left;
+	@include transition(max-height .4s);
+
+	.menu {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+
+		li {
+			list-style-type: none;			
+			font-size: 17px;
+			display: block;
+		
+			a {
+				display: block;
+				text-decoration: none;
+				padding: 8px 0.8em 8px 0.8em;
+				@include transition(all 0.2s ease);
+			}
+		}
+	}
+}
+
+//increase the max-height if you add more links.
+.expand {
+	max-height: 20em;
+}
+
+@media only screen and (min-width : 768px) {
+	/* Mobile menu icon */
+	#menu-icon {
+		display: none;
+	}
+
+	.navbar {
+		max-height: none;
+		border-bottom: 1px solid;
+		position: relative;
+
+		.btn.btn-day, .btn.btn-night {
+			position: absolute;
+			right: 0;
+			top: 3px;
+		}
+		
+		.menu {
+			li {
+				list-style-type: none;
+				display: inline-block;
+				text-align: center;
+				
+				a {
+					display: block;
+					border-bottom: 0;					
+				}
+			}
+		}
+	}
+}
+
+//COLORS
+@include navigation-colors-mixin();
+//COLORS

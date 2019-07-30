@@ -1,6 +1,37 @@
+@mixin transition($transition...) {
+    -moz-transition:    $transition;
+    -o-transition:      $transition;
+    -webkit-transition: $transition;
+    transition:         $transition;
+}
+
 @mixin body-colors-mixin() {
 	color: $text_color;
 	background-color: $common_bg_color;
+}
+
+@mixin navigation-colors-mixin() {
+	#menu-icon {
+		color: $text_color;		
+	}
+	
+	.navbar .menu li a {
+		color: $text_color;
+		&:hover {
+			background-color: $navbar_border_color;
+			
+		}
+		&.active {
+			background-color: $navbar_border_color;
+			
+		}
+	}
+	
+	@media only screen and (min-width : 768px) {	
+		.navbar {
+			border-bottom-color: $navbar_border_color;
+		}
+	}
 }
 
 @mixin abovethefold-colors-mixin() {

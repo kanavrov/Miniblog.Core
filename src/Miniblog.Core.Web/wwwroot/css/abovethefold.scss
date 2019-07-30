@@ -1,5 +1,6 @@
 ﻿@import "variables";
 @import "mixins";
+@import "navigation";
 @import "./fontawesome/fontawesome";
 @import "./fontawesome/solid";
 @import "./fontawesome/brands";
@@ -261,6 +262,8 @@ time {
 		padding: 2px 7px;
 	}
 }
+
+
 
 //COLORS
 body {

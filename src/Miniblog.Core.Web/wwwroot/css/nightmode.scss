@@ -7,6 +7,8 @@ $text_color: #e1e1e1;
 $light_bg_color: #252525;
 $time_text_color: #7b7b7b;
 
+$navbar_border_color: #252525;
+
 //Buttons
 $button_text_color: #000000;
 $button_edit_bg_color: #03dac6;
@@ -26,6 +28,7 @@ $footer_link_text_color: #e1e1e1;
 
 .night-mode {
 	@include body-colors-mixin();
+	@include navigation-colors-mixin();
 	@include admin-colors-mixin();
 	@include abovethefold-colors-mixin();
 	@include belowthefold-colors-mixin();

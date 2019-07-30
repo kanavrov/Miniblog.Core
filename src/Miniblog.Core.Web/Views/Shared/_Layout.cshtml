@@ -51,12 +51,16 @@
     <header class="siteheader">
         <div class="container">
             <p itemprop="name"><a href="~/">@manifest.Name</a></p>
-            By <span itemprop="author">@settings.Value.Owner</span>
-
-			<p>
+			<a id="menu-icon">&#9776; Menu</a>
+			<nav class="navbar">
+				<ul class="menu">
+        			<li><a class="active" href="#">Home</a></li>
+					<li><a href="#">Categories</a></li>
+					<li><a href="#">About</a></li>
+      			</ul>
 				<button class="btn btn-icon btn-icon-left btn-day"><i class="fa fa-sun"></i>@i18n.Translate("Layout.Day")</button>
 				<button class="btn btn-icon btn-icon-left btn-night"><i class="fa fa-moon"></i>@i18n.Translate("Layout.Night")</button>
-			</p>			
+			</nav>			
         </div>
 		
     </header>

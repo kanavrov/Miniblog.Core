@@ -155,4 +155,11 @@
 		document.cookie = nightModeCookie +  + " expires=Thu, 01 Jan 9999 00:00:01 GMT;"
 	});
 
+	//Navigation
+	document.getElementById("menu-icon").addEventListener("click", function () {
+		var navbar = document.body.querySelector(".navbar");		
+		navbar.classList.toggle('expand');
+    	return false;
+	});
+
 })(window, document);
