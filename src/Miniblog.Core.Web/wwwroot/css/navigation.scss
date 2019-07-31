@@ -2,20 +2,14 @@
 @import "mixins";
 
 #menu-icon {
+	position: absolute;	
 	display: block;
-	position: absolute;
-	top: 0;
-	right: 1em;
-	text-decoration: none;
-	font-weight: bold;
-	cursor: pointer;
 	opacity: 1;
-	padding: 0 0.4em;
+	top: 0.5em;
+	right: 1.5em;
 
 	&:hover {
 		opacity: 0.85;
-		text-decoration: none;
-		border: none;
 	}
 }
 
@@ -51,7 +45,33 @@
 	max-height: 20em;
 }
 
+.siteheader {
+	text-align: left;
+	padding: 0.8em 0 2em 0;
+
+	p {
+		font-size: 2em;
+	}
+
+	a {
+		text-decoration: none;
+	}
+}
+
+@media only screen and (max-width : 767px) {
+	.siteheader {
+		p {
+			padding-right: 45px;
+		}
+
+		.container {
+			position: relative;
+		}
+	}
+}
+
 @media only screen and (min-width : 768px) {
+	
 	/* Mobile menu icon */
 	#menu-icon {
 		display: none;

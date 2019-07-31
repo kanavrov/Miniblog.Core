@@ -35,6 +35,12 @@
 }
 
 @mixin abovethefold-colors-mixin() {
+	#menu-icon {
+		background-color: $common_bg_color;
+		color: $text_color;
+		border: 1px solid $text_color;
+	}
+
 	.btn {
 		color: $button_text_color;
 

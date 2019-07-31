@@ -72,6 +72,12 @@ body {
 			right: 8px;
 		}
 	}
+
+	&.btn-icon-only {
+		i {
+			position: static;
+		}
+	}
 }
 
 .delete {
@@ -87,19 +93,6 @@ body {
 .container-row {
 	width: 100%;
 	padding-bottom: 30px;
-}
-
-.siteheader {
-	text-align: right;
-	padding: 0.8em 1.5em 2em 1.5em;
-
-	p {
-		font-size: 2em;
-	}
-
-	a {
-		text-decoration: none;
-	}
 }
 
 @keyframes fade-in {
