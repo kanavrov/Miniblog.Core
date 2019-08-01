@@ -13,5 +13,7 @@ namespace Miniblog.Core.Service.Models
 		public string Name { get; set; }
 
 		public DateTime LastModified { get; set; }
+		
+		public int PostCount { get; set; }
 	}
 }

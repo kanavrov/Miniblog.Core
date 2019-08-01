@@ -58,8 +58,8 @@
 			<button id="menu-icon" class="btn btn-icon btn-icon-only"><i class="fa fa-bars"></i></button>
 			<nav class="navbar">
 				<ul class="menu">
-        			<li><a class="@(controller == "Blog" && action == "Index" ? navigationActiveClass : null)" asp-controller="Blog" asp-action="Index">Home</a></li>
-					<li><a class="@(controller == "Category" && action == "Index" ? navigationActiveClass : null)" asp-controller="Category" asp-action="Index">@i18n.Translate("Layout.Categories")</a></li>
+        			<li><a class="@(controller == "Blog" && action == "Index" ? navigationActiveClass : null)" asp-controller="Blog" asp-action="Index">@i18n.Translate("Navigation.Home")</a></li>
+					<li><a class="@(controller == "Category" && action == "Index" ? navigationActiveClass : null)" asp-controller="Category" asp-action="Index">@i18n.Translate("Navigation.Categories")</a></li>
 					<li><a href="#">About</a></li>
       			</ul>
 				<button class="btn btn-icon btn-icon-left btn-day"><i class="fa fa-sun"></i>@i18n.Translate("Layout.Day")</button>

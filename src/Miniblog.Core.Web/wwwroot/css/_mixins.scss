@@ -26,6 +26,12 @@
 			
 		}
 	}
+
+	.siteheader {
+		a {
+			color: $text_color;
+		}
+	}
 	
 	@media only screen and (min-width : 768px) {	
 		.navbar {
@@ -71,11 +77,16 @@
 			background-color: darken($button_delete_bg_color, 10%);
 		}
 	}
-	.siteheader {
-		a {
-			color: $text_color;
+
+	.overview-table {
+		tr {
+			border-bottom-color: $input_border_color;
 		}
-	}
+
+		tr:nth-child(2n) {
+			background-color: $light_bg_color;
+		}
+	}	
 
 	a {
 		color: $link_color;
@@ -123,16 +134,6 @@
 }
 
 @mixin admin-colors-mixin() {
-	.editable-table {
-		td {
-			border-bottom-color: $input_border_color;
-		}
-
-		tr:nth-child(2n) {
-			background-color: $light_bg_color;
-		}
-	}
-
 	form {
 		input {
 			&[type="text"] {

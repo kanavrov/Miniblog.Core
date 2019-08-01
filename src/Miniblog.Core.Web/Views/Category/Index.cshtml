@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<CategoryDto>
 @inject ITranslationProvider i18n
+@inject IUserRoleResolver userRoleResolver
 
 @{
    ViewData["Title"] = i18n.Translate("Category.Title");
@@ -10,22 +11,30 @@
 }
 
 <div class="container">
-	<div class="container-row">
-		<a class="btn btn-edit" asp-controller="Category" asp-Action="Edit" 
+	@if (userRoleResolver.IsAdmin())
+    {
+		<div class="container-row">
+			<a class="btn btn-edit" asp-controller="Category" asp-Action="Edit" 
 							title="@i18n.Translate("Category.NewCategoryTitle")">@i18n.Translate("Category.NewCategory")</a>
-	</div>
+		</div>
+	}
 	
 	<div class="container-row">
-		<table class="editable-table category-table">
+		<table class="overview-table category-table">
 			@foreach (var category in Model)
 			{
     			<tr>
-					<td>@category.Name</td>
 					<td>
-						<a class="btn btn-edit" asp-controller="Category" asp-Action="Edit" asp-route-id="@category.Id" 
-							title="@i18n.Translate("Category.EditTitle")">@i18n.Translate("Category.Edit")</a>
-						<a class="btn btn-delete" asp-controller="Category" asp-Action="Delete" asp-route-id="@category.Id" 
-							title="@i18n.Translate("Category.DeleteTitle")">@i18n.Translate("Category.Delete")</a>
+						<a asp-controller="Blog" asp-action="Category" asp-route-categoryId="@category.Id" asp-route-page="">@category.Name (@category.PostCount)</a>
+					</td>
+					<td>
+						@if (userRoleResolver.IsAdmin())
+    					{
+							<a class="btn btn-edit" asp-controller="Category" asp-Action="Edit" asp-route-id="@category.Id" 
+									title="@i18n.Translate("Category.EditTitle")">@i18n.Translate("Category.Edit")</a>
+							<a class="btn btn-delete" asp-controller="Category" asp-Action="Delete" asp-route-id="@category.Id" 
+									title="@i18n.Translate("Category.DeleteTitle")">@i18n.Translate("Category.Delete")</a>
+						}
 					</td>	
 				</tr>
 			}

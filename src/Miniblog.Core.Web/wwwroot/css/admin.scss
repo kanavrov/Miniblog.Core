@@ -5,26 +5,6 @@ a.noline {
 	text-decoration: none;
 }
 
-.editable-table {
-	width: 100%;
-	border-collapse: collapse;
-
-	td {
-		border-bottom: 1px solid;
-		padding-top: 5px;
-		padding-bottom: 5px;
-	}
-
-	td:first-child {
-		padding-left: 5px;
-	}
-
-	td:last-child {
-		text-align: right;
-		padding-right: 5px;
-	}
-}
-
 form {
 	padding-bottom: 2em;
 

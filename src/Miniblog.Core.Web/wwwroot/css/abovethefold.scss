@@ -80,6 +80,26 @@ body {
 	}
 }
 
+.overview-table {
+	width: 100%;
+	border-collapse: collapse;
+
+	tr {
+		border-bottom: 1px solid;
+		padding-top: 5px;
+		padding-bottom: 5px;
+	}
+
+	td:first-child {
+		padding-left: 5px;
+	}
+
+	td:last-child {
+		text-align: right;
+		padding-right: 5px;
+	}
+}
+
 .delete {
 	float: right;
 }

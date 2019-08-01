@@ -37,7 +37,7 @@
                 <li> @i18n.Translate("Post.PostedIn") </li>
                 @foreach (ICategory cat in Model.Categories)
                 {
-                    <li itemprop="articleSection"><a asp-controller="Blog" asp-action="Category" asp-route-category="@cat.Id" asp-route-page="">@cat.Name</a></li>
+                    <li itemprop="articleSection"><a asp-controller="Blog" asp-action="Category" asp-route-categoryId="@cat.Id" asp-route-page="">@cat.Name</a></li>
                 }
             </ul>
             <text>@i18n.Translate("Post.AndHas")</text>

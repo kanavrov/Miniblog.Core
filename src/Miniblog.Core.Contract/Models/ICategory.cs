@@ -8,6 +8,8 @@ namespace Miniblog.Core.Contract.Models
 
 		string Name { get; set; }
 
+		int PostCount { get; set; }
+
 		DateTime LastModified { get; set; }
 	}
 }
