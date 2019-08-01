@@ -34,7 +34,10 @@
 					@if (userRoleResolver.IsAdmin())
     				{
 						<td>
-							<button class="btn btn-icon btn-icon-only btn-opener"><i class="fa fa-angle-down"></i></button>
+							<button class="btn btn-icon btn-icon-only btn-opener">
+								<i class="fa fa-angle-down expand-icon"></i>
+								<i class="fa fa-angle-up collapse-icon"></i>
+							</button>
 							@{await Html.RenderPartialAsync("TableButtons.cshtml", category);}
 						</td>
 					}	

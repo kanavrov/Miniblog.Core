@@ -192,6 +192,7 @@
 					var expandRow = row.nextElementSibling;
 					if(expandRow.classList.contains(rowExpandClass)) {
 						expandRow.classList.remove(rowExpandClass);
+						row.classList.remove(rowExpandClass);
 					} else {
 						var table = e.target.closest("table");
 						var rows = table.querySelectorAll("tr");
@@ -199,6 +200,7 @@
 							rows[j].classList.remove(rowExpandClass);
 						}
 						expandRow.classList.add(rowExpandClass);
+						row.classList.add(rowExpandClass);
 					}
 				}								
 			});

@@ -114,7 +114,26 @@ body {
 		.expand-content {
 			display: none;
 		}
-	}	
+	}
+
+	tr {
+		.btn-opener {
+			.collapse-icon {
+				display: none;
+			}
+		}
+	}
+	
+	tr.expand {
+		.btn-opener {
+			.collapse-icon {
+				display: inline;
+			}
+			.expand-icon {
+				display: none;
+			}
+		}
+	}
 }
 
 @media only screen and (max-width : 767px) {
