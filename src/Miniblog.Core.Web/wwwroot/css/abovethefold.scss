@@ -108,18 +108,13 @@ body {
 		display: none;
 	}
 
-	tr.expand-row {
+	tr.expand-row,
+	tr.expand-row.expand {
 		border: none;
 		.expand-content {
 			display: none;
 		}
-	}
-
-	tr.expand-row.expand {
-		.expand-content {
-			display: block;
-		}
-	}
+	}	
 }
 
 @media only screen and (max-width : 767px) {
@@ -133,7 +128,13 @@ body {
 			.btn-delete {
 				display: none;
 			}
-		}		
+		}
+		
+		tr.expand-row.expand {
+			.expand-content {
+				display: block;
+			}
+		}
 	}
 }
 
