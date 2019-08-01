@@ -21,22 +21,35 @@
 	
 	<div class="container-row">
 		<table class="overview-table category-table">
+			@{
+				int index = 1;
+				string evenClass = "even";
+			}
 			@foreach (var category in Model)
 			{
-    			<tr>
+				<tr class="@(index % 2 == 0 ? evenClass : null)">
 					<td>
 						<a asp-controller="Blog" asp-action="Category" asp-route-categoryId="@category.Id" asp-route-page="">@category.Name (@category.PostCount)</a>
 					</td>
-					<td>
-						@if (userRoleResolver.IsAdmin())
-    					{
-							<a class="btn btn-edit" asp-controller="Category" asp-Action="Edit" asp-route-id="@category.Id" 
-									title="@i18n.Translate("Category.EditTitle")">@i18n.Translate("Category.Edit")</a>
-							<a class="btn btn-delete" asp-controller="Category" asp-Action="Delete" asp-route-id="@category.Id" 
-									title="@i18n.Translate("Category.DeleteTitle")">@i18n.Translate("Category.Delete")</a>
-						}
-					</td>	
+					@if (userRoleResolver.IsAdmin())
+    				{
+						<td>
+							<button class="btn btn-icon btn-icon-only btn-opener"><i class="fa fa-angle-down"></i></button>
+							@{await Html.RenderPartialAsync("TableButtons.cshtml", category);}
+						</td>
+					}	
 				</tr>
+				@if (userRoleResolver.IsAdmin())
+    			{
+					<tr class="expand-row @(index % 2 == 0 ? evenClass : null)">
+						<td colspan="2">
+							<div class="expand-content">
+								@{await Html.RenderPartialAsync("TableButtons.cshtml", category);}
+							</div>							
+						</td>
+					</tr>
+				}
+				index++;
 			}
 		</table>
 	</div>
@@ -45,5 +58,8 @@
 
 
 @section Scripts {
-    <script src="~/js/admin.js" async></script>
+	@if(userRoleResolver.IsAdmin())
+	{
+		<script src="~/js/admin.js" async></script>
+	}    
 }

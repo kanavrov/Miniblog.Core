@@ -84,10 +84,15 @@ body {
 	width: 100%;
 	border-collapse: collapse;
 
-	tr {
-		border-bottom: 1px solid;
-		padding-top: 5px;
-		padding-bottom: 5px;
+	tr,
+	tr.expand-row.expand {
+		border-bottom: 1px solid;			
+	}
+
+	tr:not(.expand-row) td,
+	tr.expand-row .expand-content {
+		padding-top: 3px;
+		padding-bottom: 3px;
 	}
 
 	td:first-child {
@@ -97,6 +102,38 @@ body {
 	td:last-child {
 		text-align: right;
 		padding-right: 5px;
+	}
+
+	.btn-opener {
+		display: none;
+	}
+
+	tr.expand-row {
+		border: none;
+		.expand-content {
+			display: none;
+		}
+	}
+
+	tr.expand-row.expand {
+		.expand-content {
+			display: block;
+		}
+	}
+}
+
+@media only screen and (max-width : 767px) {
+	.overview-table {
+		.btn-opener {
+			display: inline-block;
+		}
+
+		tr:not(.expand-row) {
+			.btn-edit, 
+			.btn-delete {
+				display: none;
+			}
+		}		
 	}
 }
 

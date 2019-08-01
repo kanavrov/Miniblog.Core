@@ -1,0 +1,9 @@
+﻿@model CategoryDto
+@inject ITranslationProvider i18n
+
+
+<a class="btn btn-edit" asp-controller="Category" asp-Action="Edit" asp-route-id="@Model.Id" 
+		title="@i18n.Translate("Category.EditTitle")">@i18n.Translate("Category.Edit")</a>
+<a class="btn btn-delete" asp-controller="Category" asp-Action="Delete" asp-route-id="@Model.Id" 
+		title="@i18n.Translate("Category.DeleteTitle")">@i18n.Translate("Category.Delete")</a>
+

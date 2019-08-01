@@ -79,12 +79,19 @@
 	}
 
 	.overview-table {
-		tr {
+		tr,
+		tr.expand-row.expand {
 			border-bottom-color: $input_border_color;
 		}
 
-		tr:nth-child(2n) {
+		tr.even {
 			background-color: $light_bg_color;
+		}
+
+		.btn-opener {
+			background: none;
+			color: $text_color;
+			border: 1px solid $text_color;
 		}
 	}	
 

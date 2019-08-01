@@ -1,4 +1,17 @@
 ﻿(function (window, document) {
+	//START: polyfills
+	if (!Element.prototype.matches) Element.prototype.matches = Element.prototype.msMatchesSelector;
+	if (!Element.prototype.closest) Element.prototype.closest = function (selector) {
+	    var el = this;
+	    while (el) {
+	        if (el.matches(selector)) {
+	            return el;
+	        }
+	        el = el.parentElement;
+	    }
+	};
+	//END: polyfills
+
 
     // Lazy load stylesheets
     requestAnimationFrame(function () {
@@ -157,9 +170,39 @@
 
 	//Navigation
 	document.getElementById("menu-icon").addEventListener("click", function () {
-		var navbar = document.body.querySelector(".navbar");		
-		navbar.classList.toggle('expand');
+		var navbar = document.body.querySelector(".navbar");
+		var expandClass = "expand";
+		if(navbar.classList.contains(expandClass)) {
+			navbar.classList.remove(expandClass);
+		} else {
+			navbar.classList.add(expandClass);
+		}
     	return false;
 	});
+
+	//Overview table
+	var overviewTable = document.querySelector(".overview-table");
+	var rowExpandClass = "expand";
+	if (overviewTable) {
+		var openerButtons = overviewTable.querySelectorAll(".btn-opener");
+		for (var i = 0; i < openerButtons.length; i++) {
+			openerButtons[i].addEventListener("click", function (e) {				
+				var row = e.target.closest("tr");
+				if(row && row.nextElementSibling) {
+					var expandRow = row.nextElementSibling;
+					if(expandRow.classList.contains(rowExpandClass)) {
+						expandRow.classList.remove(rowExpandClass);
+					} else {
+						var table = e.target.closest("table");
+						var rows = table.querySelectorAll("tr");
+						for (var j = 0; j < rows.length; j++) {
+							rows[j].classList.remove(rowExpandClass);
+						}
+						expandRow.classList.add(rowExpandClass);
+					}
+				}								
+			});
+		}
+	}
 
 })(window, document);
