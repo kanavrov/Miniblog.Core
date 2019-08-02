@@ -255,7 +255,7 @@
 	//Edit category
 	var editCategory = document.getElementById("edit-category");
 	if (editCategory) {
-		// Delete post
+		// Delete category
 		var deleteCategoryButton = editCategory.querySelector(".btn-delete");
 		if (deleteCategoryButton) {
 			deleteCategoryButton.addEventListener("click", function (e) {
@@ -268,15 +268,12 @@
 
 	var categoryTable = document.querySelector(".category-table");
 	if (categoryTable) {
-		// Delete post
-		var deleteCategoryButtons = categoryTable.querySelectorAll(".btn-delete");
-		for (var i = 0; i < deleteCategoryButtons.length; i++) {
-			deleteCategoryButtons[i].addEventListener("click", function (e) {
-				if (!confirm(window.i18n("Category.ConfirmDelete"))) {
-					e.preventDefault();
-				}
-			});
-		}
+		// Delete category
+		categoryTable.addEventListener("click", function (e) {
+			if (e.target.classList.contains("btn-delete") && !confirm(window.i18n("Category.ConfirmDelete"))) {
+				e.preventDefault();
+			}
+		});
 	}
 
 })();
